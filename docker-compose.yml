@@ -51,7 +51,8 @@ services:
       - fake_smtp
     env_file:
       - plausible-variables.sample.env
-
+    environment:
+      - GEOLITE2_COUNTRY_DB=/geoip/GeoLite2-Country.mmdb
 
   setup:
     build:

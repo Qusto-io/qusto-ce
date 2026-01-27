@@ -24,6 +24,7 @@ erl_crash.dump
 
 # Ignore package tarball (built via "mix hex.build").
 plausible-*.tar
+qusto-*.tar
 
 # If NPM crashes, it generates a log, let's ignore it too.
 npm-debug.log
@@ -73,18 +74,11 @@ npm-debug.log
 # Ignore Elixir Language Server files
 .elixir_ls
 plausible-report.xml
+qusto-report.xml
 
-.idea
-*.iml
-*.log
-*.code-workspace
-.vscode
-
-# Dializer
+# Dialyzer
 /priv/plts/*.plt
 /priv/plts/*.plt.hash
-
-.env
 
 # Geolocation databases
 /priv/geodb/*.mmdb
@@ -92,10 +86,61 @@ plausible-report.xml
 
 # Auto-generated tracker files
 /priv/tracker/js/plausible*.js*
+/priv/tracker/js/qusto*.js*
 /priv/tracker/installation_support/*.js
 
 # Docker volumes
 .clickhouse_db_vol*
 plausible_db*
+qusto_db*
 
-.claude
+# =============================================================================
+# Qusto-specific ignores
+# =============================================================================
+
+# Environment files - NEVER commit these
+.env
+.env.*
+!.env.example
+
+# Premium feature references (these stay in private repos)
+# These directories should never exist in this repo
+/funnels/
+/ai-tracking/
+/attribution/
+
+# Deployment secrets
+/secrets/
+*.pem
+*.key
+!*.key.example
+
+# IDE settings (user-specific)
+.vscode/settings.json
+.vscode/launch.json
+.vscode/*.code-workspace
+*.code-workspace
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Database dumps (may contain user data)
+*.sql
+*.dump
+/priv/repo/backups/
+
+# ClickHouse data
+/clickhouse/
+
+# Test artifacts
+/screenshots/
+/recordings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude AI assistant
+.claude/

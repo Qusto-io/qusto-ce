@@ -1,0 +1,20 @@
+# Qusto Analytics Code Owners
+# Each line is a file pattern followed by one or more owners.
+
+# Default owner for everything in repo
+*       @QustoAnalytics
+
+# Specific module owners (add as team grows)
+# /lib/qusto/analytics/*     @Qusto-io/core-team
+# /lib/qusto/billing/*       @Qusto-io/core-team
+# /lib/qusto_web/*           @Qusto-io/core-team
+# /priv/repo/migrations/*    @Qusto-io/core-team
+
+# Critical files require core team review
+/config/prod.exs           @Qusto-io/core-team
+/mix.exs                   @Qusto-io/core-team
+/.github/workflows/*       @Qusto-io/core-team
+
+# Legal and compliance
+/LICENSE                   @QustoAnalytics
+/NOTICE                    @QustoAnalytics

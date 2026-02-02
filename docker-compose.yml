@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  # ===========================================
+  # PostgreSQL - Metadata & Configuration Store
+  # ===========================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: qusto-postgres
+    hostname: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-plausible_dev}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-plausible_dev}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - qusto-network
+
+  # ===========================================
+  # ClickHouse - Analytics Data Store
+  # ===========================================
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.10
+    container_name: qusto-clickhouse
+    hostname: clickhouse
+    restart: unless-stopped
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB:-plausible_events_dev}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    ports:
+      - "${CLICKHOUSE_HTTP_PORT:-8123}:8123"   # HTTP interface
+      - "${CLICKHOUSE_NATIVE_PORT:-9000}:9000" # Native protocol
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+      - ./docker/clickhouse/config:/etc/clickhouse-server/config.d:ro
+      - ./docker/clickhouse/init:/docker-entrypoint-initdb.d:ro
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - qusto-network
+
+  # ===========================================
+  # Redis - Cache & Real-time Counters
+  # ===========================================
+  redis:
+    image: redis:7-alpine
+    container_name: qusto-redis
+    hostname: redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - qusto-network
+
+  # ===========================================
+  # Adminer - Database Management UI (Optional)
+  # ===========================================
+  adminer:
+    image: adminer:latest
+    container_name: qusto-adminer
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      - postgres
+    networks:
+      - qusto-network
+    profiles:
+      - tools
+
+# ===========================================
+# Networks
+# ===========================================
+networks:
+  qusto-network:
+    driver: bridge
+    name: qusto-network
+
+# ===========================================
+# Volumes (Persistent Data)
+# ===========================================
+volumes:
+  postgres_data:
+    name: qusto-postgres-data
+  clickhouse_data:
+    name: qusto-clickhouse-data
+  clickhouse_logs:
+    name: qusto-clickhouse-logs
+  redis_data:
+    name: qusto-redis-data

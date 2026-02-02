@@ -77,6 +77,8 @@ defmodule Plausible.MixProject do
       {:cors_plug, "~> 3.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
+      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
       {:double, "~> 0.8.0", only: [:dev, :test, :ce_test, :ce_dev]},
       {:ecto, "~> 3.13.5"},
       {:ecto_sql, "~> 3.13.2"},

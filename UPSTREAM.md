@@ -34,25 +34,7 @@ Plausible has demonstrated that privacy-respecting analytics can be both effecti
 
 ### Premium Features (Qusto Only)
 
-Qusto extends the open-source core with proprietary premium features:
-
-1. **E-commerce Funnels**
-   - Multi-step conversion tracking
-   - Abandoned cart analysis
-   - Product journey visualization
-   - Revenue attribution
-
-2. **AI Search Tracking**
-   - Detect visits from ChatGPT, Perplexity, Claude, Gemini
-   - AI search engine referral analytics
-   - Bot vs human traffic differentiation
-   - AI-driven traffic trends
-
-3. **Advanced Attribution**
-   - Cookieless attribution with 94% accuracy
-   - Multi-touch attribution models
-   - Cross-device tracking (privacy-preserving)
-   - Marketing ROI analysis
+Qusto extends the open-source core with proprietary premium features developed in separate private repositories. These include enhanced e-commerce analytics, AI search traffic detection, and advanced attribution capabilities.
 
 ### Hosting Philosophy
 

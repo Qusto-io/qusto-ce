@@ -19,7 +19,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("welcome-email")
-    |> subject("Welcome to Plausible")
+    |> subject("Welcome to Qusto")
     |> render("welcome_email.html", user: user)
   end
 

@@ -475,3 +475,79 @@ iframe[hidden] {
     --color-border-dark: var(--qusto-gray-600);
   }
 }
+
+/* ============================================================================
+   QUSTO SHADOW UTILITIES
+   Added: Week 5 - Design System Implementation
+   Custom shadows for blue (analytics) and orange (revenue) themes
+   ============================================================================ */
+
+/* Blue Shadows (Analytics) */
+.shadow-blue-sm {
+  box-shadow: 0 1px 2px 0 rgba(22, 97, 190, 0.05);
+}
+
+.shadow-blue {
+  box-shadow: 0 1px 3px 0 rgba(22, 97, 190, 0.1), 0 1px 2px 0 rgba(22, 97, 190, 0.06);
+}
+
+.shadow-blue-md {
+  box-shadow: 0 4px 6px -1px rgba(22, 97, 190, 0.1), 0 2px 4px -1px rgba(22, 97, 190, 0.06);
+}
+
+.shadow-blue-lg {
+  box-shadow: 0 10px 15px -3px rgba(22, 97, 190, 0.1), 0 4px 6px -2px rgba(22, 97, 190, 0.05);
+}
+
+.shadow-blue-xl {
+  box-shadow: 0 20px 25px -5px rgba(22, 97, 190, 0.1), 0 10px 10px -5px rgba(22, 97, 190, 0.04);
+}
+
+/* Orange Shadows (Revenue) */
+.shadow-orange-sm {
+  box-shadow: 0 1px 2px 0 rgba(197, 81, 48, 0.05);
+}
+
+.shadow-orange {
+  box-shadow: 0 1px 3px 0 rgba(197, 81, 48, 0.1), 0 1px 2px 0 rgba(197, 81, 48, 0.06);
+}
+
+.shadow-orange-md {
+  box-shadow: 0 4px 6px -1px rgba(197, 81, 48, 0.1), 0 2px 4px -1px rgba(197, 81, 48, 0.06);
+}
+
+.shadow-orange-lg {
+  box-shadow: 0 10px 15px -3px rgba(197, 81, 48, 0.1), 0 4px 6px -2px rgba(197, 81, 48, 0.05);
+}
+
+.shadow-orange-xl {
+  box-shadow: 0 20px 25px -5px rgba(197, 81, 48, 0.1), 0 10px 10px -5px rgba(197, 81, 48, 0.04);
+}
+
+/* Hover States */
+.hover\:shadow-blue-md:hover {
+  box-shadow: 0 4px 6px -1px rgba(22, 97, 190, 0.1), 0 2px 4px -1px rgba(22, 97, 190, 0.06);
+}
+
+.hover\:shadow-orange-md:hover {
+  box-shadow: 0 4px 6px -1px rgba(197, 81, 48, 0.1), 0 2px 4px -1px rgba(197, 81, 48, 0.06);
+}
+
+/* Dark Mode Adjustments */
+@media (prefers-color-scheme: dark) {
+  .shadow-blue-sm,
+  .shadow-blue,
+  .shadow-blue-md,
+  .shadow-blue-lg,
+  .shadow-blue-xl {
+    box-shadow: 0 0 0 1px rgba(22, 97, 190, 0.2);
+  }
+
+  .shadow-orange-sm,
+  .shadow-orange,
+  .shadow-orange-md,
+  .shadow-orange-lg,
+  .shadow-orange-xl {
+    box-shadow: 0 0 0 1px rgba(197, 81, 48, 0.2);
+  }
+}

@@ -77,7 +77,11 @@ defmodule Plausible.Qusto.AttributionModel do
         add_error(changeset, :position_weights, "is required for position_based model")
 
       model_type == "position_based" and not valid_position_weights?(weights) ->
-        add_error(changeset, :position_weights, "must have 'first', 'middle', and 'last' keys that sum to 1.0")
+        add_error(
+          changeset,
+          :position_weights,
+          "must have 'first', 'middle', and 'last' keys that sum to 1.0"
+        )
 
       true ->
         changeset

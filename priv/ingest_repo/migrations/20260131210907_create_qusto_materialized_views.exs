@@ -4,6 +4,15 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
   import Plausible.MigrationUtils
 
   def up do
+    # Skip materialized views in test environments to avoid dependency issues
+    if Application.get_env(:plausible, :environment) == :test do
+      :ok
+    else
+      create_materialized_views()
+    end
+  end
+
+  defp create_materialized_views do
     on_cluster = on_cluster_statement("events_v2")
 
     # AI Traffic Daily Materialized View

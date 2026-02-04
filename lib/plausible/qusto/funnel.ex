@@ -18,7 +18,8 @@ defmodule Plausible.Qusto.Funnel do
   @type t() :: %__MODULE__{}
 
   @funnel_types ["ecommerce", "custom", "form"]
-  @default_window_minutes 43200  # 30 days
+  # 30 days
+  @default_window_minutes 43200
 
   schema "qusto_funnels" do
     field :name, :string
@@ -52,7 +53,8 @@ defmodule Plausible.Qusto.Funnel do
     ])
     |> validate_required([:name, :site_id, :funnel_type])
     |> validate_inclusion(:funnel_type, @funnel_types)
-    |> validate_number(:window_minutes, greater_than: 0, less_than_or_equal_to: 525_600) # Max 1 year
+    # Max 1 year
+    |> validate_number(:window_minutes, greater_than: 0, less_than_or_equal_to: 525_600)
     |> unique_constraint([:site_id, :name])
     |> cast_assoc(:steps, with: &FunnelStep.changeset/2)
     |> validate_length(:steps, min: 2, max: 10)

@@ -20,8 +20,8 @@ defmodule Plausible.Repo.Migrations.CreateQustoAttributionModels do
 
     # Partial unique index to ensure only one default model per site
     create unique_index(:qusto_attribution_models, [:site_id],
-      where: "is_default = true",
-      name: :one_default_attribution_model_per_site
-    )
+             where: "is_default = true",
+             name: :one_default_attribution_model_per_site
+           )
   end
 end

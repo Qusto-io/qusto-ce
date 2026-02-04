@@ -15,6 +15,9 @@ defmodule Plausible.Repo.Migrations.CreateQustoFunnelSteps do
     end
 
     create index(:qusto_funnel_steps, [:funnel_id])
-    create unique_index(:qusto_funnel_steps, [:funnel_id, :step_order], name: :unique_funnel_step_order)
+
+    create unique_index(:qusto_funnel_steps, [:funnel_id, :step_order],
+             name: :unique_funnel_step_order
+           )
   end
 end

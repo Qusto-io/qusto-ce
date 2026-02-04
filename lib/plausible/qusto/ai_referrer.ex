@@ -100,12 +100,9 @@ defmodule Plausible.Qusto.AiReferrer do
 
     Enum.find_value(referrers, fn ai_ref ->
       patterns = ai_ref.utm_patterns || []
+      matches_pattern? = Enum.any?(patterns, &String.contains?(utm_lower, String.downcase(&1)))
 
-      if Enum.any?(patterns, fn pattern ->
-           String.contains?(utm_lower, String.downcase(pattern))
-         end) do
-        ai_ref.name
-      end
+      matches_pattern? && ai_ref.name
     end)
   end
 

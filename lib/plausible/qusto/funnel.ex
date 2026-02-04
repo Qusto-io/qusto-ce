@@ -19,7 +19,7 @@ defmodule Plausible.Qusto.Funnel do
 
   @funnel_types ["ecommerce", "custom", "form"]
   # 30 days
-  @default_window_minutes 43200
+  @default_window_minutes 43_200
 
   schema "qusto_funnels" do
     field :name, :string

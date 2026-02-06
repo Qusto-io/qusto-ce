@@ -59,7 +59,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("check-stats-email")
-    |> subject("Check your Plausible website stats")
+    |> subject("Check your Qusto website stats")
     |> render("check_stats_email.html", user: user)
   end
 

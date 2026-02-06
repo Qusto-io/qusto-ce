@@ -4,7 +4,7 @@ defmodule Plausible.Teams.Invitations.InviteToSiteTest do
 
   alias Plausible.Teams.Invitations.InviteToSite
 
-  @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
+  @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
 
   describe "invite/4" do
     test "creates an invitation" do

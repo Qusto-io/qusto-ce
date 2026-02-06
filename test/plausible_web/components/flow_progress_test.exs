@@ -31,7 +31,7 @@ defmodule PlausibleWeb.Components.FlowProgressTest do
       )
 
     assert text_of_element(rendered, "#flow-progress") ==
-             "1 Register 2 Activate account 3 Add site info 4 Install Plausible 5 Verify installation"
+             "1 Register 2 Activate account 3 Add site info 4 Install Qusto 5 Verify installation"
   end
 
   test "invitation" do
@@ -53,18 +53,18 @@ defmodule PlausibleWeb.Components.FlowProgressTest do
       )
 
     assert text_of_element(rendered, "#flow-progress") ==
-             "1 Add site info 2 Install Plausible 3 Verify installation"
+             "1 Add site info 2 Install Qusto 3 Verify installation"
   end
 
   test "review" do
     rendered =
       render_component(&FlowProgress.render/1,
         flow: PlausibleWeb.Flows.review(),
-        current_step: "Install Plausible"
+        current_step: "Install Qusto"
       )
 
     assert text_of_element(rendered, "#flow-progress") ==
-             "1 Install Plausible 2 Verify installation"
+             "1 Install Qusto 2 Verify installation"
   end
 
   test "domain_change" do
@@ -75,6 +75,6 @@ defmodule PlausibleWeb.Components.FlowProgressTest do
       )
 
     assert text_of_element(rendered, "#flow-progress") ==
-             "1 Set up new domain 2 Install Plausible 3 Verify installation"
+             "1 Set up new domain 2 Install Qusto 3 Verify installation"
   end
 end

@@ -3,7 +3,7 @@ defmodule Plausible.MixProject do
 
   def project do
     [
-      name: "Plausible",
+      name: "Qusto",
       source_url: "https://github.com/plausible/analytics",
       docs: docs(),
       app: :plausible,
@@ -98,6 +98,7 @@ defmodule Plausible.MixProject do
       {:location, git: "https://github.com/plausible/location.git"},
       {:mox, "~> 1.0", only: [:test, :ce_test]},
       {:nanoid, "~> 2.1.0"},
+      {:nimble_publisher, "~> 1.1"},
       {:nimble_totp, "~> 1.0"},
       {:oban, "~> 2.20.1"},
       {:observer_cli, "~> 1.7"},

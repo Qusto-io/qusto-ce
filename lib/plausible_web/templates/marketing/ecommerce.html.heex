@@ -1,0 +1,140 @@
+<.focus_box>
+  <:title>E-commerce Analytics</:title>
+
+  <div class="mb-8">
+    <h1 class="text-4xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-6">
+      Analytics Built Specifically for E-commerce
+    </h1>
+    <p class="text-xl text-gray-600 mb-6 leading-relaxed">
+      Stop adapting generic web analytics to your e-commerce needs. Qusto is built from the ground up
+      for online stores, with features that help you track revenue, reduce cart abandonment, and
+      understand what drives purchases.
+    </p>
+  </div>
+  
+<!-- Key Features -->
+  <div class="space-y-6 mb-12">
+    <%= for feature <- @features do %>
+      <div class="bg-white rounded-xl p-6 border-l-4 border-[#1661be] shadow-md">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl">{feature.icon}</div>
+          <div class="flex-1">
+            <h3 class="text-2xl font-['Arbutus_Slab',Georgia,serif] text-[#1661be] mb-2">
+              {feature.title}
+            </h3>
+            <p class="text-gray-600">{feature.description}</p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+<!-- E-commerce Funnel Visualization -->
+  <div class="bg-[#eeece2] rounded-xl p-8 mb-12">
+    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-6 text-center">
+      Track the Complete Customer Journey
+    </h2>
+    <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
+      <div class="bg-white rounded-lg p-4 shadow-md text-center min-w-[150px]">
+        <div class="text-3xl mb-2">👀</div>
+        <div class="font-semibold text-gray-900">Product View</div>
+        <div class="text-sm text-gray-600">Landing pages</div>
+      </div>
+      <div class="text-[#1661be] text-2xl">→</div>
+      <div class="bg-white rounded-lg p-4 shadow-md text-center min-w-[150px]">
+        <div class="text-3xl mb-2">🛒</div>
+        <div class="font-semibold text-gray-900">Add to Cart</div>
+        <div class="text-sm text-gray-600">Product engagement</div>
+      </div>
+      <div class="text-[#1661be] text-2xl">→</div>
+      <div class="bg-white rounded-lg p-4 shadow-md text-center min-w-[150px]">
+        <div class="text-3xl mb-2">💳</div>
+        <div class="font-semibold text-gray-900">Checkout</div>
+        <div class="text-sm text-gray-600">Payment intent</div>
+      </div>
+      <div class="text-[#1661be] text-2xl">→</div>
+      <div class="bg-white rounded-lg p-4 shadow-md text-center min-w-[150px] border-2 border-[#10b981]">
+        <div class="text-3xl mb-2">✅</div>
+        <div class="font-semibold text-[#10b981]">Purchase</div>
+        <div class="text-sm text-gray-600">Revenue!</div>
+      </div>
+    </div>
+    <p class="text-center text-gray-600">
+      Identify exactly where customers drop off and optimize each step to increase conversions.
+    </p>
+  </div>
+  
+<!-- Cart Abandonment Stats -->
+  <div class="bg-white rounded-xl p-8 mb-12 border-2 border-[#c55130]">
+    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#c55130] mb-4">
+      The €700 Billion Problem
+    </h2>
+    <p class="text-xl text-gray-700 mb-6">
+      Cart abandonment costs e-commerce businesses an estimated €700 billion annually.
+      The average cart abandonment rate is <strong>70%</strong>.
+    </p>
+    <p class="text-gray-600 mb-6">
+      Qusto helps you:
+    </p>
+    <ul class="space-y-3 mb-6">
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl">✓</span>
+        <span class="text-gray-700">Track cart abandonment rates in real-time</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl">✓</span>
+        <span class="text-gray-700">Identify drop-off points in your checkout flow</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl">✓</span>
+        <span class="text-gray-700">Calculate lost revenue by product and category</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl">✓</span>
+        <span class="text-gray-700">Optimize your funnel to recover more sales</span>
+      </li>
+    </ul>
+  </div>
+  
+<!-- Integration -->
+  <div class="bg-[#eeece2] rounded-xl p-8 mb-12">
+    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-6">
+      Native Integrations
+    </h2>
+    <p class="text-gray-600 mb-6">
+      Qusto integrates seamlessly with the platforms you already use:
+    </p>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="bg-white rounded-lg p-4 text-center">
+        <div class="text-4xl mb-2">🛍️</div>
+        <div class="font-semibold text-gray-900">Shopify</div>
+        <div class="text-sm text-gray-600">Native app</div>
+      </div>
+      <div class="bg-white rounded-lg p-4 text-center">
+        <div class="text-4xl mb-2">🔌</div>
+        <div class="font-semibold text-gray-900">WooCommerce</div>
+        <div class="text-sm text-gray-600">Plugin</div>
+      </div>
+      <div class="bg-white rounded-lg p-4 text-center">
+        <div class="text-4xl mb-2">⚡</div>
+        <div class="font-semibold text-gray-900">Custom</div>
+        <div class="text-sm text-gray-600">API</div>
+      </div>
+    </div>
+  </div>
+
+  <:footer>
+    <.focus_list>
+      <:item>
+        <.styled_link href={Routes.auth_path(@conn, :register_form)}>
+          Start Free Trial →
+        </.styled_link>
+      </:item>
+      <:item>
+        <.styled_link href="/pricing">
+          View Pricing
+        </.styled_link>
+      </:item>
+    </.focus_list>
+  </:footer>
+</.focus_box>

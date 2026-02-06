@@ -5,7 +5,10 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
 
   def up do
     # Skip materialized views in test environments to avoid dependency issues
-    if Application.get_env(:plausible, :environment) == :test do
+    # Check both the runtime environment string and Mix environment atom
+    env = Application.get_env(:plausible, :environment)
+
+    if env == "test" or env == :test do
       :ok
     else
       create_materialized_views()

@@ -55,7 +55,7 @@ defmodule Plausible.Workers.CheckUsageTest do
 
     assert_email_delivered_with(
       to: [user],
-      subject: "[Action required] You have outgrown your Plausible subscription tier"
+      subject: "[Action required] You have outgrown your Qusto subscription tier"
     )
   end
 
@@ -86,12 +86,12 @@ defmodule Plausible.Workers.CheckUsageTest do
 
     assert_email_delivered_with(
       to: [user],
-      subject: "[Action required] You have outgrown your Plausible subscription tier"
+      subject: "[Action required] You have outgrown your Qusto subscription tier"
     )
 
     assert_email_delivered_with(
       to: [user2],
-      subject: "[Action required] You have outgrown your Plausible subscription tier"
+      subject: "[Action required] You have outgrown your Qusto subscription tier"
     )
   end
 
@@ -125,17 +125,17 @@ defmodule Plausible.Workers.CheckUsageTest do
 
     assert_email_delivered_with(
       to: [user],
-      subject: "[Action required] You have outgrown your Plausible subscription tier"
+      subject: "[Action required] You have outgrown your Qusto subscription tier"
     )
 
     assert_email_delivered_with(
       to: [user2],
-      subject: "[Action required] You have outgrown your Plausible subscription tier"
+      subject: "[Action required] You have outgrown your Qusto subscription tier"
     )
 
     refute_email_delivered_with(
       to: [user3],
-      subject: "[Action required] You have outgrown your Plausible subscription tier"
+      subject: "[Action required] You have outgrown your Qusto subscription tier"
     )
   end
 
@@ -236,7 +236,7 @@ defmodule Plausible.Workers.CheckUsageTest do
 
         assert_email_delivered_with(
           to: [user],
-          subject: "[Action required] You have outgrown your Plausible subscription tier"
+          subject: "[Action required] You have outgrown your Qusto subscription tier"
         )
 
         assert Repo.reload(team_of(user)).grace_period.end_date ==
@@ -528,7 +528,7 @@ defmodule Plausible.Workers.CheckUsageTest do
 
       assert_email_delivered_with(
         to: [user],
-        subject: "[Action required] You have outgrown your Plausible subscription tier"
+        subject: "[Action required] You have outgrown your Qusto subscription tier"
       )
     end
 
@@ -574,7 +574,7 @@ defmodule Plausible.Workers.CheckUsageTest do
 
       assert_email_delivered_with(
         to: [user],
-        subject: "[Action required] You have outgrown your Plausible subscription tier"
+        subject: "[Action required] You have outgrown your Qusto subscription tier"
       )
     end
   end

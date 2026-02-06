@@ -1,7 +1,9 @@
 # Architecture
 
-This document describes the design goals informing the architecture of the Plausible tracker script codebase as well as a map
+This document describes the design goals informing the architecture of the Qusto tracker script codebase as well as a map
 to how the code is laid out.
+
+> **Note:** The tracker is based on the Plausible Analytics open-source project. This document preserves the original architecture documentation with Qusto-specific updates.
 
 ## Installation Support
 
@@ -27,9 +29,9 @@ We minify our scripts using the speedy `@swc/core` library and track script size
 
 ### 2. Many targets, single codebase
 
-Plausible provides a web 'snippet' users can include on their site, tooling for wordpress and other plugins as well as an npm package.
+Qusto provides a web 'snippet' users can include on their site, tooling for wordpress and other plugins as well as an npm package.
 
-As Plausible doesn't have the workforce to maintain multiple code bases, everything is built from the same underlying source code.
+As Qusto doesn't have the workforce to maintain multiple code bases, everything is built from the same underlying source code.
 
 This is achieved by:
 
@@ -40,11 +42,11 @@ This is achieved by:
 
 ### 3. Flexible user configuration
 
-Rather than capturing everything, we want to provide configurability allowing Plausible users to toggle tracking features on/off.
+Rather than capturing everything, we want to provide configurability allowing Qusto users to toggle tracking features on/off.
 
 To make life simpler for these users, we want to allow changing configuration on web without users needing to change their integration code or deploying.
 
-Plausible tracker endpoints dynamically interpolate site-specific configuration into the minified plausible.js. For integrations such as the wordpress plugin, we provide tooling like the plugins API.
+Qusto tracker endpoints dynamically interpolate site-specific configuration into the minified plausible.js. For integrations such as the wordpress plugin, we provide tooling like the plugins API.
 
 ### 4. Legacy support
 

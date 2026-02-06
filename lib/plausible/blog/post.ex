@@ -1,4 +1,10 @@
 defmodule Plausible.Blog.Post do
+  @moduledoc """
+  Schema for blog post metadata and content.
+
+  Used by NimblePublisher to parse and structure blog posts from markdown files.
+  """
+
   @enforce_keys [:id, :author, :title, :body, :description, :tags, :date]
   defstruct [:id, :author, :title, :body, :description, :tags, :date]
 

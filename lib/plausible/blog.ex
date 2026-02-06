@@ -1,4 +1,11 @@
 defmodule Plausible.Blog do
+  @moduledoc """
+  Blog post management using NimblePublisher.
+
+  Loads blog posts from markdown files in priv/blog/ and provides functions
+  to query and retrieve them.
+  """
+
   alias Plausible.Blog.Post
 
   use NimblePublisher,

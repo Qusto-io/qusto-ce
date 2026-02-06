@@ -5,7 +5,7 @@ defmodule Plausible.Teams.Memberships.LeaveTest do
 
   alias Plausible.Teams.Memberships.Leave
 
-  @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
+  @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
 
   test "removes a member from a team" do
     user = new_user()

@@ -74,7 +74,7 @@ defmodule PlausibleWeb.Live.CustomerSupport.SitesTest do
         assert element_exists?(html, ~s|#{form} button[type="submit"]|)
       end
 
-      @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
+      @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
       test "form submission creates invitation", %{user: user, site: site, conn: conn} do
         {:ok, lv, _html} = live(conn, open_site(site.id, tab: "rescue-zone"))
         render(lv)

@@ -1,0 +1,132 @@
+<.focus_box>
+  <:title>Conversion Funnels</:title>
+
+  <div class="mb-8">
+    <h1 class="text-4xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-6">
+      E-commerce Funnels Made Simple
+    </h1>
+    <p class="text-xl text-gray-600 mb-6 leading-relaxed">
+      Track every step of your customer journey with visual conversion funnels.
+      Identify bottlenecks, optimize drop-offs, and increase revenue.
+    </p>
+  </div>
+  
+<!-- Key Benefits -->
+  <div class="grid md:grid-cols-2 gap-6 mb-12">
+    <div class="bg-white rounded-xl p-6 border-l-4 border-[#1661be] shadow-md">
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">🎯 Visual Funnel Builder</h3>
+      <p class="text-gray-600">
+        Create funnels with our intuitive visual builder. No coding required.
+        Define steps, set goals, and watch conversions flow.
+      </p>
+    </div>
+    <div class="bg-white rounded-xl p-6 border-l-4 border-[#1661be] shadow-md">
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">📊 Real-Time Analytics</h3>
+      <p class="text-gray-600">
+        See funnel performance in real-time. Track conversion rates,
+        drop-off points, and revenue attribution as it happens.
+      </p>
+    </div>
+    <div class="bg-white rounded-xl p-6 border-l-4 border-[#1661be] shadow-md">
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">💡 Smart Insights</h3>
+      <p class="text-gray-600">
+        Get automatic recommendations on where to optimize.
+        Qusto highlights the biggest opportunities for improvement.
+      </p>
+    </div>
+    <div class="bg-white rounded-xl p-6 border-l-4 border-[#1661be] shadow-md">
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">🔄 Multi-Touch Attribution</h3>
+      <p class="text-gray-600">
+        See the full customer journey across multiple touchpoints.
+        Understand what really drives conversions.
+      </p>
+    </div>
+  </div>
+  
+<!-- Example Funnels -->
+  <div class="bg-[#eeece2] rounded-xl p-8 mb-12">
+    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-6">
+      Pre-Built E-commerce Funnels
+    </h2>
+    <p class="text-gray-600 mb-6">
+      Start with our pre-built funnels or create your own:
+    </p>
+    <div class="space-y-4">
+      <div class="bg-white rounded-lg p-4">
+        <h3 class="font-semibold text-gray-900 mb-2">🛍️ Standard E-commerce Funnel</h3>
+        <p class="text-gray-600 text-sm mb-2">Product View → Add to Cart → Checkout → Purchase</p>
+        <div class="text-sm text-gray-500">Most common e-commerce conversion path</div>
+      </div>
+      <div class="bg-white rounded-lg p-4">
+        <h3 class="font-semibold text-gray-900 mb-2">🔍 Product Discovery Funnel</h3>
+        <p class="text-gray-600 text-sm mb-2">Search → Category → Product → Add to Cart</p>
+        <div class="text-sm text-gray-500">Optimize product findability</div>
+      </div>
+      <div class="bg-white rounded-lg p-4">
+        <h3 class="font-semibold text-gray-900 mb-2">💳 Checkout Optimization Funnel</h3>
+        <p class="text-gray-600 text-sm mb-2">Cart → Shipping Info → Payment → Confirmation</p>
+        <div class="text-sm text-gray-500">Reduce checkout abandonment</div>
+      </div>
+    </div>
+  </div>
+  
+<!-- Optimization Tips -->
+  <div class="mb-12">
+    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-6">
+      How to Optimize Your Funnels
+    </h2>
+    <ul class="space-y-4">
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl font-bold">1.</span>
+        <div>
+          <strong class="text-gray-900">Identify the Biggest Drop-Off:</strong>
+          <span class="text-gray-600">
+            Focus on the step with the largest percentage drop first
+          </span>
+        </div>
+      </li>
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl font-bold">2.</span>
+        <div>
+          <strong class="text-gray-900">Segment Your Audience:</strong>
+          <span class="text-gray-600">
+            Compare funnel performance by traffic source, device, or customer type
+          </span>
+        </div>
+      </li>
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl font-bold">3.</span>
+        <div>
+          <strong class="text-gray-900">A/B Test Changes:</strong>
+          <span class="text-gray-600">
+            Make incremental improvements and measure impact on conversion rate
+          </span>
+        </div>
+      </li>
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl font-bold">4.</span>
+        <div>
+          <strong class="text-gray-900">Track Over Time:</strong>
+          <span class="text-gray-600">
+            Monitor trends to ensure improvements stick and catch new issues early
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <:footer>
+    <.focus_list>
+      <:item>
+        <.styled_link href={Routes.auth_path(@conn, :register_form)}>
+          Start Free Trial →
+        </.styled_link>
+      </:item>
+      <:item>
+        <.styled_link href="/pricing">
+          View Pricing
+        </.styled_link>
+      </:item>
+    </.focus_list>
+  </:footer>
+</.focus_box>

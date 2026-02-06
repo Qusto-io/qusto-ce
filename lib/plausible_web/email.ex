@@ -206,7 +206,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(owner)
     |> tag("yearly-renewal")
-    |> subject("Your Plausible subscription is up for renewal")
+    |> subject("Your Qusto subscription is up for renewal")
     |> render("yearly_renewal_notification.html", %{
       user: owner,
       team: team,

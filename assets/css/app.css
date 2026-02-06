@@ -372,7 +372,7 @@ iframe[hidden] {
 :root {
   /* Background Colors */
   --qusto-background: #eeece2;      /* Warm cream - page backgrounds */
-  --qusto-surface: #ffffff;          /* White - cards, modals */
+  --qusto-surface: #fff;          /* White - cards, modals */
 
   /* Brand Colors */
   --qusto-brand-blue: #002d9c;       /* Deep blue - headings, brand emphasis */
@@ -420,17 +420,10 @@ iframe[hidden] {
   --qusto-gray-900: #111827;
 
   /* Typography */
-  --qusto-font-heading: 'Arbutus Slab', Georgia, 'Times New Roman', serif;
-  --qusto-font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --qusto-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-}
+  --qusto-font-heading: 'Arbutus Slab', georgia, 'Times New Roman', serif;
+  --qusto-font-body: system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, 'Helvetica Neue', arial, sans-serif;
+  --qusto-font-mono: 'SF Mono', monaco, 'Cascadia Code', 'Roboto Mono', consolas, 'Courier New', monospace;
 
-/* ============================================================================
-   SEMANTIC VARIABLE MAPPINGS
-   Maps old Plausible variables to new Qusto variables
-   ============================================================================ */
-
-:root {
   /* Primary Colors (Analytics) */
   --color-primary: var(--qusto-primary);
   --color-primary-dark: var(--qusto-brand-blue);
@@ -459,18 +452,15 @@ iframe[hidden] {
    DARK MODE VARIANTS
    ============================================================================ */
 
-@media (prefers-color-scheme: dark), .dark {
+@media (prefers-color-scheme: dark) {
   :root {
     --qusto-background: #111827;
     --qusto-surface: #1f2937;
-
     --color-bg-primary: var(--qusto-gray-900);
     --color-bg-surface: var(--qusto-gray-800);
-
     --color-text-primary: var(--qusto-gray-50);
     --color-text-secondary: var(--qusto-gray-400);
     --color-text-tertiary: var(--qusto-gray-500);
-
     --color-border: var(--qusto-gray-700);
     --color-border-dark: var(--qusto-gray-600);
   }
@@ -484,63 +474,64 @@ iframe[hidden] {
 
 /* Blue Shadows (Analytics) */
 .shadow-blue-sm {
-  box-shadow: 0 1px 2px 0 rgba(22, 97, 190, 0.05);
+  box-shadow: 0 1px 2px 0 rgb(22 97 190 / 5%);
 }
 
 .shadow-blue {
-  box-shadow: 0 1px 3px 0 rgba(22, 97, 190, 0.1), 0 1px 2px 0 rgba(22, 97, 190, 0.06);
+  box-shadow: 0 1px 3px 0 rgb(22 97 190 / 10%), 0 1px 2px 0 rgb(22 97 190 / 6%);
 }
 
 .shadow-blue-md {
-  box-shadow: 0 4px 6px -1px rgba(22, 97, 190, 0.1), 0 2px 4px -1px rgba(22, 97, 190, 0.06);
+  box-shadow: 0 4px 6px -1px rgb(22 97 190 / 10%), 0 2px 4px -1px rgb(22 97 190 / 6%);
 }
 
 .shadow-blue-lg {
-  box-shadow: 0 10px 15px -3px rgba(22, 97, 190, 0.1), 0 4px 6px -2px rgba(22, 97, 190, 0.05);
+  box-shadow: 0 10px 15px -3px rgb(22 97 190 / 10%), 0 4px 6px -2px rgb(22 97 190 / 5%);
 }
 
 .shadow-blue-xl {
-  box-shadow: 0 20px 25px -5px rgba(22, 97, 190, 0.1), 0 10px 10px -5px rgba(22, 97, 190, 0.04);
+  box-shadow: 0 20px 25px -5px rgb(22 97 190 / 10%), 0 10px 10px -5px rgb(22 97 190 / 4%);
 }
 
 /* Orange Shadows (Revenue) */
 .shadow-orange-sm {
-  box-shadow: 0 1px 2px 0 rgba(197, 81, 48, 0.05);
+  box-shadow: 0 1px 2px 0 rgb(197 81 48 / 5%);
 }
 
 .shadow-orange {
-  box-shadow: 0 1px 3px 0 rgba(197, 81, 48, 0.1), 0 1px 2px 0 rgba(197, 81, 48, 0.06);
+  box-shadow: 0 1px 3px 0 rgb(197 81 48 / 10%), 0 1px 2px 0 rgb(197 81 48 / 6%);
 }
 
 .shadow-orange-md {
-  box-shadow: 0 4px 6px -1px rgba(197, 81, 48, 0.1), 0 2px 4px -1px rgba(197, 81, 48, 0.06);
+  box-shadow: 0 4px 6px -1px rgb(197 81 48 / 10%), 0 2px 4px -1px rgb(197 81 48 / 6%);
 }
 
 .shadow-orange-lg {
-  box-shadow: 0 10px 15px -3px rgba(197, 81, 48, 0.1), 0 4px 6px -2px rgba(197, 81, 48, 0.05);
+  box-shadow: 0 10px 15px -3px rgb(197 81 48 / 10%), 0 4px 6px -2px rgb(197 81 48 / 5%);
 }
 
 .shadow-orange-xl {
-  box-shadow: 0 20px 25px -5px rgba(197, 81, 48, 0.1), 0 10px 10px -5px rgba(197, 81, 48, 0.04);
+  box-shadow: 0 20px 25px -5px rgb(197 81 48 / 10%), 0 10px 10px -5px rgb(197 81 48 / 4%);
 }
 
 /* Hover States */
-.hover\:shadow-blue-md:hover {
-  box-shadow: 0 4px 6px -1px rgba(22, 97, 190, 0.1), 0 2px 4px -1px rgba(22, 97, 190, 0.06);
+.hover-shadow-blue-md:hover {
+  box-shadow: 0 4px 6px -1px rgb(22 97 190 / 10%), 0 2px 4px -1px rgb(22 97 190 / 6%);
 }
 
-.hover\:shadow-orange-md:hover {
-  box-shadow: 0 4px 6px -1px rgba(197, 81, 48, 0.1), 0 2px 4px -1px rgba(197, 81, 48, 0.06);
+.hover-shadow-orange-md:hover {
+  box-shadow: 0 4px 6px -1px rgb(197 81 48 / 10%), 0 2px 4px -1px rgb(197 81 48 / 6%);
 }
 
 /* Dark Mode Adjustments */
+
 @media (prefers-color-scheme: dark) {
   .shadow-blue-sm,
   .shadow-blue,
   .shadow-blue-md,
   .shadow-blue-lg,
   .shadow-blue-xl {
-    box-shadow: 0 0 0 1px rgba(22, 97, 190, 0.2);
+    box-shadow: 0 0 0 1px rgb(22 97 190 / 20%);
   }
 
   .shadow-orange-sm,
@@ -548,7 +539,7 @@ iframe[hidden] {
   .shadow-orange-md,
   .shadow-orange-lg,
   .shadow-orange-xl {
-    box-shadow: 0 0 0 1px rgba(197, 81, 48, 0.2);
+    box-shadow: 0 0 0 1px rgb(197 81 48 / 20%);
   }
 }
 
@@ -573,19 +564,19 @@ iframe[hidden] {
   color: white;
   border: none;
   cursor: pointer;
-  box-shadow: 0 1px 3px 0 rgba(22, 97, 190, 0.1), 0 1px 2px 0 rgba(22, 97, 190, 0.06);
+  box-shadow: 0 1px 3px 0 rgb(22 97 190 / 10%), 0 1px 2px 0 rgb(22 97 190 / 6%);
 }
 
 .button-primary:hover {
   background: linear-gradient(135deg, var(--qusto-blue-400) 0%, var(--qusto-primary) 100%);
-  box-shadow: 0 4px 6px -1px rgba(22, 97, 190, 0.1), 0 2px 4px -1px rgba(22, 97, 190, 0.06);
+  box-shadow: 0 4px 6px -1px rgb(22 97 190 / 10%), 0 2px 4px -1px rgb(22 97 190 / 6%);
   transform: translateY(-1px);
 }
 
 .button-primary:focus {
   outline: none;
-  ring: 2px solid var(--qusto-primary);
-  ring-offset: 2px;
+  outline: 2px solid var(--qusto-primary);
+  outline-offset: 2px;
 }
 
 .button-primary:active {
@@ -614,19 +605,18 @@ iframe[hidden] {
   color: white;
   border: none;
   cursor: pointer;
-  box-shadow: 0 1px 3px 0 rgba(197, 81, 48, 0.1), 0 1px 2px 0 rgba(197, 81, 48, 0.06);
+  box-shadow: 0 1px 3px 0 rgb(197 81 48 / 10%), 0 1px 2px 0 rgb(197 81 48 / 6%);
 }
 
 .button-cta:hover {
   background: linear-gradient(135deg, var(--qusto-orange-400) 0%, var(--qusto-accent) 100%);
-  box-shadow: 0 4px 6px -1px rgba(197, 81, 48, 0.1), 0 2px 4px -1px rgba(197, 81, 48, 0.06);
+  box-shadow: 0 4px 6px -1px rgb(197 81 48 / 10%), 0 2px 4px -1px rgb(197 81 48 / 6%);
   transform: translateY(-1px);
 }
 
 .button-cta:focus {
-  outline: none;
-  ring: 2px solid var(--qusto-accent);
-  ring-offset: 2px;
+  outline: 2px solid var(--qusto-accent);
+  outline-offset: 2px;
 }
 
 .button-cta:active {
@@ -665,8 +655,8 @@ iframe[hidden] {
 
 .button-secondary:focus {
   outline: none;
-  ring: 2px solid var(--qusto-primary);
-  ring-offset: 2px;
+  outline: 2px solid var(--qusto-primary);
+  outline-offset: 2px;
 }
 
 .button-secondary:active {
@@ -679,6 +669,7 @@ iframe[hidden] {
 }
 
 /* Dark Mode Adjustments */
+
 @media (prefers-color-scheme: dark) {
   .button-secondary {
     border-color: var(--qusto-blue-400);
@@ -686,12 +677,12 @@ iframe[hidden] {
   }
 
   .button-secondary:hover {
-    background: rgba(22, 97, 190, 0.1);
+    background: rgb(22 97 190 / 10%);
     border-color: var(--qusto-blue-300);
     color: var(--qusto-blue-300);
   }
 
   .button-secondary:active {
-    background: rgba(22, 97, 190, 0.2);
+    background: rgb(22 97 190 / 20%);
   }
 }

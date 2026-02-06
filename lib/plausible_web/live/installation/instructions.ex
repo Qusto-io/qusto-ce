@@ -100,10 +100,10 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
     <div class="text-sm mt-4 leading-6">
       <div class="mb-4">
         <span :if={@recommended_installation_type == "wordpress"}>
-          We've detected your website is using WordPress. Here's how to integrate Plausible:
+          We've detected your website is using WordPress. Here's how to integrate Qusto:
         </span>
         <span :if={@recommended_installation_type != "wordpress"}>
-          Using Wordpress? Here's how to integrate Plausible:
+          Using Wordpress? Here's how to integrate Qusto:
         </span>
       </div>
       <.focus_list>
@@ -130,10 +130,10 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
     </.title>
     <div class="text-sm mt-4 leading-6">
       <span :if={@recommended_installation_type == "gtm"}>
-        We've detected your website is using Google Tag Manager. Here's how to integrate Plausible:
+        We've detected your website is using Google Tag Manager. Here's how to integrate Qusto:
       </span>
       <span :if={@recommended_installation_type != "gtm"}>
-        Using Google Tag Manager? Here's how to integrate Plausible:
+        Using Google Tag Manager? Here's how to integrate Qusto:
       </span>
       <div class="mt-4">
         <.focus_list>
@@ -148,7 +148,7 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
 
           <:item>
             <.styled_link href="https://plausible.io/gtm-template" new_tab={true}>
-              Install the Plausible template in GTM
+              Install the Qusto template in GTM
             </.styled_link>
           </:item>
 
@@ -262,7 +262,7 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
 
   defp render_snippet(tracker_script_configuration) do
     """
-    <!-- Privacy-friendly analytics by Plausible -->
+    <!-- Privacy-friendly analytics by Qusto -->
     <script async src="#{tracker_url(tracker_script_configuration)}"></script>
     <script>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};

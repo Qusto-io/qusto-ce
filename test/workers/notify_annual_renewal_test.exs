@@ -71,12 +71,12 @@ defmodule Plausible.Workers.NotifyAnnualRenewalTest do
 
     assert_email_delivered_with(
       to: [{user.name, user.email}],
-      subject: "Your Plausible subscription is up for renewal"
+      subject: "Your Qusto subscription is up for renewal"
     )
 
     assert_email_delivered_with(
       to: [{billing_member.name, billing_member.email}],
-      subject: "Your Plausible subscription is up for renewal"
+      subject: "Your Qusto subscription is up for renewal"
     )
   end
 
@@ -93,7 +93,7 @@ defmodule Plausible.Workers.NotifyAnnualRenewalTest do
 
     assert_email_delivered_with(
       to: [{user.name, user.email}],
-      subject: "Your Plausible subscription is up for renewal"
+      subject: "Your Qusto subscription is up for renewal"
     )
   end
 
@@ -104,7 +104,7 @@ defmodule Plausible.Workers.NotifyAnnualRenewalTest do
 
     assert_email_delivered_with(
       to: [{user.name, user.email}],
-      subject: "Your Plausible subscription is up for renewal"
+      subject: "Your Qusto subscription is up for renewal"
     )
 
     NotifyAnnualRenewal.perform(nil)
@@ -126,7 +126,7 @@ defmodule Plausible.Workers.NotifyAnnualRenewalTest do
 
     assert_email_delivered_with(
       to: [{user.name, user.email}],
-      subject: "Your Plausible subscription is up for renewal"
+      subject: "Your Qusto subscription is up for renewal"
     )
   end
 
@@ -146,7 +146,7 @@ defmodule Plausible.Workers.NotifyAnnualRenewalTest do
 
     assert_email_delivered_with(
       to: [{user.name, user.email}],
-      subject: "Your Plausible subscription is up for renewal"
+      subject: "Your Qusto subscription is up for renewal"
     )
 
     NotifyAnnualRenewal.perform(nil)
@@ -165,7 +165,7 @@ defmodule Plausible.Workers.NotifyAnnualRenewalTest do
 
     assert_email_delivered_with(
       to: [{user.name, user.email}],
-      subject: "Your Plausible subscription is up for renewal"
+      subject: "Your Qusto subscription is up for renewal"
     )
   end
 
@@ -180,7 +180,7 @@ defmodule Plausible.Workers.NotifyAnnualRenewalTest do
 
       assert_email_delivered_with(
         to: [{user.name, user.email}],
-        subject: "Your Plausible subscription is about to expire"
+        subject: "Your Qusto subscription is about to expire"
       )
     end
   end

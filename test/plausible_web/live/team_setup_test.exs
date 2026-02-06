@@ -8,7 +8,7 @@ defmodule PlausibleWeb.Live.TeamSetupTest do
   alias Plausible.Repo
 
   @url "/team/setup"
-  @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
+  @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
 
   describe "/team/setup - edge cases" do
     setup [:create_user, :log_in]

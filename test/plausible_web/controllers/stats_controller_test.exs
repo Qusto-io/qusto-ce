@@ -231,7 +231,7 @@ defmodule PlausibleWeb.StatsControllerTest do
       resp = html_response(conn, 200)
       assert resp =~ user.name
       assert text_of_attr(resp, @react_container, "data-logged-in") == "true"
-      assert resp =~ "Getting started"
+      assert resp =~ "self-managed"
     end
 
     test "shows locked page if site is locked", %{conn: conn, user: user} do

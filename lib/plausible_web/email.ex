@@ -227,7 +227,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(owner)
     |> tag("yearly-expiration")
-    |> subject("Your Plausible subscription is about to expire")
+    |> subject("Your Qusto subscription is about to expire")
     |> render("yearly_expiration_notification.html", %{
       user: owner,
       team: team,

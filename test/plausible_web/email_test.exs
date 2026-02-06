@@ -435,9 +435,9 @@ defmodule PlausibleWeb.EmailTest do
       assert email.text_body == """
              Hey John,
 
-             We are building Plausible to provide a simple and ethical approach to tracking website visitors. We're super excited to have you on board!
+             We are building Qusto to provide a simple and ethical approach to tracking website visitors. We're super excited to have you on board!
 
-             Here's how to get the most out of your Plausible experience:
+             Here's how to get the most out of your Qusto experience:
 
              * Enable email reports (https://plausible.io/docs/email-reports) and notifications for traffic spikes (https://plausible.io/docs/traffic-spikes)
              * Integrate with Search Console (https://plausible.io/docs/google-search-console-integration) to get keyword phrases people find your site with
@@ -447,7 +447,7 @@ defmodule PlausibleWeb.EmailTest do
              * If you're concerned about adblockers, set up a proxy to bypass them (https://plausible.io/docs/proxy/introduction)
 
 
-             Then you're ready to start exploring your fast loading, ethical and actionable Plausible dashboard (https://plausible.io/sites).
+             Then you're ready to start exploring your fast loading, ethical and actionable dashboard (https://plausible.io/sites).
 
              Have a question, feedback or need some guidance? Do reply back to this email.
 

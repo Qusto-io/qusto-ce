@@ -52,7 +52,7 @@ defmodule PlausibleWeb.Live.RegisterForm do
       <div class="text-xl font-medium">Lightweight and privacy-friendly web analytics</div>
     </div>
 
-    <div class="w-full max-w-md mx-auto bg-white dark:bg-gray-800 shadow-md rounded-sm px-8 py-6 mb-4 mt-8">
+    <div class="w-full max-w-md mx-auto bg-white dark:bg-[var(--color-dark-bg-elevated)] shadow-md rounded-sm px-8 py-6 mb-4 mt-8">
       <h2 class="text-xl font-black dark:text-gray-100">Invitation expired</h2>
 
       <p class="mt-4">
@@ -133,7 +133,7 @@ defmodule PlausibleWeb.Live.RegisterForm do
               field={f[:password]}
               strength={@password_strength}
               phx-debounce={200}
-              class="dark:bg-gray-900 shadow-xs focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 dark:border-gray-500 rounded-md dark:text-gray-300"
+              class="dark:bg-[var(--color-dark-bg-card)] shadow-xs focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 dark:border-gray-500 rounded-md dark:text-gray-300"
             />
           </div>
         </div>
@@ -151,7 +151,7 @@ defmodule PlausibleWeb.Live.RegisterForm do
               autocomplete="new-password"
               field={f[:password_confirmation]}
               phx-debounce={200}
-              class="dark:bg-gray-900 shadow-xs focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 dark:border-gray-500 rounded-md dark:text-gray-300"
+              class="dark:bg-[var(--color-dark-bg-card)] shadow-xs focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 dark:border-gray-500 rounded-md dark:text-gray-300"
             />
           </div>
         </div>
@@ -213,7 +213,7 @@ defmodule PlausibleWeb.Live.RegisterForm do
           field={@field}
           placeholder="Jane Doe"
           phx-debounce={200}
-          class="dark:bg-gray-900 shadow-xs focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 dark:border-gray-500 rounded-md dark:text-gray-300"
+          class="dark:bg-[var(--color-dark-bg-card)] shadow-xs focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 dark:border-gray-500 rounded-md dark:text-gray-300"
         />
       </div>
     </div>
@@ -222,7 +222,7 @@ defmodule PlausibleWeb.Live.RegisterForm do
 
   defp email_input(assigns) do
     email_classes = ~w(
-      dark:bg-gray-900
+      dark:bg-[var(--color-dark-bg-card)]
       shadow-sm
       focus:ring-indigo-500
       focus:border-indigo-500

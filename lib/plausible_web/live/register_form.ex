@@ -221,18 +221,18 @@ defmodule PlausibleWeb.Live.RegisterForm do
   end
 
   defp email_input(assigns) do
-    email_classes = ~w(
-      dark:bg-[var(--color-dark-bg-card)]
-      shadow-sm
-      focus:ring-indigo-500
-      focus:border-indigo-500
-      block
-      w-full
-      border-gray-300
-      dark:border-gray-500
-      rounded-md
-      dark:text-gray-300
-    )
+    email_classes = [
+      "dark:bg-[var(--color-dark-bg-card)]",
+      "shadow-sm",
+      "focus:ring-indigo-500",
+      "focus:border-indigo-500",
+      "block",
+      "w-full",
+      "border-gray-300",
+      "dark:border-gray-500",
+      "rounded-md",
+      "dark:text-gray-300"
+    ]
 
     {email_readonly, email_extra_classes} =
       if assigns[:for_invitation] do

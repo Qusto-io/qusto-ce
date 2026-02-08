@@ -179,7 +179,7 @@
   .glass-surface {
     @apply bg-white/80 dark:bg-[rgba(45,40,32,0.6)]
            backdrop-blur-lg backdrop-saturate-180
-           border border-gray-200 dark:border-[--color-dark-border];
+           border border-gray-200 dark:border-[var(--color-dark-border)];
   }
 
   /* === MICRO-INTERACTIONS === */
@@ -217,7 +217,7 @@
     content: '';
     @apply absolute bottom-0 left-0 w-0 h-0.5
            bg-gradient-to-r from-blue-600 to-orange-600
-           dark:from-[--color-dark-primary] dark:to-[--color-dark-accent]
+           dark:from-[var(--color-dark-primary)] dark:to-[var(--color-dark-accent)]
            transition-all duration-300;
   }
 
@@ -232,10 +232,10 @@
 
 .button {
   @apply inline-flex justify-center px-3.5 py-2 text-sm font-medium
-         text-white bg-blue-600 dark:bg-[--color-dark-primary]
+         text-white bg-blue-600 dark:bg-[var(--color-dark-primary)]
          border border-transparent rounded-md leading-5
          transition-all duration-200
-         hover:bg-blue-700 dark:hover:bg-[--color-dark-primary-hover]
+         hover:bg-blue-700 dark:hover:bg-[var(--color-dark-primary-hover)]
          hover:-translate-y-0.5 hover:shadow-lg
          active:translate-y-0;
 }
@@ -264,26 +264,27 @@ input[type="number"],
 select,
 textarea {
   @apply
-    bg-white dark:bg-[--color-dark-bg-elevated]
-    text-gray-900 dark:text-[--color-dark-text-primary]
-    border border-gray-300 dark:border-[--color-dark-border]
+    bg-white dark:bg-[var(--color-dark-bg-elevated)]
+    text-gray-900 dark:text-[var(--color-dark-text-primary)]
+    border border-gray-300 dark:border-[var(--color-dark-border)]
     rounded-lg px-4 py-2
     transition-all duration-200
-    placeholder:text-gray-400 dark:placeholder:text-[--color-dark-text-tertiary];
+    placeholder:text-gray-400 dark:placeholder:text-[var(--color-dark-text-tertiary)];
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   @apply
-    border-blue-500 dark:border-[--color-dark-primary]
+    border-blue-500 dark:border-[var(--color-dark-primary)]
     ring-4 ring-blue-100 dark:ring-[rgba(74,158,255,0.2)]
     outline-none
     scale-[1.01];
 }
 
 html {
-  @apply text-gray-800;
+  @apply text-gray-800 dark:text-[var(--color-dark-text-primary)];
+  @apply bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)];
 }
 
 body {
@@ -291,6 +292,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   width: 100vw; /* Prevents content from jumping when scrollbar is added/removed due to vertical overflow */
   overflow-x: hidden;
+  @apply bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)];
+  @apply text-gray-800 dark:text-[var(--color-dark-text-primary)];
 }
 
 blockquote {

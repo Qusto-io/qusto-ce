@@ -65,7 +65,7 @@ defmodule PlausibleWeb.Live.Components.Pagination do
         if @active? do
           "active button "
         else
-          "inactive border-gray-300 text-gray-300 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-600 hover:shadow-none hover:bg-gray-300 cursor-not-allowed"
+          "inactive border-gray-300 text-gray-300 dark:border-gray-500 dark:bg-[var(--color-dark-bg-elevated)] dark:text-gray-600 hover:shadow-none hover:bg-gray-300 cursor-not-allowed"
         end,
         @class
       ]}

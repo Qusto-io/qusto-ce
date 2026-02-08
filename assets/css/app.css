@@ -589,20 +589,25 @@ iframe[hidden] {
 }
 
 /* ============================================================================
-   DARK MODE VARIANTS
+   DARK MODE VARIANTS - WARM DARK MODE (Qusto Brand)
    ============================================================================ */
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --qusto-background: #111827;
-    --qusto-surface: #1f2937;
-    --color-bg-primary: var(--qusto-gray-900);
-    --color-bg-surface: var(--qusto-gray-800);
-    --color-text-primary: var(--qusto-gray-50);
-    --color-text-secondary: var(--qusto-gray-400);
-    --color-text-tertiary: var(--qusto-gray-500);
-    --color-border: var(--qusto-gray-700);
-    --color-border-dark: var(--qusto-gray-600);
+    /* Warm Dark Mode Backgrounds */
+    --qusto-background: #1a1612;
+    --qusto-surface: #2d2820;
+    --color-bg-primary: var(--color-dark-bg-base);
+    --color-bg-surface: var(--color-dark-bg-card);
+
+    /* Warm Dark Mode Text */
+    --color-text-primary: var(--color-dark-text-primary);
+    --color-text-secondary: var(--color-dark-text-secondary);
+    --color-text-tertiary: var(--color-dark-text-tertiary);
+
+    /* Warm Dark Mode Borders (Orange-tinted) */
+    --color-border: var(--color-dark-border);
+    --color-border-dark: var(--color-dark-border-strong);
   }
 }
 

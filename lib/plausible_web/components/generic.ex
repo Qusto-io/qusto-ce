@@ -6,7 +6,7 @@ defmodule PlausibleWeb.Components.Generic do
 
   @notice_themes %{
     gray: %{
-      bg: "bg-gray-100 dark:bg-gray-800",
+      bg: "bg-gray-100 dark:bg-[var(--color-dark-bg-elevated)]",
       icon: "text-gray-600 dark:text-gray-300",
       title_text: "text-sm text-gray-900 dark:text-gray-100",
       body_text: "text-sm text-gray-600 dark:text-gray-300 leading-5"
@@ -35,7 +35,7 @@ defmodule PlausibleWeb.Components.Generic do
     "yellow" =>
       "bg-yellow-600/90 text-white hover:bg-yellow-600 focus-visible:outline-yellow-600 disabled:bg-yellow-400/60 disabled:dark:bg-yellow-600/30 disabled:dark:text-white/35",
     "danger" =>
-      "border border-gray-300 dark:border-gray-700 text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:text-red-700 hover:shadow-sm dark:hover:text-red-300 active:text-red-800 disabled:text-red-700/40 disabled:hover:shadow-none dark:disabled:text-red-500/35"
+      "border border-gray-300 dark:border-gray-700 text-red-600 dark:text-red-400 bg-white dark:bg-[var(--color-dark-bg-elevated)] hover:text-red-700 hover:shadow-sm dark:hover:text-red-300 active:text-red-800 disabled:text-red-700/40 disabled:hover:shadow-none dark:disabled:text-red-500/35"
   }
 
   @button_base_class "whitespace-nowrap truncate inline-flex items-center justify-center gap-x-2 font-medium rounded-md px-3.5 py-2.5 text-sm transition-all duration-150 cursor-pointer disabled:cursor-not-allowed"
@@ -167,7 +167,7 @@ defmodule PlausibleWeb.Components.Generic do
 
   def upgrade(assigns) do
     ~H"""
-    <div class={["rounded-md p-5 bg-gray-100 dark:bg-gray-800", @class]} {@rest}>
+    <div class={["rounded-md p-5 bg-gray-100 dark:bg-[var(--color-dark-bg-elevated)]", @class]} {@rest}>
       <div class="flex flex-col gap-y-4">
         <div class="flex-shrink-0 bg-white dark:bg-gray-700 max-w-max rounded-md p-2 border border-gray-200 dark:border-gray-600 text-indigo-500">
           {render_slot(@icon)}
@@ -306,7 +306,7 @@ defmodule PlausibleWeb.Components.Generic do
         x-on:click.outside="close($refs.button)"
         style="display: none;"
         class={[
-          "origin-top-right absolute z-50 right-0 mt-2 p-1.5 w-max rounded-md shadow-lg overflow-hidden bg-white dark:bg-gray-800 ring-1 ring-black/5 focus:outline-none",
+          "origin-top-right absolute z-50 right-0 mt-2 p-1.5 w-max rounded-md shadow-lg overflow-hidden bg-white dark:bg-[var(--color-dark-bg-elevated)] ring-1 ring-black/5 focus:outline-none",
           @menu_class
         ]}
       >
@@ -555,7 +555,7 @@ defmodule PlausibleWeb.Components.Generic do
 
   def tile(assigns) do
     ~H"""
-    <div data-test-id="settings-tile" class="shadow-sm bg-white dark:bg-gray-900 rounded-md mb-6">
+    <div data-test-id="settings-tile" class="shadow-sm bg-white dark:bg-[var(--color-dark-bg-card)] rounded-md mb-6">
       <header class="relative py-4 px-6">
         <.title>
           {render_slot(@title)}
@@ -773,7 +773,7 @@ defmodule PlausibleWeb.Components.Generic do
   def focus_box(assigns) do
     ~H"""
     <div
-      class="bg-white w-full max-w-lg mx-auto dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-md rounded-md mt-12"
+      class="bg-white w-full max-w-lg mx-auto dark:bg-[var(--color-dark-bg-card)] text-gray-900 dark:text-gray-100 shadow-md rounded-md mt-12"
       {@rest}
     >
       <div class={if(@padding?, do: "p-8")}>

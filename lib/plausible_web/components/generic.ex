@@ -27,11 +27,11 @@ defmodule PlausibleWeb.Components.Generic do
 
   @button_themes %{
     "primary" =>
-      "bg-blue-600 dark:bg-[--color-dark-primary] text-white hover:bg-blue-700 dark:hover:bg-[--color-dark-primary-hover] focus-visible:outline-blue-600 dark:focus-visible:outline-[--color-dark-primary] disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0",
+      "bg-blue-600 dark:bg-[var(--color-dark-primary)] text-white hover:bg-blue-700 dark:hover:bg-[var(--color-dark-primary-hover)] focus-visible:outline-blue-600 dark:focus-visible:outline-[var(--color-dark-primary)] disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0",
     "cta" =>
-      "bg-orange-600 dark:bg-[--color-dark-accent] text-white hover:bg-orange-700 dark:hover:bg-[--color-dark-accent-hover] focus-visible:outline-orange-600 disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg active:translate-y-0 active:scale-100",
+      "bg-orange-600 dark:bg-[var(--color-dark-accent)] text-white hover:bg-orange-700 dark:hover:bg-[var(--color-dark-accent-hover)] focus-visible:outline-orange-600 disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg active:translate-y-0 active:scale-100",
     "secondary" =>
-      "border-2 border-blue-600 dark:border-[--color-dark-primary] bg-transparent text-blue-600 dark:text-[--color-dark-primary] hover:bg-blue-50 dark:hover:bg-[rgba(74,158,255,0.1)] disabled:opacity-50 transition-all duration-150",
+      "border-2 border-blue-600 dark:border-[var(--color-dark-primary)] bg-transparent text-blue-600 dark:text-[var(--color-dark-primary)] hover:bg-blue-50 dark:hover:bg-[rgba(74,158,255,0.1)] disabled:opacity-50 transition-all duration-150",
     "yellow" =>
       "bg-yellow-600/90 text-white hover:bg-yellow-600 focus-visible:outline-yellow-600 disabled:bg-yellow-400/60 disabled:dark:bg-yellow-600/30 disabled:dark:text-white/35",
     "danger" =>

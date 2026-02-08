@@ -103,6 +103,30 @@
   /* Set v3 default ring behavior */
   --default-ring-width: 2px;
   --default-ring-color: var(--color-indigo-500);
+
+  /* === QUSTO WARM DARK MODE - Backgrounds === */
+  --color-dark-bg-base: #1a1612;           /* Warm charcoal base */
+  --color-dark-bg-elevated: #252118;       /* Elevated surfaces */
+  --color-dark-bg-card: #2d2820;          /* Cards, panels */
+  --color-dark-bg-overlay: #363027;        /* Modals, dropdowns */
+  --color-dark-bg-hover: #443c33;          /* Hover states */
+
+  /* === QUSTO WARM DARK MODE - Text === */
+  --color-dark-text-primary: #f5f1e8;      /* 17.2:1 contrast */
+  --color-dark-text-secondary: #d4cfc0;    /* 11.8:1 contrast */
+  --color-dark-text-tertiary: #a8a196;     /* 7.1:1 contrast */
+  --color-dark-text-disabled: #7a736a;     /* 4.2:1 contrast */
+
+  /* === QUSTO WARM DARK MODE - Brand Colors (Brightened) === */
+  --color-dark-primary: #4a9eff;           /* Brighter blue */
+  --color-dark-primary-hover: #6bb0ff;
+  --color-dark-accent: #e97a52;            /* Brighter orange */
+  --color-dark-accent-hover: #ff8f66;
+
+  /* === QUSTO WARM DARK MODE - Borders (Orange-tinted) === */
+  --color-dark-border: rgba(197, 81, 48, 0.15);
+  --color-dark-border-strong: rgba(197, 81, 48, 0.25);
+  --color-dark-divider: rgba(197, 81, 48, 0.08);
 }
 
 @media print {
@@ -123,12 +147,97 @@
 @custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
 @custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
 
+/* === WARM DARK MODE SHADOWS === */
+@layer utilities {
+  .shadow-warm-sm {
+    box-shadow: 0 1px 2px 0 rgba(197, 81, 48, 0.08);
+  }
+
+  .shadow-warm {
+    box-shadow: 0 4px 6px -1px rgba(197, 81, 48, 0.12);
+  }
+
+  .shadow-warm-lg {
+    box-shadow:
+      0 4px 8px -2px rgba(197, 81, 48, 0.12),
+      0 12px 24px -6px rgba(197, 81, 48, 0.16);
+  }
+
+  .shadow-warm-xl {
+    box-shadow:
+      0 8px 16px -4px rgba(197, 81, 48, 0.16),
+      0 20px 40px -10px rgba(197, 81, 48, 0.20);
+  }
+
+  .shadow-revenue {
+    box-shadow:
+      0 8px 20px rgba(197, 81, 48, 0.20),
+      0 0 60px rgba(197, 81, 48, 0.15);
+  }
+
+  /* === GLASSMORPHISM === */
+  .glass-surface {
+    @apply bg-white/80 dark:bg-[rgba(45,40,32,0.6)]
+           backdrop-blur-lg backdrop-saturate-180
+           border border-gray-200 dark:border-[--color-dark-border];
+  }
+
+  /* === MICRO-INTERACTIONS === */
+  .interact-lift {
+    @apply transition-all duration-200
+           hover:-translate-y-1 hover:shadow-lg
+           active:translate-y-0;
+  }
+
+  .interact-scale {
+    @apply transition-transform duration-200
+           hover:scale-105 active:scale-95;
+  }
+
+  .interact-glow {
+    @apply transition-all duration-300;
+  }
+
+  .interact-glow:hover {
+    @apply shadow-lg;
+  }
+
+  :is(.dark, .dark *) .interact-glow:hover {
+    box-shadow:
+      0 8px 16px -4px rgba(197, 81, 48, 0.16),
+      0 20px 40px -10px rgba(197, 81, 48, 0.20);
+  }
+
+  /* Link underline animation */
+  .link-animated {
+    @apply relative inline-block transition-colors duration-200;
+  }
+
+  .link-animated::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5
+           bg-gradient-to-r from-blue-600 to-orange-600
+           dark:from-[--color-dark-primary] dark:to-[--color-dark-accent]
+           transition-all duration-300;
+  }
+
+  .link-animated:hover::after {
+    @apply w-full;
+  }
+}
+
 [x-cloak] {
   display: none;
 }
 
 .button {
-  @apply inline-flex justify-center px-3.5 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md leading-5 transition hover:bg-blue-600;
+  @apply inline-flex justify-center px-3.5 py-2 text-sm font-medium
+         text-white bg-blue-600 dark:bg-[--color-dark-primary]
+         border border-transparent rounded-md leading-5
+         transition-all duration-200
+         hover:bg-blue-700 dark:hover:bg-[--color-dark-primary-hover]
+         hover:-translate-y-0.5 hover:shadow-lg
+         active:translate-y-0;
 }
 
 .button[disabled] {
@@ -145,6 +254,32 @@
 
 .button-md {
   @apply px-4 py-2;
+}
+
+/* === ENHANCED FORM INPUTS === */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  @apply
+    bg-white dark:bg-[--color-dark-bg-elevated]
+    text-gray-900 dark:text-[--color-dark-text-primary]
+    border border-gray-300 dark:border-[--color-dark-border]
+    rounded-lg px-4 py-2
+    transition-all duration-200
+    placeholder:text-gray-400 dark:placeholder:text-[--color-dark-text-tertiary];
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  @apply
+    border-blue-500 dark:border-[--color-dark-primary]
+    ring-4 ring-blue-100 dark:ring-[rgba(74,158,255,0.2)]
+    outline-none
+    scale-[1.01];
 }
 
 html {
@@ -738,5 +873,16 @@ iframe[hidden] {
 
   .button-secondary:active {
     background: rgb(22 97 190 / 20%);
+  }
+}
+
+/* === ACCESSIBILITY - REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

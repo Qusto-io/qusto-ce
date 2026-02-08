@@ -27,13 +27,15 @@ defmodule PlausibleWeb.Components.Generic do
 
   @button_themes %{
     "primary" =>
-      "bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-indigo-600 disabled:bg-indigo-400/60 disabled:dark:bg-indigo-600/30 disabled:dark:text-white/35",
+      "bg-blue-600 dark:bg-[--color-dark-primary] text-white hover:bg-blue-700 dark:hover:bg-[--color-dark-primary-hover] focus-visible:outline-blue-600 dark:focus-visible:outline-[--color-dark-primary] disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0",
+    "cta" =>
+      "bg-orange-600 dark:bg-[--color-dark-accent] text-white hover:bg-orange-700 dark:hover:bg-[--color-dark-accent-hover] focus-visible:outline-orange-600 disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg active:translate-y-0 active:scale-100",
     "secondary" =>
-      "border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:text-gray-900 hover:shadow-sm dark:hover:bg-gray-600 dark:hover:text-white disabled:text-gray-700/40 disabled:hover:shadow-none dark:disabled:text-gray-500 dark:disabled:bg-gray-800 dark:disabled:border-gray-800",
+      "border-2 border-blue-600 dark:border-[--color-dark-primary] bg-transparent text-blue-600 dark:text-[--color-dark-primary] hover:bg-blue-50 dark:hover:bg-[rgba(74,158,255,0.1)] disabled:opacity-50 transition-all duration-150",
     "yellow" =>
       "bg-yellow-600/90 text-white hover:bg-yellow-600 focus-visible:outline-yellow-600 disabled:bg-yellow-400/60 disabled:dark:bg-yellow-600/30 disabled:dark:text-white/35",
     "danger" =>
-      "border border-gray-300 dark:border-gray-800 text-red-600 bg-white dark:bg-gray-800 hover:text-red-700 hover:shadow-sm dark:hover:text-red-400 dark:text-red-500 active:text-red-800 disabled:text-red-700/40 disabled:hover:shadow-none dark:disabled:text-red-500/35 dark:disabled:bg-gray-800"
+      "border border-gray-300 dark:border-gray-700 text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:text-red-700 hover:shadow-sm dark:hover:text-red-300 active:text-red-800 disabled:text-red-700/40 disabled:hover:shadow-none dark:disabled:text-red-500/35"
   }
 
   @button_base_class "whitespace-nowrap truncate inline-flex items-center justify-center gap-x-2 font-medium rounded-md px-3.5 py-2.5 text-sm transition-all duration-150 cursor-pointer disabled:cursor-not-allowed"

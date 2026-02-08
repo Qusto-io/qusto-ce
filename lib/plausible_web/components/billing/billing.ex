@@ -21,7 +21,7 @@ defmodule PlausibleWeb.Components.Billing do
     <div
       :if={@locked?}
       id="feature-gate-overlay"
-      class="absolute backdrop-blur-[8px] bg-white/70 dark:bg-gray-800/50 inset-0 flex justify-center items-center"
+      class="absolute backdrop-blur-[8px] bg-white/70 dark:bg-[var(--color-dark-bg-elevated)]/50 inset-0 flex justify-center items-center"
     >
       <div class="px-6 flex flex-col items-center gap-y-3">
         <div class="flex-shrink-0 bg-white dark:bg-gray-700 max-w-max rounded-md p-2 border border-gray-200 dark:border-gray-600 text-indigo-500">
@@ -219,7 +219,7 @@ defmodule PlausibleWeb.Components.Billing do
     ~H"""
     <div
       id="monthly-quota-box"
-      class="w-full flex-1 h-32 px-2 py-4 text-center bg-gray-100 rounded-sm dark:bg-gray-800 w-max-md"
+      class="w-full flex-1 h-32 px-2 py-4 text-center bg-gray-100 rounded-sm dark:bg-[var(--color-dark-bg-elevated)] w-max-md"
     >
       <h4 class="font-black dark:text-gray-100">Monthly quota</h4>
       <div class="py-2 text-xl font-medium dark:text-gray-100">

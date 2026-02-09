@@ -140,7 +140,7 @@ defmodule PlausibleWeb.StatsController do
       date_range = Query.date_range(query)
 
       filename =
-        ~c"Plausible export #{params["domain"]} #{Date.to_iso8601(date_range.first)}  to #{Date.to_iso8601(date_range.last)} .zip"
+        ~c"Qusto export #{params["domain"]} #{Date.to_iso8601(date_range.first)}  to #{Date.to_iso8601(date_range.last)} .zip"
 
       params = Map.merge(params, %{"limit" => "300", "csv" => "True", "detailed" => "True"})
       limited_params = Map.merge(params, %{"limit" => "100"})
@@ -497,10 +497,10 @@ defmodule PlausibleWeb.StatsController do
   end
 
   defp title(%{path_info: ["plausible.io"]}, _) do
-    "Plausible Analytics: Live Demo"
+    "Qusto Analytics: Live Demo"
   end
 
   defp title(_conn, site) do
-    "Plausible · " <> site.domain
+    "Qusto · " <> site.domain
   end
 end

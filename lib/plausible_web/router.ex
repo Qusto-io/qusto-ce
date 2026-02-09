@@ -545,6 +545,25 @@ defmodule PlausibleWeb.Router do
 
     get "/", PageController, :index
 
+    # Marketing Pages
+    get "/product", MarketingController, :product_overview
+    get "/product/ecommerce", MarketingController, :ecommerce
+    get "/product/ai-search", MarketingController, :ai_search
+    get "/product/funnels", MarketingController, :funnels
+    get "/product/privacy", MarketingController, :privacy
+    get "/pricing", MarketingController, :pricing
+    get "/about", MarketingController, :about
+    get "/contact", MarketingController, :contact
+
+    # Legal Pages
+    get "/privacy-policy", MarketingController, :privacy_policy
+    get "/terms", MarketingController, :terms
+    get "/gdpr", MarketingController, :gdpr
+
+    # Blog
+    get "/blog", BlogController, :index
+    get "/blog/:id", BlogController, :show
+
     get "/billing/change-plan/preview/:plan_id", BillingController, :change_plan_preview
     post "/billing/change-plan/:new_plan_id", BillingController, :change_plan
     get "/billing/choose-plan", BillingController, :choose_plan

@@ -1,0 +1,122 @@
+<.focus_box>
+  <:title>Qusto Product Overview</:title>
+  
+<!-- Hero Section -->
+  <div class="mb-12">
+    <h1 class="text-4xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] dark:text-[var(--color-dark-text-primary)] mb-6">
+      Privacy-First Analytics Built for E-commerce
+    </h1>
+    <p class="text-xl text-gray-600 dark:text-[var(--color-dark-text-secondary)] mb-8 leading-relaxed">
+      Qusto combines the privacy-first approach you love with powerful e-commerce features
+      that help you grow your online business. Track what matters, respect your customers' privacy,
+      and stay GDPR compliant—all in one platform.
+    </p>
+  </div>
+  
+<!-- Core Features Grid -->
+  <div class="grid md:grid-cols-2 gap-8 mb-12">
+    <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow-md dark:shadow-warm">
+      <div class="text-4xl mb-3">🛒</div>
+      <h3 class="text-2xl font-['Arbutus_Slab',Georgia,serif] text-[#1661be] dark:text-[#4a9eff] mb-3">
+        <.styled_link href="/product/ecommerce">E-commerce Analytics</.styled_link>
+      </h3>
+      <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
+        Product-level tracking, cart abandonment detection, revenue analytics, and conversion funnels
+        specifically designed for online stores.
+      </p>
+    </div>
+
+    <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-6 border-l-4 border-[#8b5cf6] shadow-md dark:shadow-warm">
+      <div class="text-4xl mb-3">🤖</div>
+      <h3 class="text-2xl font-['Arbutus_Slab',Georgia,serif] text-[#8b5cf6] mb-3">
+        <.styled_link href="/product/ai-search">AI Search Tracking</.styled_link>
+      </h3>
+      <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
+        First privacy-first platform to track ChatGPT, Perplexity, and Claude referrals.
+        Understand how AI search drives traffic to your store.
+      </p>
+    </div>
+
+    <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow-md dark:shadow-warm">
+      <div class="text-4xl mb-3">🎯</div>
+      <h3 class="text-2xl font-['Arbutus_Slab',Georgia,serif] text-[#1661be] dark:text-[#4a9eff] mb-3">
+        <.styled_link href="/product/funnels">Conversion Funnels</.styled_link>
+      </h3>
+      <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
+        Track the complete customer journey from product view to purchase.
+        Identify drop-off points and optimize each step.
+      </p>
+    </div>
+
+    <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-6 border-l-4 border-[#10b981] shadow-md dark:shadow-warm">
+      <div class="text-4xl mb-3">🔒</div>
+      <h3 class="text-2xl font-['Arbutus_Slab',Georgia,serif] text-[#10b981] mb-3">
+        <.styled_link href="/product/privacy">Privacy & GDPR</.styled_link>
+      </h3>
+      <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
+        Cookieless tracking, EU hosting, GDPR compliance out of the box.
+        No cookie banner needed, no personal data collected.
+      </p>
+    </div>
+  </div>
+  
+<!-- Key Benefits -->
+  <div class="bg-[#eeece2] dark:bg-[var(--color-dark-bg-base)] rounded-xl p-8 mb-12">
+    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] dark:text-[var(--color-dark-text-primary)] mb-6">
+      Why Choose Qusto?
+    </h2>
+    <ul class="space-y-4">
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl">✓</span>
+        <div>
+          <strong class="text-gray-900 dark:text-[var(--color-dark-text-primary)]">E-commerce Specialist:</strong>
+          <span class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
+            Built specifically for online stores, not adapted from generic analytics
+          </span>
+        </div>
+      </li>
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl">✓</span>
+        <div>
+          <strong class="text-gray-900 dark:text-[var(--color-dark-text-primary)]">AI Search Ready:</strong>
+          <span class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
+            Only privacy-first platform tracking ChatGPT and AI search referrals
+          </span>
+        </div>
+      </li>
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl">✓</span>
+        <div>
+          <strong class="text-gray-900 dark:text-[var(--color-dark-text-primary)]">Privacy-First:</strong>
+          <span class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
+            GDPR compliant, EU-hosted, no cookies, no personal data collection
+          </span>
+        </div>
+      </li>
+      <li class="flex items-start">
+        <span class="text-[#10b981] mr-3 text-xl">✓</span>
+        <div>
+          <strong class="text-gray-900 dark:text-[var(--color-dark-text-primary)]">Simple Pricing:</strong>
+          <span class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
+            Transparent, predictable pricing. Start at €19/month, scale as you grow
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <:footer>
+    <.focus_list>
+      <:item>
+        <.styled_link href={Routes.auth_path(@conn, :register_form)}>
+          Start Free Trial →
+        </.styled_link>
+      </:item>
+      <:item>
+        <.styled_link href="/pricing">
+          View Pricing
+        </.styled_link>
+      </:item>
+    </.focus_list>
+  </:footer>
+</.focus_box>

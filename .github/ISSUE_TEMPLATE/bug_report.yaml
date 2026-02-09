@@ -1,78 +1,156 @@
 name: "🐛 Bug Report"
-description: Create a report to help us improve Plausible Analytics
+description: Report a bug in Qusto Analytics core engine
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
-     value: |
-       Thanks for taking the time to fill out this bug report!
+      value: |
+        Thanks for taking the time to fill out this bug report!
 
-       Please note that this tracker is only for bugs. Do not use the issue tracker for help, customer support or feature requests.
+        **Important:** This issue tracker is for the **open-source Qusto Analytics core** only.
 
-       [Our docs](https://plausible.io/docs) are a great place for most answers, but if you can’t find your answer there, you can [contact our customer support](https://plausible.io/contact).
+        - **Qusto Cloud users**: Please contact support@qusto.io for premium feature issues
+        - **Self-hosted users**: You're in the right place! Community support is available here
+        - **Feature requests**: Please use the Feature Request template instead
 
-       Have a feature request? Please check our [feedback board](https://feedback.plausible.io).
+        [Documentation](https://docs.qusto.io) | [Self-hosted Support Forum](https://github.com/qusto-io/qusto-analytics/discussions/categories/self-hosted-support)
 
-       Have an issue with your self-hosted install? Self-hosted is community supported and you can ask in [our self-hosted forum](https://github.com/plausible/analytics/discussions/categories/self-hosted-support).
-
-       Note that self-hosted is a long term release published twice per year so latest features won’t be immediately available. You can see all the [currently unreleased features in the changelog](https://github.com/plausible/analytics/blob/master/CHANGELOG.md).
-
-       **Thanks!**
-  - type: checkboxes
-    attributes:
-      label: Past Issues Searched
-      options:
-        - label: >-
-            I have searched open and closed issues to make sure that the bug has
-            not yet been reported
-          required: true
-  - type: checkboxes
-    attributes:
-      label: Issue is a Bug Report
-      options:
-        - label: >-
-            This is a bug report and not a feature request, nor asking for self-hosted support
-          required: true
   - type: dropdown
-    id: version
+    id: bug-location
     attributes:
-      label: Using official Plausible Cloud hosting or self-hosting?
+      label: Where did you encounter this bug?
+      description: This helps us route your issue correctly
       options:
-        - Plausible Cloud from plausible.io
-        - Self-hosting
+        - Self-hosted installation (open-source core)
+        - Qusto Cloud (premium features)
+        - Documentation
     validations:
       required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **⚠️ If you selected "Qusto Cloud (premium features)":**
+
+        Premium features (funnels, AI tracking, attribution) are not in this repository.
+        Please contact **support@qusto.io** instead of filing an issue here.
+
+        ---
+
+  - type: checkboxes
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have searched open and closed issues to make sure this bug has not been reported
+          required: true
+        - label: This is about the open-source core (not premium features like funnels, AI tracking, or attribution)
+          required: true
+        - label: This is a bug report, not a feature request or support question
+          required: true
+
   - type: textarea
     id: bug-description
     attributes:
-      label: Describe the bug
+      label: Bug Description
       description: A clear and concise description of what the bug is
-      placeholder: Tell us what happened!
+      placeholder: Tell us what happened
     validations:
       required: true
+
   - type: textarea
-    id: bug-expectation
+    id: steps-to-reproduce
     attributes:
-      label: Expected behavior
-      description: A clear and concise description of what you expected to happen
+      label: Steps to Reproduce
+      description: Step-by-step instructions to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen?
       placeholder: Tell us what you expected
     validations:
       required: true
+
   - type: textarea
-    id: bug-screenshots
+    id: actual-behavior
     attributes:
-      label: Screenshots
-      description: 'If applicable, add screenshots to help explain your problem'
-      placeholder: Insert screenshots here
+      label: Actual Behavior
+      description: What actually happens?
+      placeholder: Tell us what actually happened
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Qusto Version
+      description: What version of Qusto are you running? (Check the footer of the dashboard or `mix version`)
+      placeholder: e.g., v0.1.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment Method
+      description: How is Qusto deployed?
+      options:
+        - Docker Compose
+        - Docker (custom)
+        - From source
+        - Other
+    validations:
+      required: true
+
   - type: textarea
+    id: environment
     attributes:
       label: Environment
-      description: |
-        examples:
-        - **OS**: MacOS
-        - **Browser**: Firefox
-        - **Browser Version**: 88
+      description: Please provide details about your environment
       value: |
-        - OS:
-        - Browser:
-        - Browser Version:
+        - OS: [e.g., Ubuntu 22.04]
+        - Browser: [e.g., Firefox 120]
+        - PostgreSQL version: [e.g., 14.10]
+        - ClickHouse version: [e.g., 23.8]
       render: markdown
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: If applicable, add relevant log output (remove any sensitive data!)
+      render: shell
+      placeholder: |
+        Paste relevant logs here...
+
+        IMPORTANT: Remove any sensitive information like API keys, passwords, or personal data
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain the problem
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information that might be helpful
+
+  - type: checkboxes
+    attributes:
+      label: Final Confirmation
+      options:
+        - label: I can reproduce this on a fresh installation
+          required: false
+        - label: I have removed any sensitive information from this report
+          required: true

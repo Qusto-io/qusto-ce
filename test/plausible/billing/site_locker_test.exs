@@ -156,12 +156,12 @@ defmodule Plausible.Billing.SiteLockerTest do
 
       assert_email_delivered_with(
         to: [user],
-        subject: "[Action required] Your Plausible dashboard is now locked"
+        subject: "[Action required] Your Qusto dashboard is now locked"
       )
 
       assert_email_delivered_with(
         to: [billing_member],
-        subject: "[Action required] Your Plausible dashboard is now locked"
+        subject: "[Action required] Your Qusto dashboard is now locked"
       )
 
       assert Repo.reload!(team).locked
@@ -186,7 +186,7 @@ defmodule Plausible.Billing.SiteLockerTest do
 
       assert_email_delivered_with(
         to: [user],
-        subject: "[Action required] Your Plausible dashboard is now locked"
+        subject: "[Action required] Your Qusto dashboard is now locked"
       )
 
       team = Repo.reload!(team)

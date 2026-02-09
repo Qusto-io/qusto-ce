@@ -28,7 +28,7 @@ defmodule PlausibleWeb.Components.TwoFactor do
 
   def verify_2fa_input(assigns) do
     input_class =
-      "font-mono tracking-[0.5em] w-36 pl-5 font-medium shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block border-gray-300 dark:border-gray-500 dark:text-gray-200 dark:bg-gray-900 rounded-l-md"
+      "font-mono tracking-[0.5em] w-36 pl-5 font-medium shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block border-gray-300 dark:border-gray-500 dark:text-gray-200 dark:bg-[var(--color-dark-bg-card)] rounded-l-md"
 
     input_class =
       if assigns.show_button? do
@@ -112,7 +112,7 @@ defmodule PlausibleWeb.Components.TwoFactor do
           x-transition:leave="transition ease-in duration-200"
           x-transition:leave-start="opacity-100"
           x-transition:leave-end="opacity-0"
-          class="fixed inset-0 bg-gray-500/75 dark:bg-gray-800/75 transition-opacity"
+          class="fixed inset-0 bg-gray-500/75 dark:bg-[var(--color-dark-bg-elevated)]/75 transition-opacity"
           aria-hidden="true"
           x-on:click={"#{@state_param} = false"}
         >
@@ -130,7 +130,7 @@ defmodule PlausibleWeb.Components.TwoFactor do
           x-transition:leave="transition ease-in duration-200"
           x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
           x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          class="relative inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+          class="relative inline-block align-bottom bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
         >
           <.form :let={f} for={@form_data} action={@form_target} onsubmit={@onsubmit}>
             <div class="bg-white dark:bg-gray-850 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -138,7 +138,7 @@ defmodule PlausibleWeb.Components.TwoFactor do
                 <a
                   href="#"
                   x-on:click.prevent={"#{@state_param} = false"}
-                  class="bg-white dark:bg-gray-800 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
+                  class="bg-white dark:bg-[var(--color-dark-bg-elevated)] rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
                 >
                   <span class="sr-only">Close</span>
                   <Heroicons.x_mark class="h-6 w-6" />

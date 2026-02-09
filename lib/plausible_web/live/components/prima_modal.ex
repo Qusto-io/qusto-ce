@@ -13,14 +13,14 @@ defmodule PlausibleWeb.Live.Components.PrimaModal do
       <Modal.modal_overlay
         transition_enter={{"ease-out duration-300", "opacity-0", "opacity-100"}}
         transition_leave={{"ease-in duration-200", "opacity-100", "opacity-0"}}
-        class="fixed inset-0 z-[9999] bg-gray-500/75 dark:bg-gray-800/75"
+        class="fixed inset-0 z-[9999] bg-gray-500/75 dark:bg-[var(--color-dark-bg-elevated)]/75"
       />
 
       <div class="fixed inset-0 z-[9999] w-screen overflow-y-auto sm:pt-[10vmin]">
         <div class="flex min-h-full items-end justify-center p-4 sm:items-start sm:p-0">
           <Modal.modal_panel
             id={@id <> "-panel"}
-            class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-900 text-left shadow-xl sm:w-full sm:max-w-lg"
+            class="relative overflow-hidden rounded-lg bg-white dark:bg-[var(--color-dark-bg-card)] text-left shadow-xl sm:w-full sm:max-w-lg"
             transition_enter={
               {"ease-out duration-300", "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
                "opacity-100 translate-y-0 sm:scale-100"}

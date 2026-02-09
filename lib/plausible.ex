@@ -68,9 +68,9 @@ defmodule Plausible do
 
   def product_name do
     if ee?() do
-      "Plausible Analytics"
+      "Qusto Analytics"
     else
-      "Plausible CE"
+      "Qusto CE"
     end
   end
 end

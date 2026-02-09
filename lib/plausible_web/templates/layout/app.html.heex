@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Plausible is a lightweight and open-source web analytics tool. Your website data is 100% yours and the privacy of your visitors is respected."
+      content="Qusto is a lightweight and open-source web analytics tool. Your website data is 100% yours and the privacy of your visitors is respected."
     />
     <%= if assigns[:connect_live_socket] do %>
       <meta name="csrf-token" content={Plug.CSRFProtection.get_csrf_token()} />
@@ -24,20 +24,30 @@
 
     <title>
       {assigns[:title] ||
-        "Plausible · Simple, privacy-friendly alternative to Google Analytics"}
+        "Qusto · Simple, privacy-friendly alternative to Google Analytics"}
     </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href={Routes.static_path(@conn, "/css/app.css")} />
     <PlausibleWeb.Components.Layout.theme_script {Map.take(assigns, [:current_user, :theme])} />
     {render("_tracking.html", assigns)}
   </head>
   <body
     class={[
-      "flex flex-col bg-gray-50 dark:bg-gray-950",
+      "flex flex-col",
       if !assigns[:embedded] do
         "h-full"
       end
     ]}
-    style={if assigns[:background], do: "background-color: #{assigns[:background]}"}
+    style={
+      if assigns[:background],
+        do: "background-color: #{assigns[:background]}",
+        else: "background-color: var(--qusto-background)"
+    }
   >
     <%= if !assigns[:embedded] && !assigns[:hide_header?] do %>
       {render("_header.html", assigns)}

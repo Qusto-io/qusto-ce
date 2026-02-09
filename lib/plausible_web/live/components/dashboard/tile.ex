@@ -23,7 +23,7 @@ defmodule PlausibleWeb.Components.Dashboard.Tile do
     <div
       data-tile
       id={@id}
-      class="relative min-h-[430px] w-full p-5 flex flex-col bg-white dark:bg-gray-900 shadow-sm rounded-md md:min-h-initial md:h-27.25rem"
+      class="relative min-h-[430px] w-full p-5 flex flex-col bg-white dark:bg-[var(--color-dark-bg-card)] shadow-sm rounded-md md:min-h-initial md:h-27.25rem"
     >
       <%!-- reportheader --%>
       <div class="w-full flex justify-between border-b border-gray-200 dark:border-gray-750">

@@ -108,7 +108,7 @@ defmodule PlausibleWeb.Live.Flash do
     <div
       class={[
         @class,
-        "mb-4 max-w-sm w-full bg-white dark:bg-gray-800 shadow-lg rounded-lg pointer-events-auto"
+        "mb-4 max-w-sm w-full bg-white dark:bg-[var(--color-dark-bg-elevated)] shadow-lg rounded-lg pointer-events-auto"
       ]}
       {@rest}
     >

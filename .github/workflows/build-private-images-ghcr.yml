@@ -27,7 +27,7 @@ jobs:
         env:
           DOCKER_METADATA_PR_HEAD_SHA: true
         with:
-          images: ghcr.io/plausible/analytics/ee
+          images: ghcr.io/qusto-io/qusto-analytics
           tags: |
             type=ref,event=pr
             type=ref,event=branch
@@ -67,7 +67,7 @@ jobs:
           url: ${{ secrets.BUILD_NOTIFICATION_URL }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"content": "<a href=\"https://github.com/plausible/analytics/actions/workflows/build-private-images.yml\">Build failed</a>"}'
+          data: '{"content": "<a href=\"https://github.com/Qusto-io/qusto-analytics/actions/workflows/build-private-images-ghcr.yml\">Build failed</a>"}'
 
       - name: Get first line and Co-Authored-By lines of the commit message
         if: ${{ success() && github.ref == 'refs/heads/master' }}
@@ -98,5 +98,5 @@ jobs:
         uses: cnkk/honeymarker-action@1bd92aec746e38efe43a0faee94ced1ebb930712
         with:
           apikey: ${{ secrets.HONEYCOMB_MARKER_APIKEY }}
-          dataset: 'plausible-prod'
+          dataset: 'qusto-prod'
           message: "${{ github.sha }}"

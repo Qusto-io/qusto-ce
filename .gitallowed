@@ -1,0 +1,10 @@
+# Whitelist for git-secrets false positives
+# These are test/development keys that are safe to commit
+
+# Test environment SECRET_KEY_BASE (not real secrets)
+config/.env.dev:.*SECRET_KEY_BASE=
+config/.env.load:.*SECRET_KEY_BASE=
+config/.env.test:.*SECRET_KEY_BASE=
+
+# Test database URLs
+config/.env.test:.*DATABASE_URL=

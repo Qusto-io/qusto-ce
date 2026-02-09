@@ -22,16 +22,13 @@
 
           <%= if ce?() do %>
             This dashboard is running on self-managed Qusto Analytics infrastructure.
-            Qusto is built on <.styled_link href="https://plausible.io">Plausible Analytics</.styled_link>,
-            an open-source web analytics platform.
+            Qusto is an open-source web analytics platform licensed under AGPL-3.0.
           <% end %>
         </p>
 
         <%= if ee?() do %>
           <p class="mt-4 text-sm text-gray-500">
-            Powered by
-            <.styled_link href="https://plausible.io">Plausible Analytics</.styled_link>
-            (AGPL-3.0)
+            Open-source software • AGPL-3.0 licensed
           </p>
         <% end %>
       </div>
@@ -97,7 +94,7 @@
               <li>
                 <a
                   rel="noferrer"
-                  href="https://github.com/plausible/analytics"
+                  href="https://github.com/qusto-io/qusto-analytics"
                   class="text-base text-gray-300 leading-6 hover:text-white"
                 >
                   Source Code
@@ -115,7 +112,7 @@
               <li>
                 <a
                   rel="noreferrer"
-                  href="https://github.com/plausible/analytics/blob/master/LICENSE.md"
+                  href="https://github.com/qusto-io/qusto-analytics/blob/main/LICENSE.md"
                   class="text-base text-gray-300 leading-6 hover:text-white"
                 >
                   License (AGPL-3.0)
@@ -147,9 +144,8 @@
       <p class="text-base text-gray-400 xl:text-center">
         &copy; {DateTime.utc_now().year} Qusto Analytics.
         <span class="text-gray-500">
-          Built on
-          <a href="https://plausible.io" class="hover:text-gray-300">Plausible Analytics</a>
-          open-source software.
+          Open-source software licensed under
+          <a href="https://github.com/qusto-io/qusto-analytics/blob/main/LICENSE.md" class="hover:text-gray-300">AGPL-3.0</a>.
         </span>
       </p>
     </div>

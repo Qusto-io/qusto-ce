@@ -101,7 +101,7 @@ defmodule PlausibleWeb.Live.Sites do
       } />
 
       <div class="group mt-6 pb-5 border-b border-gray-200 dark:border-gray-750 flex items-center gap-2">
-        <h2 class="text-xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-2xl md:text-3xl sm:leading-9 min-w-0 truncate">
+        <h2 class="text-xl font-bold leading-7 sm:text-2xl md:text-3xl sm:leading-9 min-w-0 truncate" style="color: #374151 !important;">
           {Teams.name(@current_team)}
         </h2>
         <.unstyled_link
@@ -279,7 +279,7 @@ defmodule PlausibleWeb.Live.Sites do
     ~H"""
     <li
       data-test-id="consolidated-view-card-cta"
-      class="relative col-span-1 flex flex-col justify-between bg-white p-6 dark:bg-gray-800 rounded-md shadow-lg dark:shadow-xl"
+      class="relative col-span-1 flex flex-col justify-between bg-white p-6 dark:bg-[var(--color-dark-bg-elevated)] rounded-md shadow-lg dark:shadow-xl"
     >
       <div class="flex flex-col">
         <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
@@ -392,7 +392,7 @@ defmodule PlausibleWeb.Live.Sites do
     >
       <.unstyled_link
         href={"/#{URI.encode_www_form(@consolidated_view.domain)}"}
-        class="flex flex-col justify-between gap-6 h-full bg-white p-6 dark:bg-gray-900 rounded-md shadow-sm cursor-pointer hover:shadow-lg transition-shadow duration-150"
+        class="flex flex-col justify-between gap-6 h-full bg-white p-6 dark:bg-[var(--color-dark-bg-card)] rounded-md shadow-sm cursor-pointer hover:shadow-lg transition-shadow duration-150"
       >
         <div class="flex flex-col flex-1 justify-between gap-y-5">
           <div class="flex flex-col gap-y-2 mb-auto">
@@ -500,7 +500,7 @@ defmodule PlausibleWeb.Live.Sites do
       data-domain={@site.domain}
       phx-click={Prima.Modal.JS.open(@modal_id)}
     >
-      <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-gray-900 rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
+      <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-[var(--color-dark-bg-card)] rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
         <div class="w-full flex items-center justify-between gap-x-2.5">
           <.favicon domain={@site.domain} />
           <div class="flex-1 w-full truncate">
@@ -542,7 +542,7 @@ defmodule PlausibleWeb.Live.Sites do
       }
     >
       <.unstyled_link href={"/#{URI.encode_www_form(@site.domain)}"} class="block">
-        <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-gray-900 rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
+        <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-[var(--color-dark-bg-card)] rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
           <div class="w-full flex items-center justify-between gap-x-2.5">
             <.favicon domain={@site.domain} />
             <div class="flex-1 w-full">

@@ -1,0 +1,314 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - develop    # Auto-deploy to staging
+      - main       # Manual deploy to production
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      skip_migrations:
+        description: 'Skip database migrations'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  MIX_ENV: prod
+  CACHE_VERSION: v1
+
+jobs:
+  # ===========================================
+  # Staging Deployment (Auto on develop push)
+  # ===========================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment:
+      name: staging
+      url: https://staging.qusto.io
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Read .tool-versions
+        uses: marocchino/tool-versions-action@v1
+        id: versions
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ steps.versions.outputs.elixir }}
+          otp-version: ${{ steps.versions.outputs.erlang }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ steps.versions.outputs.nodejs }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            deps
+            _build
+            tracker/node_modules
+            priv/tracker/js
+          key: deploy-staging-${{ env.CACHE_VERSION }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            deploy-staging-${{ env.CACHE_VERSION }}-
+
+      - name: Install dependencies
+        run: |
+          mix deps.get --only $MIX_ENV
+          npm install --prefix ./tracker
+          npm install --prefix ./assets
+
+      - name: Build tracker
+        run: npm run deploy --prefix ./tracker
+
+      - name: Compile application
+        run: mix compile --warnings-as-errors
+
+      - name: Build assets
+        run: mix assets.deploy
+
+      - name: Create release
+        run: mix release --overwrite
+
+      - name: Deploy to staging server
+        env:
+          DEPLOY_HOST: ${{ secrets.STAGING_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.STAGING_DEPLOY_USER }}
+          DEPLOY_KEY: ${{ secrets.STAGING_DEPLOY_SSH_KEY }}
+          SKIP_MIGRATIONS: ${{ github.event.inputs.skip_migrations || 'false' }}
+        run: |
+          echo "🚀 Deploying to staging server..."
+          echo "Note: SSH deployment requires server setup"
+          echo "Host: $DEPLOY_HOST"
+          echo "Skip migrations: $SKIP_MIGRATIONS"
+
+          # Save SSH key
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          # Add server to known hosts
+          ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
+
+          # Create deployment script
+          cat > deploy.sh << 'EOF'
+          #!/bin/bash
+          set -e
+
+          RELEASE_PATH="/var/www/qusto/staging"
+          BACKUP_PATH="/var/www/qusto/backups/staging"
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+          echo "📦 Creating backup of current release..."
+          mkdir -p $BACKUP_PATH
+          if [ -d "$RELEASE_PATH/current" ]; then
+            cp -r $RELEASE_PATH/current $BACKUP_PATH/release_$TIMESTAMP
+          fi
+
+          echo "📤 Uploading new release..."
+          mkdir -p $RELEASE_PATH/releases/$TIMESTAMP
+          tar -czf - _build/prod/rel/plausible | ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "cd $RELEASE_PATH/releases/$TIMESTAMP && tar -xzf -"
+
+          echo "🔄 Stopping current service..."
+          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl stop qusto-staging || true"
+
+          if [ "$SKIP_MIGRATIONS" != "true" ]; then
+            echo "🗄️  Running database migrations..."
+            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "cd $RELEASE_PATH/releases/$TIMESTAMP/_build/prod/rel/plausible && bin/plausible eval 'Plausible.Release.migrate()'"
+          fi
+
+          echo "🔗 Updating symlink..."
+          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "ln -sfn $RELEASE_PATH/releases/$TIMESTAMP/_build/prod/rel/plausible $RELEASE_PATH/current"
+
+          echo "▶️  Starting service..."
+          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl start qusto-staging"
+
+          echo "⏳ Waiting for service to be ready..."
+          sleep 10
+
+          echo "🏥 Running health check..."
+          if ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "curl -f http://localhost:8000/api/health"; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Health check failed! Rolling back..."
+            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl stop qusto-staging"
+            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "ln -sfn $BACKUP_PATH/release_$TIMESTAMP $RELEASE_PATH/current"
+            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl start qusto-staging"
+            exit 1
+          fi
+          EOF
+
+          chmod +x deploy.sh
+          ./deploy.sh
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Staging deployment successful"
+          else
+            echo "❌ Staging deployment failed"
+          fi
+
+  # ===========================================
+  # Production Deployment (Manual approval required)
+  # ===========================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    environment:
+      name: production
+      url: https://qusto.io
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Read .tool-versions
+        uses: marocchino/tool-versions-action@v1
+        id: versions
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ steps.versions.outputs.elixir }}
+          otp-version: ${{ steps.versions.outputs.erlang }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ steps.versions.outputs.nodejs }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            deps
+            _build
+            tracker/node_modules
+            priv/tracker/js
+          key: deploy-prod-${{ env.CACHE_VERSION }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            deploy-prod-${{ env.CACHE_VERSION }}-
+
+      - name: Install dependencies
+        run: |
+          mix deps.get --only $MIX_ENV
+          npm install --prefix ./tracker
+          npm install --prefix ./assets
+
+      - name: Build tracker
+        run: npm run deploy --prefix ./tracker
+
+      - name: Compile application
+        run: mix compile --warnings-as-errors
+
+      - name: Build assets
+        run: mix assets.deploy
+
+      - name: Create release
+        run: mix release --overwrite
+
+      - name: Deploy to production server
+        env:
+          DEPLOY_HOST: ${{ secrets.PRODUCTION_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.PRODUCTION_DEPLOY_USER }}
+          DEPLOY_KEY: ${{ secrets.PRODUCTION_DEPLOY_SSH_KEY }}
+          SKIP_MIGRATIONS: ${{ github.event.inputs.skip_migrations || 'false' }}
+        run: |
+          echo "🚀 Deploying to production server..."
+          echo "Note: SSH deployment requires server setup"
+          echo "Host: $DEPLOY_HOST"
+          echo "Skip migrations: $SKIP_MIGRATIONS"
+
+          # Save SSH key
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          # Add server to known hosts
+          ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
+
+          # Create deployment script (same as staging with different paths)
+          cat > deploy.sh << 'EOF'
+          #!/bin/bash
+          set -e
+
+          RELEASE_PATH="/var/www/qusto/production"
+          BACKUP_PATH="/var/www/qusto/backups/production"
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+          echo "📦 Creating backup of current release..."
+          mkdir -p $BACKUP_PATH
+          if [ -d "$RELEASE_PATH/current" ]; then
+            cp -r $RELEASE_PATH/current $BACKUP_PATH/release_$TIMESTAMP
+          fi
+
+          echo "📤 Uploading new release..."
+          mkdir -p $RELEASE_PATH/releases/$TIMESTAMP
+          tar -czf - _build/prod/rel/plausible | ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "cd $RELEASE_PATH/releases/$TIMESTAMP && tar -xzf -"
+
+          echo "🔄 Stopping current service..."
+          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl stop qusto || true"
+
+          if [ "$SKIP_MIGRATIONS" != "true" ]; then
+            echo "🗄️  Running database migrations..."
+            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "cd $RELEASE_PATH/releases/$TIMESTAMP/_build/prod/rel/plausible && bin/plausible eval 'Plausible.Release.migrate()'"
+          fi
+
+          echo "🔗 Updating symlink..."
+          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "ln -sfn $RELEASE_PATH/releases/$TIMESTAMP/_build/prod/rel/plausible $RELEASE_PATH/current"
+
+          echo "▶️  Starting service..."
+          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl start qusto"
+
+          echo "⏳ Waiting for service to be ready..."
+          sleep 10
+
+          echo "🏥 Running health check..."
+          if ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "curl -f http://localhost:8000/api/health"; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Health check failed! Rolling back..."
+            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl stop qusto"
+            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "ln -sfn $BACKUP_PATH/release_$TIMESTAMP $RELEASE_PATH/current"
+            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl start qusto"
+            exit 1
+          fi
+          EOF
+
+          chmod +x deploy.sh
+          ./deploy.sh
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Production deployment successful"
+          else
+            echo "❌ Production deployment failed"
+          fi

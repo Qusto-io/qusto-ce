@@ -287,7 +287,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
     |> unhandled_error()
   end
 
-  @message_plausible_not_found "We couldn't detect Plausible on your site"
+  @message_plausible_not_found "We couldn't detect Qusto on your site"
   @error_plausible_not_found_for_manual Error.new!(%{
                                           message: @message_plausible_not_found,
                                           recommendation:
@@ -297,7 +297,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
   @error_plausible_not_found_for_npm Error.new!(%{
                                        message: @message_plausible_not_found,
                                        recommendation:
-                                         "Please make sure you've initialized Plausible on your site, or verify your installation manually",
+                                         "Please make sure you've initialized Qusto on your site, or verify your installation manually",
                                        url: @verify_manually_url
                                      })
   @error_plausible_not_found_for_gtm Error.new!(%{
@@ -321,7 +321,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
     end
   end
 
-  @unexpected_domain_message "Plausible test event is not for this site"
+  @unexpected_domain_message "Qusto test event is not for this site"
   @error_unexpected_domain_for_manual Error.new!(%{
                                         message: @unexpected_domain_message,
                                         recommendation:
@@ -332,7 +332,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
   @error_unexpected_domain_for_npm Error.new!(%{
                                      message: @unexpected_domain_message,
                                      recommendation:
-                                       "Please check that you've initialized Plausible with the correct domain, or verify your installation manually",
+                                       "Please check that you've initialized Qusto with the correct domain, or verify your installation manually",
                                      url: @verify_manually_url
                                    })
 

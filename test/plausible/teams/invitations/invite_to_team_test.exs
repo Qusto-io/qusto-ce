@@ -6,7 +6,7 @@ defmodule Plausible.Teams.Invitations.InviteToTeamTest do
   alias Plausible.Teams
   alias Plausible.Teams.Invitations.InviteToTeam
 
-  @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
+  @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
 
   describe "invite/4,5" do
     for role <- Teams.Invitation.roles() -- [:guest] do

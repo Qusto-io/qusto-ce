@@ -307,7 +307,7 @@ defmodule PlausibleWeb.Plugs.AuthorizePublicAPI do
   defp send_error(conn, _, {:error, :missing_api_key}) do
     H.unauthorized(
       conn,
-      "Missing API key. Please use a valid Plausible API key as a Bearer Token."
+      "Missing API key. Please use a valid Qusto API key as a Bearer Token."
     )
   end
 

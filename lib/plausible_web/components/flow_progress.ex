@@ -38,7 +38,7 @@ defmodule PlausibleWeb.Components.FlowProgress do
             </div>
             <div
               :if={idx > @current_step_idx}
-              class="size-6 bg-gray-300 text-xs text-white font-bold dark:bg-gray-800 rounded-full flex items-center justify-center"
+              class="size-6 bg-gray-300 text-xs text-white font-bold dark:bg-[var(--color-dark-bg-elevated)] rounded-full flex items-center justify-center"
             >
               {idx + 1}
             </div>
@@ -55,7 +55,7 @@ defmodule PlausibleWeb.Components.FlowProgress do
               {step}
             </span>
           </div>
-          <div :if={idx + 1 != length(@steps)} class="flex-1 h-px bg-gray-300 mx-4 dark:bg-gray-800 ">
+          <div :if={idx + 1 != length(@steps)} class="flex-1 h-px bg-gray-300 mx-4 dark:bg-[var(--color-dark-bg-elevated)] ">
           </div>
         <% end %>
       </div>

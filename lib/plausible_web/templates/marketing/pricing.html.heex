@@ -2,13 +2,13 @@
   <:title>Pricing</:title>
 
   <div class="mb-12 text-center">
-    <h1 class="text-4xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-4">
+    <h1 class="text-4xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] dark:text-[var(--color-dark-text-primary)] mb-4">
       Simple, Transparent Pricing
     </h1>
-    <p class="text-xl text-gray-600 mb-2">
+    <p class="text-xl text-gray-600 dark:text-[var(--color-dark-text-secondary)] mb-2">
       No hidden fees. No surprises. Cancel anytime.
     </p>
-    <p class="text-lg text-gray-500">
+    <p class="text-lg text-gray-500 dark:text-[var(--color-dark-text-tertiary)]">
       14-day free trial on all plans. No credit card required.
     </p>
   </div>
@@ -17,32 +17,32 @@
   <div class="grid md:grid-cols-3 gap-8 mb-12">
     <%= for plan <- @plans do %>
       <div class={[
-        "bg-white rounded-xl p-8 shadow-lg",
+        "bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-8 shadow-lg dark:shadow-warm-lg",
         if(plan.featured,
-          do: "border-4 border-[#c55130] transform scale-105",
-          else: "border border-gray-200"
+          do: "border-4 border-[#c55130] dark:border-[#e97a52] transform scale-105 dark:shadow-warm-2xl",
+          else: "border border-gray-200 dark:border-[rgba(197,81,48,0.15)]"
         )
       ]}>
         <%= if plan.featured do %>
-          <div class="bg-[#c55130] text-white text-sm font-semibold px-4 py-2 rounded-full inline-block mb-4">
+          <div class="bg-[#c55130] dark:bg-[#e97a52] text-white text-sm font-semibold px-4 py-2 rounded-full inline-block mb-4">
             Most Popular
           </div>
         <% end %>
 
-        <h3 class="text-2xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-2">
+        <h3 class="text-2xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] dark:text-[var(--color-dark-text-primary)] mb-2">
           {plan.name}
         </h3>
 
         <div class="mb-6">
-          <span class="text-5xl font-bold text-gray-900">{plan.price}</span>
-          <span class="text-gray-600">/{plan.period}</span>
+          <span class="text-5xl font-bold text-gray-900 dark:text-[var(--color-dark-text-primary)]">{plan.price}</span>
+          <span class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">/{plan.period}</span>
         </div>
 
         <ul class="space-y-3 mb-8">
           <%= for feature <- plan.features do %>
             <li class="flex items-start">
-              <span class="text-[#10b981] mr-2 text-lg">✓</span>
-              <span class="text-gray-700">{feature}</span>
+              <span class="text-[#10b981] dark:text-[#34d399] mr-2 text-lg">✓</span>
+              <span class="text-gray-700 dark:text-[var(--color-dark-text-secondary)]">{feature}</span>
             </li>
           <% end %>
         </ul>
@@ -55,8 +55,8 @@
                 "block text-center px-6 py-3 rounded-lg font-semibold transition-all",
                 if(plan.featured,
                   do:
-                    "bg-gradient-to-r from-[#c55130] to-[#a33f22] text-white shadow-lg hover:shadow-xl",
-                  else: "bg-white text-[#1661be] border-2 border-[#1661be] hover:bg-[#e6f0ff]"
+                    "bg-gradient-to-r from-[#c55130] to-[#a33f22] text-white shadow-lg dark:shadow-revenue hover:shadow-xl dark:hover:shadow-revenue dark:hover:scale-[1.02]",
+                  else: "bg-white dark:bg-transparent text-[#1661be] dark:text-[#4a9eff] border-2 border-[#1661be] dark:border-[#4a9eff] hover:bg-[#e6f0ff] dark:hover:bg-[var(--color-dark-bg-hover)]"
                 )
               ],
               " "
@@ -70,30 +70,30 @@
   </div>
   
 <!-- Enterprise -->
-  <div class="bg-[#eeece2] rounded-xl p-8 mb-12 text-center">
-    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-4">
+  <div class="bg-[#eeece2] dark:bg-[var(--color-dark-bg-base)] rounded-xl p-8 mb-12 text-center">
+    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] dark:text-[var(--color-dark-text-primary)] mb-4">
       Enterprise Plan
     </h2>
-    <p class="text-xl text-gray-600 mb-6">
+    <p class="text-xl text-gray-600 dark:text-[var(--color-dark-text-secondary)] mb-6">
       Need more than 500K visitors or custom features? We've got you covered.
     </p>
     <div class="grid md:grid-cols-3 gap-6 mb-6">
-      <div class="bg-white rounded-lg p-4">
+      <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-4 shadow dark:shadow-warm">
         <div class="text-3xl mb-2">∞</div>
-        <div class="font-semibold text-gray-900">Unlimited Traffic</div>
+        <div class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)]">Unlimited Traffic</div>
       </div>
-      <div class="bg-white rounded-lg p-4">
+      <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-4 shadow dark:shadow-warm">
         <div class="text-3xl mb-2">🔧</div>
-        <div class="font-semibold text-gray-900">Custom Features</div>
+        <div class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)]">Custom Features</div>
       </div>
-      <div class="bg-white rounded-lg p-4">
+      <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-4 shadow dark:shadow-warm">
         <div class="text-3xl mb-2">📞</div>
-        <div class="font-semibold text-gray-900">Dedicated Support</div>
+        <div class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)]">Dedicated Support</div>
       </div>
     </div>
     <.styled_link
       href="/contact"
-      class="inline-block px-8 py-3 bg-[#002d9c] text-white rounded-lg font-semibold hover:bg-[#001a73] transition-all"
+      class="inline-block px-8 py-3 bg-[#002d9c] dark:bg-[#4a9eff] text-white rounded-lg font-semibold hover:bg-[#001a73] dark:hover:bg-[#6bb0ff] transition-all shadow-lg dark:shadow-warm-lg"
     >
       Contact Sales
     </.styled_link>
@@ -101,55 +101,55 @@
   
 <!-- FAQ -->
   <div class="mb-12">
-    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-8 text-center">
+    <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] dark:text-[var(--color-dark-text-primary)] mb-8 text-center">
       Frequently Asked Questions
     </h2>
     <div class="space-y-4">
-      <div class="bg-white rounded-lg p-6 border-l-4 border-[#1661be]">
-        <h3 class="font-semibold text-gray-900 mb-2">What counts as a "visitor"?</h3>
-        <p class="text-gray-600">
+      <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">What counts as a "visitor"?</h3>
+        <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           A visitor is a unique user who visits your website. We count unique visitors per month,
           not pageviews. If someone visits 10 pages, that's 1 visitor.
         </p>
       </div>
 
-      <div class="bg-white rounded-lg p-6 border-l-4 border-[#1661be]">
-        <h3 class="font-semibold text-gray-900 mb-2">Can I change plans anytime?</h3>
-        <p class="text-gray-600">
+      <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">Can I change plans anytime?</h3>
+        <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           Yes! Upgrade or downgrade at any time. Changes take effect immediately,
           and we'll prorate the difference.
         </p>
       </div>
 
-      <div class="bg-white rounded-lg p-6 border-l-4 border-[#1661be]">
-        <h3 class="font-semibold text-gray-900 mb-2">What payment methods do you accept?</h3>
-        <p class="text-gray-600">
+      <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">What payment methods do you accept?</h3>
+        <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           We accept all major credit cards (Visa, Mastercard, American Express) and SEPA direct debit
           for European businesses.
         </p>
       </div>
 
-      <div class="bg-white rounded-lg p-6 border-l-4 border-[#1661be]">
-        <h3 class="font-semibold text-gray-900 mb-2">Is there a setup fee?</h3>
-        <p class="text-gray-600">
+      <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">Is there a setup fee?</h3>
+        <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           No setup fees, no hidden charges. The price you see is the price you pay.
         </p>
       </div>
 
-      <div class="bg-white rounded-lg p-6 border-l-4 border-[#1661be]">
-        <h3 class="font-semibold text-gray-900 mb-2">What happens after the trial?</h3>
-        <p class="text-gray-600">
+      <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">What happens after the trial?</h3>
+        <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           After your 14-day trial, you can choose a plan and add your payment details.
           If you don't choose a plan, your account will be downgraded to view-only mode
           (you can still see your data, but we won't track new visitors).
         </p>
       </div>
 
-      <div class="bg-white rounded-lg p-6 border-l-4 border-[#1661be]">
-        <h3 class="font-semibold text-gray-900 mb-2">
+      <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">
           Do you offer discounts for annual billing?
         </h3>
-        <p class="text-gray-600">
+        <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           Yes! Save 20% when you pay annually. For example, the Starter plan is €182/year
           (€15.17/month) instead of €228/year when paid monthly.
         </p>
@@ -158,11 +158,11 @@
   </div>
   
 <!-- Money-Back Guarantee -->
-  <div class="bg-green-50 border-2 border-[#10b981] rounded-xl p-8 text-center mb-12">
-    <h2 class="text-2xl font-['Arbutus_Slab',Georgia,serif] text-[#10b981] mb-4">
+  <div class="bg-green-50 dark:bg-[var(--color-dark-bg-card)] border-2 border-[#10b981] dark:border-[#34d399] rounded-xl p-8 text-center mb-12 shadow-lg dark:shadow-warm-lg">
+    <h2 class="text-2xl font-['Arbutus_Slab',Georgia,serif] text-[#10b981] dark:text-[#34d399] mb-4">
       💯 30-Day Money-Back Guarantee
     </h2>
-    <p class="text-gray-700 text-lg">
+    <p class="text-gray-700 dark:text-[var(--color-dark-text-secondary)] text-lg">
       Not satisfied? Get a full refund within 30 days. No questions asked.
     </p>
   </div>

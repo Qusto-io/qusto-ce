@@ -101,7 +101,7 @@ defmodule PlausibleWeb.Live.Sites do
       } />
 
       <div class="group mt-6 pb-5 border-b border-gray-200 dark:border-gray-750 flex items-center gap-2">
-        <h2 class="text-xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-2xl md:text-3xl sm:leading-9 min-w-0 truncate">
+        <h2 class="text-xl font-bold leading-7 sm:text-2xl md:text-3xl sm:leading-9 min-w-0 truncate" style="color: #374151 !important;">
           {Teams.name(@current_team)}
         </h2>
         <.unstyled_link

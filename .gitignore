@@ -137,6 +137,9 @@ qusto_db*
 # Test artifacts
 /screenshots/
 /recordings/
+/test-automation/
+test-branding.js
+*.bak
 
 # OS files
 .DS_Store

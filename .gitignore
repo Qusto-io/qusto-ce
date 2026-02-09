@@ -24,6 +24,7 @@ erl_crash.dump
 
 # Ignore package tarball (built via "mix hex.build").
 plausible-*.tar
+qusto-*.tar
 
 # If NPM crashes, it generates a log, let's ignore it too.
 npm-debug.log
@@ -73,18 +74,11 @@ npm-debug.log
 # Ignore Elixir Language Server files
 .elixir_ls
 plausible-report.xml
+qusto-report.xml
 
-.idea
-*.iml
-*.log
-*.code-workspace
-.vscode
-
-# Dializer
+# Dialyzer
 /priv/plts/*.plt
 /priv/plts/*.plt.hash
-
-.env
 
 # Geolocation databases
 /priv/geodb/*.mmdb
@@ -92,10 +86,119 @@ plausible-report.xml
 
 # Auto-generated tracker files
 /priv/tracker/js/plausible*.js*
+/priv/tracker/js/qusto*.js*
 /priv/tracker/installation_support/*.js
 
 # Docker volumes
 .clickhouse_db_vol*
 plausible_db*
+qusto_db*
 
-.claude
+# =============================================================================
+# Qusto-specific ignores
+# =============================================================================
+
+# Environment files - NEVER commit these
+.env
+.env.*
+!.env.example
+
+# Premium feature references (these stay in private repos)
+# These directories should never exist in this repo
+/funnels/
+/ai-tracking/
+/attribution/
+
+# Deployment secrets
+/secrets/
+*.pem
+*.key
+!*.key.example
+
+# IDE settings (user-specific)
+.vscode/settings.json
+.vscode/launch.json
+.vscode/*.code-workspace
+*.code-workspace
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Database dumps (may contain user data)
+*.sql
+*.dump
+/priv/repo/backups/
+
+# ClickHouse data
+/clickhouse/
+
+# Test artifacts
+/screenshots/
+/recordings/
+/test-automation/
+test-branding.js
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude AI assistant
+.claude/
+
+# Qusto-specific secrets
+.env
+.env.*
+!.env.example
+*.secret
+*.secrets
+secrets.yml
+credentials.yml
+config/secrets.yml
+
+# Database dumps and backups
+*.sql
+*.dump
+*.backup
+/priv/data/
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# IDE specific
+.vscode/settings.json
+.vscode/*.code-workspace
+.idea/
+*.swp
+*.swo
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# Logs and runtime
+*.log
+logs/
+/log/*
+!/log/.keep
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts (additional to Elixir defaults)
+/priv/static/cache/
+/tmp/
+
+# Local configuration overrides
+config/*.local.exs

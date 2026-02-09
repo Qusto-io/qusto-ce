@@ -360,7 +360,7 @@ defmodule PlausibleWeb.SiteControllerTest do
         }
       })
 
-      assert_email_delivered_with(subject: "Welcome to Plausible")
+      assert_email_delivered_with(subject: "Welcome to Qusto")
     end
 
     test "does not send welcome email if user already has a previous site", %{

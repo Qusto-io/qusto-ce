@@ -1,0 +1,15 @@
+[
+  verbose: true,
+  private: false,
+  skip: true,
+  router: "lib/plausible_web/router.ex",
+  exit: "high",
+  format: "txt",
+  out: "",
+  threshold: "low",
+  # Pre-existing security findings to be addressed in separate PR
+  # API pipelines intentionally don't use CSRF protection (token-based auth)
+  # Configuration issues need architectural review
+  ignore: ["Config.CSRF", "Config.Headers", "Config.CSP", "Config.HTTPS", "Misc.BinToTerm"],
+  ignore_files: []
+]

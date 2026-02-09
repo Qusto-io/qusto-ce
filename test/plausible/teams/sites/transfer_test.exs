@@ -5,7 +5,7 @@ defmodule Plausible.Teams.Sites.TransferTest do
 
   alias Plausible.Teams.Sites.Transfer
 
-  @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
+  @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
 
   describe "change_team/3" do
     @tag :ce_build_only

@@ -1,0 +1,39 @@
+<.focus_box>
+  <:title>{@post.title}</:title>
+
+  <article class="prose prose-lg max-w-none dark:prose-invert">
+    <header class="mb-8">
+      <h1 class="text-4xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] dark:text-[var(--color-dark-text-primary)] mb-4">
+        {@post.title}
+      </h1>
+      <div class="flex items-center text-gray-600 dark:text-[var(--color-dark-text-secondary)] space-x-4 mb-4">
+        <span>📅 {format_date(@post.date)}</span>
+        <span>✍️ {@post.author}</span>
+      </div>
+      <div class="flex gap-2 mb-6">
+        <%= for tag <- @post.tags do %>
+          <span class="px-3 py-1 bg-[#e6f0ff] dark:bg-[var(--color-dark-bg-hover)] text-[#1661be] dark:text-[#4a9eff] text-sm rounded-full">
+            {tag}
+          </span>
+        <% end %>
+      </div>
+    </header>
+
+    <div class="blog-content text-gray-700 dark:text-[var(--color-dark-text-secondary)] leading-relaxed">
+      {raw(@post.body)}
+    </div>
+  </article>
+
+  <:footer>
+    <.focus_list>
+      <:item>
+        <.styled_link href="/blog">← Back to Blog</.styled_link>
+      </:item>
+      <:item>
+        <.styled_link href={Routes.auth_path(@conn, :register_form)}>
+          Start Free Trial
+        </.styled_link>
+      </:item>
+    </.focus_list>
+  </:footer>
+</.focus_box>

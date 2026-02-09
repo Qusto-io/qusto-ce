@@ -29,7 +29,7 @@
   }
 
   *:focus-visible {
-    @apply ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-gray-900 outline-none;
+    @apply ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-900 outline-none;
   }
 
   :focus:not(:focus-visible) {
@@ -47,7 +47,7 @@
 
   [type='checkbox']:focus-visible,
   [type='radio']:focus-visible {
-    @apply ring-2 ring-indigo-500 ring-offset-2 outline-none;
+    @apply ring-2 ring-blue-500 ring-offset-2 outline-none;
   }
 }
 
@@ -103,6 +103,30 @@
   /* Set v3 default ring behavior */
   --default-ring-width: 2px;
   --default-ring-color: var(--color-indigo-500);
+
+  /* === QUSTO WARM DARK MODE - Backgrounds === */
+  --color-dark-bg-base: #1a1612;           /* Warm charcoal base */
+  --color-dark-bg-elevated: #252118;       /* Elevated surfaces */
+  --color-dark-bg-card: #2d2820;          /* Cards, panels */
+  --color-dark-bg-overlay: #363027;        /* Modals, dropdowns */
+  --color-dark-bg-hover: #443c33;          /* Hover states */
+
+  /* === QUSTO WARM DARK MODE - Text === */
+  --color-dark-text-primary: #f5f1e8;      /* 17.2:1 contrast */
+  --color-dark-text-secondary: #d4cfc0;    /* 11.8:1 contrast */
+  --color-dark-text-tertiary: #a8a196;     /* 7.1:1 contrast */
+  --color-dark-text-disabled: #7a736a;     /* 4.2:1 contrast */
+
+  /* === QUSTO WARM DARK MODE - Brand Colors (Brightened) === */
+  --color-dark-primary: #4a9eff;           /* Brighter blue */
+  --color-dark-primary-hover: #6bb0ff;
+  --color-dark-accent: #e97a52;            /* Brighter orange */
+  --color-dark-accent-hover: #ff8f66;
+
+  /* === QUSTO WARM DARK MODE - Borders (Orange-tinted) === */
+  --color-dark-border: rgba(197, 81, 48, 0.15);
+  --color-dark-border-strong: rgba(197, 81, 48, 0.25);
+  --color-dark-divider: rgba(197, 81, 48, 0.08);
 }
 
 @media print {
@@ -123,12 +147,97 @@
 @custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
 @custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
 
+/* === WARM DARK MODE SHADOWS === */
+@layer utilities {
+  .shadow-warm-sm {
+    box-shadow: 0 1px 2px 0 rgba(197, 81, 48, 0.08);
+  }
+
+  .shadow-warm {
+    box-shadow: 0 4px 6px -1px rgba(197, 81, 48, 0.12);
+  }
+
+  .shadow-warm-lg {
+    box-shadow:
+      0 4px 8px -2px rgba(197, 81, 48, 0.12),
+      0 12px 24px -6px rgba(197, 81, 48, 0.16);
+  }
+
+  .shadow-warm-xl {
+    box-shadow:
+      0 8px 16px -4px rgba(197, 81, 48, 0.16),
+      0 20px 40px -10px rgba(197, 81, 48, 0.20);
+  }
+
+  .shadow-revenue {
+    box-shadow:
+      0 8px 20px rgba(197, 81, 48, 0.20),
+      0 0 60px rgba(197, 81, 48, 0.15);
+  }
+
+  /* === GLASSMORPHISM === */
+  .glass-surface {
+    @apply bg-white/80 dark:bg-[rgba(45,40,32,0.6)]
+           backdrop-blur-lg backdrop-saturate-180
+           border border-gray-200 dark:border-[var(--color-dark-border)];
+  }
+
+  /* === MICRO-INTERACTIONS === */
+  .interact-lift {
+    @apply transition-all duration-200
+           hover:-translate-y-1 hover:shadow-lg
+           active:translate-y-0;
+  }
+
+  .interact-scale {
+    @apply transition-transform duration-200
+           hover:scale-105 active:scale-95;
+  }
+
+  .interact-glow {
+    @apply transition-all duration-300;
+  }
+
+  .interact-glow:hover {
+    @apply shadow-lg;
+  }
+
+  :is(.dark, .dark *) .interact-glow:hover {
+    box-shadow:
+      0 8px 16px -4px rgba(197, 81, 48, 0.16),
+      0 20px 40px -10px rgba(197, 81, 48, 0.20);
+  }
+
+  /* Link underline animation */
+  .link-animated {
+    @apply relative inline-block transition-colors duration-200;
+  }
+
+  .link-animated::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5
+           bg-gradient-to-r from-blue-600 to-orange-600
+           dark:from-[var(--color-dark-primary)] dark:to-[var(--color-dark-accent)]
+           transition-all duration-300;
+  }
+
+  .link-animated:hover::after {
+    @apply w-full;
+  }
+}
+
 [x-cloak] {
   display: none;
 }
 
 .button {
-  @apply inline-flex justify-center px-3.5 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md leading-5 transition hover:bg-indigo-700;
+  @apply inline-flex justify-center px-3.5 py-2 text-sm font-medium
+         text-white bg-blue-600 dark:bg-[var(--color-dark-primary)]
+         border border-transparent rounded-md leading-5
+         transition-all duration-200
+         hover:bg-blue-700 dark:hover:bg-[var(--color-dark-primary-hover)]
+         hover:-translate-y-0.5 hover:shadow-lg
+         active:translate-y-0;
 }
 
 .button[disabled] {
@@ -136,7 +245,7 @@
 }
 
 .button-outline {
-  @apply text-indigo-600 bg-transparent border border-gray-300 dark:border-gray-600 dark:text-gray-100 hover:bg-transparent hover:text-indigo-700 dark:hover:text-white hover:border-gray-400/70 dark:hover:border-gray-500 transition-all duration-150;
+  @apply text-blue-500 bg-transparent border border-gray-300 dark:border-gray-600 dark:text-gray-100 hover:bg-transparent hover:text-blue-600 dark:hover:text-white hover:border-gray-400/70 dark:hover:border-gray-500 transition-all duration-150;
 }
 
 .button-sm {
@@ -147,8 +256,35 @@
   @apply px-4 py-2;
 }
 
+/* === ENHANCED FORM INPUTS === */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  @apply
+    bg-white dark:bg-[var(--color-dark-bg-elevated)]
+    text-gray-900 dark:text-[var(--color-dark-text-primary)]
+    border border-gray-300 dark:border-[var(--color-dark-border)]
+    rounded-lg px-4 py-2
+    transition-all duration-200
+    placeholder:text-gray-400 dark:placeholder:text-[var(--color-dark-text-tertiary)];
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  @apply
+    border-blue-500 dark:border-[var(--color-dark-primary)]
+    ring-4 ring-blue-100 dark:ring-[rgba(74,158,255,0.2)]
+    outline-none
+    scale-[1.01];
+}
+
 html {
-  @apply text-gray-800;
+  @apply text-gray-800 dark:text-[var(--color-dark-text-primary)];
+  @apply bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)];
 }
 
 body {
@@ -156,6 +292,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   width: 100vw; /* Prevents content from jumping when scrollbar is added/removed due to vertical overflow */
   overflow-x: hidden;
+  @apply bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)];
+  @apply text-gray-800 dark:text-[var(--color-dark-text-primary)];
 }
 
 blockquote {
@@ -361,4 +499,398 @@ iframe[hidden] {
   visibility: visible;
   content: '';
   transform: rotate(45deg) translateY(1px);
+}
+
+/* ============================================================================
+   QUSTO BRAND COLORS
+   Added: Week 5 - Design System Implementation
+   Source: Qusto Phase 1 Work Plan (Consolidated)
+   ============================================================================ */
+
+:root {
+  /* Background Colors */
+  --qusto-background: #eeece2; /* Warm cream - page backgrounds */
+  --qusto-surface: #fff; /* White - cards, modals */
+
+  /* Brand Colors */
+  --qusto-brand-blue: #002d9c; /* Deep blue - headings, brand emphasis */
+  --qusto-primary: #1661be; /* Primary blue - buttons, links, charts */
+  --qusto-accent: #c55130; /* Accent orange - CTAs, revenue, alerts */
+
+  /* Semantic Colors */
+  --qusto-analytics: #1661be; /* Blue for analytics/data displays */
+  --qusto-revenue: #c55130; /* Orange for revenue/money contexts */
+
+  /* Extended Blue Scale */
+  --qusto-blue-50: #e6f0ff;
+  --qusto-blue-100: #b3d1ff;
+  --qusto-blue-200: #80b3ff;
+  --qusto-blue-300: #4d94ff;
+  --qusto-blue-400: #1a75ff;
+  --qusto-blue-500: #1661be; /* Primary */
+  --qusto-blue-600: #002d9c; /* Brand */
+  --qusto-blue-700: #002073;
+  --qusto-blue-800: #001a5c;
+  --qusto-blue-900: #001345;
+
+  /* Extended Orange Scale */
+  --qusto-orange-50: #fff5f2;
+  --qusto-orange-100: #ffe6df;
+  --qusto-orange-200: #ffc7b8;
+  --qusto-orange-300: #ffa891;
+  --qusto-orange-400: #ff8969;
+  --qusto-orange-500: #c55130; /* Accent */
+  --qusto-orange-600: #a33f22;
+  --qusto-orange-700: #822f18;
+  --qusto-orange-800: #5c2213;
+  --qusto-orange-900: #3d180c;
+
+  /* Neutral Scale (Text & Borders) */
+  --qusto-gray-50: #f9fafb;
+  --qusto-gray-100: #f3f4f6;
+  --qusto-gray-200: #e5e7eb;
+  --qusto-gray-300: #d1d5db;
+  --qusto-gray-400: #9ca3af;
+  --qusto-gray-500: #6b7280;
+  --qusto-gray-600: #4b5563;
+  --qusto-gray-700: #374151;
+  --qusto-gray-800: #1f2937;
+  --qusto-gray-900: #111827;
+
+  /* Typography */
+  --qusto-font-heading: 'Arbutus Slab', georgia, 'Times New Roman', serif;
+  --qusto-font-body: system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI',
+    roboto, 'Helvetica Neue', arial, sans-serif;
+  --qusto-font-mono: 'SF Mono', monaco, 'Cascadia Code', 'Roboto Mono', consolas,
+    'Courier New', monospace;
+
+  /* Primary Colors (Analytics) */
+  --color-primary: var(--qusto-primary);
+  --color-primary-dark: var(--qusto-brand-blue);
+  --color-primary-light: var(--qusto-blue-400);
+
+  /* Accent Colors (Revenue/CTAs) */
+  --color-accent: var(--qusto-accent);
+  --color-accent-dark: var(--qusto-orange-600);
+  --color-accent-light: var(--qusto-orange-400);
+
+  /* Backgrounds */
+  --color-bg-primary: var(--qusto-background);
+  --color-bg-surface: var(--qusto-surface);
+
+  /* Text */
+  --color-text-primary: var(--qusto-gray-900);
+  --color-text-secondary: var(--qusto-gray-600);
+  --color-text-tertiary: var(--qusto-gray-500);
+
+  /* Borders */
+  --color-border: var(--qusto-gray-200);
+  --color-border-dark: var(--qusto-gray-300);
+}
+
+/* ============================================================================
+   DARK MODE VARIANTS - WARM DARK MODE (Qusto Brand)
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Warm Dark Mode Backgrounds */
+    --qusto-background: #1a1612;
+    --qusto-surface: #2d2820;
+    --color-bg-primary: var(--color-dark-bg-base);
+    --color-bg-surface: var(--color-dark-bg-card);
+
+    /* Warm Dark Mode Text */
+    --color-text-primary: var(--color-dark-text-primary);
+    --color-text-secondary: var(--color-dark-text-secondary);
+    --color-text-tertiary: var(--color-dark-text-tertiary);
+
+    /* Warm Dark Mode Borders (Orange-tinted) */
+    --color-border: var(--color-dark-border);
+    --color-border-dark: var(--color-dark-border-strong);
+  }
+}
+
+/* ============================================================================
+   QUSTO SHADOW UTILITIES
+   Added: Week 5 - Design System Implementation
+   Custom shadows for blue (analytics) and orange (revenue) themes
+   ============================================================================ */
+
+/* Blue Shadows (Analytics) */
+.shadow-blue-sm {
+  box-shadow: 0 1px 2px 0 rgb(22 97 190 / 5%);
+}
+
+.shadow-blue {
+  box-shadow:
+    0 1px 3px 0 rgb(22 97 190 / 10%),
+    0 1px 2px 0 rgb(22 97 190 / 6%);
+}
+
+.shadow-blue-md {
+  box-shadow:
+    0 4px 6px -1px rgb(22 97 190 / 10%),
+    0 2px 4px -1px rgb(22 97 190 / 6%);
+}
+
+.shadow-blue-lg {
+  box-shadow:
+    0 10px 15px -3px rgb(22 97 190 / 10%),
+    0 4px 6px -2px rgb(22 97 190 / 5%);
+}
+
+.shadow-blue-xl {
+  box-shadow:
+    0 20px 25px -5px rgb(22 97 190 / 10%),
+    0 10px 10px -5px rgb(22 97 190 / 4%);
+}
+
+/* Orange Shadows (Revenue) */
+.shadow-orange-sm {
+  box-shadow: 0 1px 2px 0 rgb(197 81 48 / 5%);
+}
+
+.shadow-orange {
+  box-shadow:
+    0 1px 3px 0 rgb(197 81 48 / 10%),
+    0 1px 2px 0 rgb(197 81 48 / 6%);
+}
+
+.shadow-orange-md {
+  box-shadow:
+    0 4px 6px -1px rgb(197 81 48 / 10%),
+    0 2px 4px -1px rgb(197 81 48 / 6%);
+}
+
+.shadow-orange-lg {
+  box-shadow:
+    0 10px 15px -3px rgb(197 81 48 / 10%),
+    0 4px 6px -2px rgb(197 81 48 / 5%);
+}
+
+.shadow-orange-xl {
+  box-shadow:
+    0 20px 25px -5px rgb(197 81 48 / 10%),
+    0 10px 10px -5px rgb(197 81 48 / 4%);
+}
+
+/* Hover States */
+.hover-shadow-blue-md:hover {
+  box-shadow:
+    0 4px 6px -1px rgb(22 97 190 / 10%),
+    0 2px 4px -1px rgb(22 97 190 / 6%);
+}
+
+.hover-shadow-orange-md:hover {
+  box-shadow:
+    0 4px 6px -1px rgb(197 81 48 / 10%),
+    0 2px 4px -1px rgb(197 81 48 / 6%);
+}
+
+/* Dark Mode Adjustments */
+
+@media (prefers-color-scheme: dark) {
+  .shadow-blue-sm,
+  .shadow-blue,
+  .shadow-blue-md,
+  .shadow-blue-lg,
+  .shadow-blue-xl {
+    box-shadow: 0 0 0 1px rgb(22 97 190 / 20%);
+  }
+
+  .shadow-orange-sm,
+  .shadow-orange,
+  .shadow-orange-md,
+  .shadow-orange-lg,
+  .shadow-orange-xl {
+    box-shadow: 0 0 0 1px rgb(197 81 48 / 20%);
+  }
+}
+
+/* ============================================================================
+   QUSTO ENHANCED BUTTON CLASSES
+   Added: Week 5 - Design System Implementation
+   Enhanced buttons with gradients and improved interaction states
+   ============================================================================ */
+
+/* Primary Button (Blue Analytics Theme) */
+.button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border-radius: 0.375rem;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(
+    135deg,
+    var(--qusto-primary) 0%,
+    var(--qusto-brand-blue) 100%
+  );
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow:
+    0 1px 3px 0 rgb(22 97 190 / 10%),
+    0 1px 2px 0 rgb(22 97 190 / 6%);
+}
+
+.button-primary:hover {
+  background: linear-gradient(
+    135deg,
+    var(--qusto-blue-400) 0%,
+    var(--qusto-primary) 100%
+  );
+  box-shadow:
+    0 4px 6px -1px rgb(22 97 190 / 10%),
+    0 2px 4px -1px rgb(22 97 190 / 6%);
+  transform: translateY(-1px);
+}
+
+.button-primary:focus {
+  outline: none;
+  outline: 2px solid var(--qusto-primary);
+  outline-offset: 2px;
+}
+
+.button-primary:active {
+  background: linear-gradient(
+    135deg,
+    var(--qusto-brand-blue) 0%,
+    var(--qusto-blue-700) 100%
+  );
+  transform: translateY(0);
+}
+
+.button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* CTA Button (Orange Revenue Theme) */
+.button-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border-radius: 0.375rem;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(
+    135deg,
+    var(--qusto-accent) 0%,
+    var(--qusto-orange-600) 100%
+  );
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow:
+    0 1px 3px 0 rgb(197 81 48 / 10%),
+    0 1px 2px 0 rgb(197 81 48 / 6%);
+}
+
+.button-cta:hover {
+  background: linear-gradient(
+    135deg,
+    var(--qusto-orange-400) 0%,
+    var(--qusto-accent) 100%
+  );
+  box-shadow:
+    0 4px 6px -1px rgb(197 81 48 / 10%),
+    0 2px 4px -1px rgb(197 81 48 / 6%);
+  transform: translateY(-1px);
+}
+
+.button-cta:focus {
+  outline: 2px solid var(--qusto-accent);
+  outline-offset: 2px;
+}
+
+.button-cta:active {
+  background: linear-gradient(
+    135deg,
+    var(--qusto-orange-600) 0%,
+    var(--qusto-orange-700) 100%
+  );
+  transform: translateY(0);
+}
+
+.button-cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary Button (Outline Style) */
+.button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border-radius: 0.375rem;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  color: var(--qusto-primary);
+  border: 2px solid var(--qusto-primary);
+  cursor: pointer;
+}
+
+.button-secondary:hover {
+  background: var(--qusto-blue-50);
+  border-color: var(--qusto-brand-blue);
+  color: var(--qusto-brand-blue);
+}
+
+.button-secondary:focus {
+  outline: none;
+  outline: 2px solid var(--qusto-primary);
+  outline-offset: 2px;
+}
+
+.button-secondary:active {
+  background: var(--qusto-blue-100);
+}
+
+.button-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Dark Mode Adjustments */
+
+@media (prefers-color-scheme: dark) {
+  .button-secondary {
+    border-color: var(--qusto-blue-400);
+    color: var(--qusto-blue-400);
+  }
+
+  .button-secondary:hover {
+    background: rgb(22 97 190 / 10%);
+    border-color: var(--qusto-blue-300);
+    color: var(--qusto-blue-300);
+  }
+
+  .button-secondary:active {
+    background: rgb(22 97 190 / 20%);
+  }
+}
+
+/* === ACCESSIBILITY - REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

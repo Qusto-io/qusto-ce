@@ -228,7 +228,7 @@ defmodule Plausible.Teams.Management.LayoutTest do
   end
 
   describe "persistence" do
-    @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
+    @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
     setup [:create_user, :create_team]
 
     test "unchanged layout no-op", %{user: user, team: team} do

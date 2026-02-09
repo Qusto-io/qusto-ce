@@ -932,7 +932,7 @@ defmodule PlausibleWeb.SettingsControllerTest do
 
       assert_delivered_email_matches(%{to: [{_, user_email}], subject: subject})
       assert user_email == updated_user.email
-      assert subject =~ "is your Plausible email verification code"
+      assert subject =~ "is your Qusto email verification code"
     end
 
     test "renders an error on third change attempt (allows 2 per hour)", %{conn: conn, user: user} do

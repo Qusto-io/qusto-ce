@@ -1,0 +1,37 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Qusto Full Logo: Icon + Wordmark -->
+  <!-- PRODUCTION VERSION - Matches official gradient logo design -->
+  
+  <defs>
+    <!-- Blue gradient for circle (light to dark) -->
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5B9FDB;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1661BE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#002D9C;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Orange gradient for dot (light to dark) -->
+    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5A76F;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E67944;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C55130;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Complete circle (360°) with thick stroke and gradient -->
+  <circle cx="30" cy="30" r="19" 
+          stroke="url(#blueGradient)" 
+          stroke-width="8" 
+          fill="none"/>
+  
+  <!-- Orange dot positioned at bottom-right with gradient -->
+  <circle cx="45" cy="45" r="9" fill="url(#orangeGradient)"/>
+  
+  <!-- Wordmark (Arbutus Slab) -->
+  <text x="70" y="42" 
+        font-family="'Arbutus Slab', Georgia, serif" 
+        font-size="36" 
+        fill="#002d9c" 
+        font-weight="600"
+        letter-spacing="1">Qusto</text>
+</svg>

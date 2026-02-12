@@ -51,13 +51,29 @@ defmodule Plausible.MixProject do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(env) when env in [:test, :dev],
-    do: ["lib", "test/support", "extra/lib"]
+    do: ["lib", "test/support", "extra/lib"] ++ proprietary_paths()
 
   defp elixirc_paths(env) when env in [:ce_test, :ce_dev],
     do: ["lib", "test/support"]
 
   defp elixirc_paths(:ce), do: ["lib"]
-  defp elixirc_paths(_), do: ["lib", "extra/lib"]
+  defp elixirc_paths(_), do: ["lib", "extra/lib"] ++ proprietary_paths()
+
+  # Conditionally add proprietary modules from submodule (deploy-production branch only)
+  defp proprietary_paths do
+    if System.get_env("QUSTO_ECOMMERCE_ENABLED") == "true" do
+      ecommerce_path = System.get_env("QUSTO_ECOMMERCE_PATH") || "modules/qusto-ecommerce"
+      elixir_modules = Path.join(ecommerce_path, "elixir-modules")
+
+      if File.exists?(elixir_modules) do
+        [elixir_modules]
+      else
+        []
+      end
+    else
+      []
+    end
+  end
 
   # Specifies your project dependencies.
   #

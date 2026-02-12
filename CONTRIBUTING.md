@@ -1,295 +1,177 @@
-# Contributing to Qusto Analytics
+# Contributing to Qusto Analytics CE
 
-We welcome everyone to contribute to Qusto Analytics! This document helps you understand our architecture, set up your environment, find tasks, and open pull requests.
+Thank you for your interest in contributing to Qusto Analytics Community Edition!
 
----
+## Repository Structure
 
-## 📋 Table of Contents
+Qusto uses a dual-repository architecture:
 
-- [Understanding Qusto's Architecture](#understanding-qustos-architecture)
-- [Development Setup](#development-setup)
-- [Finding a Task](#finding-a-task)
-- [Contributor License Agreement (CLA)](#contributor-license-agreement-cla)
-- [Code Guidelines](#code-guidelines)
-- [Pull Request Process](#pull-request-process)
+- **qusto-analytics** (this repo): Public AGPL core analytics engine
+- **qusto-ecommerce** (private): Proprietary e-commerce features
 
----
+This separation ensures clear licensing and allows the community to benefit from the core platform while supporting sustainable development through premium features.
 
-## Understanding Qusto's Architecture
+## How to Contribute
 
-Qusto uses an **open-core model**. Understanding this is important before contributing.
+### Reporting Bugs
 
-### This Repository (qusto-analytics) - Open Source (AGPLv3)
+1. Check [existing issues](https://github.com/Qusto-io/qusto-analytics/issues) first
+2. Use the bug report template
+3. Include:
+   - Description of the issue
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Environment details (OS, browser, version)
+   - Logs if available
 
-- ✅ Core analytics engine
-- ✅ Dashboard UI
-- ✅ Basic event tracking
-- ✅ Self-hosting support
-- ✅ API endpoints (public)
+### Suggesting Features
 
-### Private Repositories - Proprietary
+1. Check [existing discussions](https://github.com/Qusto-io/qusto-analytics/discussions)
+2. Open a new discussion in "Ideas" category
+3. Describe:
+   - The problem you're trying to solve
+   - Your proposed solution
+   - Why this benefits the community
 
-These repositories are **not open source** and are developed separately:
+**Note**: Features related to e-commerce, advanced attribution, or AI tracking are proprietary and won't be added to CE.
 
-| Repository | Purpose |
-|------------|---------|
-| `qusto-funnels` | E-commerce funnel analytics |
-| `qusto-ai-tracking` | AI search bot detection |
-| `qusto-attribution` | Advanced attribution models |
-| `qusto-api-gateway` | Service orchestration |
-| `qusto-infrastructure` | DevOps configurations |
+### Code Contributions
 
-### What This Means for Contributors
+#### Setup Development Environment
 
-1. **Your contributions remain AGPLv3** - All code in this repo is open source
-2. **Integration with premium services** - We may integrate your contributions with proprietary services via APIs
-3. **You retain copyright** - Your contributions remain yours, licensed under AGPLv3
-4. **CLA for certain contributions** - Required when contributions might be used in premium feature integration (see below)
+```bash
+# Clone the repository
+git clone https://github.com/Qusto-io/qusto-analytics.git
+cd qusto-analytics
+git checkout public-main
 
----
+# Install dependencies
+mix deps.get
+npm install --prefix assets
 
-## Development Setup
+# Setup database
+mix ecto.setup
 
-The easiest way to get up and running is to use Docker for running both Postgres and ClickHouse.
+# Start server
+mix phx.server
+```
 
-### Prerequisites
+#### Development Workflow
 
-Make sure the following are installed on your development machine:
-- Docker ([install guide](https://docs.docker.com/get-docker/))
-- Elixir/Erlang (see [`.tool-versions`](.tool-versions) for versions)
-- Node.js (see [`.tool-versions`](.tool-versions) for version)
-
-We recommend using [asdf](https://github.com/asdf-vm/asdf) for managing Elixir, Erlang, and Node.js versions.
-
-### Start the Environment
-
-1. Run both `make postgres` and `make clickhouse` to start database containers.
-
-2. You can set up everything with `make install`, or run each command separately:
+1. **Fork the repository**
+2. **Create a feature branch**:
    ```bash
-   # Download Elixir dependencies
-   mix deps.get
-
-   # Create databases in Postgres and ClickHouse
-   mix ecto.create
-
-   # Build database schema
-   mix ecto.migrate
-
-   # Seed the database (optional, see Seeds section)
-   mix run priv/repo/seeds.exs
-
-   # Install client-side dependencies
-   npm ci --prefix assets
-   npm ci --prefix tracker
-
-   # Install Tailwind and Esbuild
-   mix assets.setup
-
-   # Generate tracker files
-   npm run deploy --prefix tracker
-
-   # Fetch geolocation database
-   mix download_country_database
+   git checkout -b feature/your-feature-name public-main
    ```
+3. **Make your changes**:
+   - Follow the existing code style
+   - Add tests for new functionality
+   - Update documentation as needed
+4. **Test your changes**:
+   ```bash
+   mix test
+   mix format --check-formatted
+   mix credo --strict
+   ```
+5. **Commit with conventional commits**:
+   ```bash
+   git commit -m "feat: add new analytics feature"
+   ```
+6. **Push and create PR**:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+   - Target the `public-main` branch
+   - Fill out the PR template
+   - Link related issues
 
-3. Run `make server` or `mix phx.server` to start the Phoenix server.
+## Commit Guidelines
 
-4. The system is now available on `localhost:8000`.
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-### Seeds
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `style:` - Code style changes (formatting, etc.)
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks
 
-You can optionally seed your database to automatically create an account and a site with stats:
+## Code Style
 
-1. Run `mix run priv/repo/seeds.exs` to seed the database.
-2. Start the server with `make server` and navigate to `http://localhost:8000/login`.
-3. Log in with: `user@plausible.test` / `plausible`
-4. You should now have a `dummy.site` site with generated stats.
+- **Elixir**: Follow [Elixir Style Guide](https://github.com/christopheradams/elixir_style_guide)
+  - Run `mix format` before committing
+  - Run `mix credo` for linting
+- **JavaScript**: Follow [Standard JS](https://standardjs.com/)
+  - Run `npm run lint` in assets directory
+- **Line length**: 120 characters max
+- **Comments**: Write clear, helpful comments for complex logic
 
-Alternatively, create a new account manually:
+## Testing
 
-1. Navigate to `http://localhost:8000/register` and fill in the form.
-2. Use `dummy.site` as the domain.
-3. Skip the JS snippet and click start collecting data.
-4. Run `mix send_pageview` to generate a fake pageview event.
-
-### Stopping Docker Containers
+- Write tests for all new features
+- Ensure existing tests pass
+- Aim for >80% code coverage
+- Test edge cases and error handling
 
 ```bash
-# Stop and remove Postgres container
-make postgres-stop
+# Run all tests
+mix test
 
-# Stop and remove ClickHouse container
-make clickhouse-stop
+# Run specific test
+mix test test/plausible/stats_test.exs
+
+# Run with coverage
+mix test --cover
 ```
-
-Volumes are preserved, so your data persists between sessions.
-
-### Pre-commit Hooks
-
-`pre-commit` requires Python and covers Elixir, JavaScript, and CSS:
-
-```bash
-pip install --user pre-commit
-pre-commit install
-```
-
-To remove: `pre-commit uninstall`
-
----
-
-## Finding a Task
-
-### Bug Fixes
-
-Bugs can be found in our [issue tracker](https://github.com/qusto-io/qusto-analytics/issues). Issues labeled `good first issue` are great for newcomers.
-
-### New Features
-
-New features need to be discussed first. Please:
-
-1. Check the [Discussions tab](https://github.com/qusto-io/qusto-analytics/discussions) for existing proposals
-2. Open a new discussion to propose your feature
-3. Wait for feedback before starting implementation
-
-**Important:** Some features may be better suited for premium repositories. We'll help guide you during the discussion.
-
-### What Belongs in This Repository
-
-| Belongs Here ✅ | Belongs in Premium Repos ❌ |
-|-----------------|---------------------------|
-| Core tracking improvements | E-commerce funnel logic |
-| Dashboard UI enhancements | AI bot detection algorithms |
-| API performance optimizations | Attribution model changes |
-| Self-hosting improvements | Cloud-specific features |
-| Documentation updates | Infrastructure automation |
-| Bug fixes | Premium-only integrations |
-
----
-
-## Contributor License Agreement (CLA)
-
-For certain contributions, we require a Contributor License Agreement (CLA).
-
-### When CLA is Required
-
-- New API endpoints that premium features might integrate with
-- Database schema changes
-- Core event processing logic
-- Authentication/authorization changes
-
-### When CLA is NOT Required
-
-- Documentation improvements
-- Bug fixes in existing code
-- UI/UX improvements (styling, layout, accessibility)
-- Self-hosting guides and examples
-- Test improvements
-- Typo fixes
-
-### Why We Need a CLA
-
-The CLA allows us to:
-1. Integrate open-source contributions with proprietary premium features
-2. Ensure legal clarity for both parties
-3. Protect your rights as a contributor
-4. Maintain our ability to offer premium services
-
-**Your contributions remain AGPLv3 licensed** - the CLA does not change this. It simply grants us permission to use your contribution in our premium services as well.
-
-### How to Sign
-
-When you open a pull request that requires a CLA:
-1. Our bot will comment with a link to the CLA
-2. Read and sign the CLA electronically
-3. Your PR will be updated automatically
-
-[View the full CLA text](CLA.md) *(Coming soon)*
-
----
-
-## Code Guidelines
-
-### AGPLv3 Compliance
-
-- All code in this repo is AGPLv3 licensed
-- Maintain upstream Plausible attribution in file headers where present
-- Document your modifications clearly in commit messages
-
-### Coding Standards
-
-**Elixir:**
-- Follow the [Elixir Style Guide](https://github.com/christopheradams/elixir_style_guide)
-- Use `mix format` before committing
-- Run `mix credo` for static analysis
-
-**JavaScript:**
-- Use ESLint configuration provided
-- Run `npm run lint --prefix assets` before committing
-
-**CSS:**
-- Use TailwindCSS utility classes
-- Avoid custom CSS unless necessary
-
-### API Design
-
-If your contribution adds or modifies APIs that premium features might use:
-
-1. **Document thoroughly** - Include clear descriptions and examples
-2. **Add OpenAPI specs** - Update API documentation
-3. **Consider backward compatibility** - Avoid breaking changes
-4. **CLA required** - See section above
-
-### Testing
-
-- **Unit tests** for business logic (`test/` directory)
-- **Integration tests** for API endpoints
-- **Ensure self-hosted deployments work** - Test with `docker-compose`
-- Run the full test suite: `mix test`
-
-### Commit Messages
-
-Follow conventional commits format:
-
-```
-type(scope): short description
-
-Longer description if needed.
-
-Fixes #123
-```
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-
----
 
 ## Pull Request Process
 
-1. **Fork and branch** - Create a feature branch from `main`
-2. **Make changes** - Follow the code guidelines above
-3. **Test locally** - Run tests and verify self-hosted deployment works
-4. **Open PR** - Use our [PR template](.github/PULL_REQUEST_TEMPLATE.md)
-5. **Sign CLA if needed** - Our bot will guide you
-6. **Address feedback** - Respond to review comments
-7. **Merge** - Once approved, we'll merge your PR
+1. **PR checklist**:
+   - [ ] Tests pass locally
+   - [ ] Code is formatted (`mix format`)
+   - [ ] No linter warnings (`mix credo`)
+   - [ ] Documentation updated
+   - [ ] CHANGELOG.md updated (if applicable)
 
-### PR Checklist
+2. **Review process**:
+   - Maintainers will review within 1-2 weeks
+   - Address feedback promptly
+   - Be open to suggestions
+   - Changes may be requested for code quality, performance, or architectural fit
 
-Before opening a PR, ensure:
+3. **Merge**:
+   - Approved PRs are merged by maintainers
+   - Squash commits for clean history
+   - Credit given in release notes
 
-- [ ] Tests pass locally (`mix test`)
-- [ ] Code is formatted (`mix format`)
-- [ ] No linting errors
-- [ ] Self-hosted deployment tested
-- [ ] Documentation updated if needed
-- [ ] Commit messages follow conventions
+## Branching Strategy
 
----
+- `public-main`: Default branch for CE development
+- `feature/*`: Feature branches (from public-main)
+- `fix/*`: Bug fix branches
+- `docs/*`: Documentation updates
+
+**Never submit PRs to**:
+- `master` - Legacy branch being phased out
+- `deploy-production` - Private deployment branch
+- `private-ecommerce` - Proprietary code branch
+
+## Community Guidelines
+
+- Be respectful and constructive
+- Help others when you can
+- Follow our [Code of Conduct](CODE_OF_CONDUCT.md)
+- Ask questions in [Discussions](https://github.com/Qusto-io/qusto-analytics/discussions)
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the AGPL-3.0 license.
 
 ## Questions?
 
-- **General questions**: [Discussions](https://github.com/qusto-io/qusto-analytics/discussions)
-- **Self-hosted support**: [Self-hosted forum](https://github.com/qusto-io/qusto-analytics/discussions/categories/self-hosted-support)
-- **Security issues**: Email security@qusto.io (do not open public issues)
+- **Development**: Ask in GitHub Discussions
+- **Security**: Email security@qusto.io
+- **Other**: contact@qusto.io
 
-Thank you for contributing to Qusto Analytics! 🙏
+Thank you for helping make Qusto Analytics better! 🎉

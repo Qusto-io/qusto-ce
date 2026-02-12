@@ -1,194 +1,116 @@
-# Qusto Analytics - Core Engine
+# Qusto Analytics - Community Edition
 
-> **🔓 Open Source Core** | **💎 Premium Features Available**
-> This is the open-source core analytics engine. Premium features (e-commerce funnels, AI search tracking, advanced attribution) are available in [Qusto Cloud](https://qusto.io).
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-<p align="center">
-  <a href="https://qusto.io/">
-    <img src="https://raw.githubusercontent.com/qusto-io/qusto-analytics/main/assets/static/images/qusto-logo.png" width="140px" alt="Qusto Analytics" />
-  </a>
-</p>
-<p align="center">
-    <a href="https://qusto.io/simple-web-analytics">Simple Metrics</a> |
-    <a href="https://qusto.io/lightweight-web-analytics">Lightweight Script</a> |
-    <a href="https://qusto.io/privacy-focused-web-analytics">Privacy Focused</a> |
-    <a href="https://qusto.io/open-source-website-analytics">Open Source</a> |
-    <a href="https://docs.qusto.io">Docs</a> |
-    <a href="https://github.com/qusto-io/qusto-analytics/blob/main/CONTRIBUTING.md">Contributing</a>
-    <br /><br />
-</p>
+**Privacy-first, open-source web analytics**
 
-[Qusto Analytics](https://qusto.io/) is a privacy-friendly, GDPR-compliant web analytics platform designed for European SMB e-commerce businesses. It doesn't use cookies and is fully compliant with GDPR, CCPA and PECR. You can self-host Qusto Analytics or use our managed Qusto Cloud service. Made and hosted in the EU 🇪🇺
+Qusto Analytics Community Edition is a lightweight, privacy-focused web analytics platform. Built on Elixir and ClickHouse, providing real-time insights without compromising visitor privacy.
 
----
+> 🔓 **This is the open-source core**. Premium features (e-commerce funnels, AI search tracking, advanced attribution) are available in [Qusto Cloud](https://qusto.io).
 
-## 📋 Table of Contents
+## Features (Community Edition)
 
-- [Open-Core Model](#-open-core-model)
-- [Self-Hosting vs Qusto Cloud](#-self-hosting-vs-qusto-cloud)
-- [Why Qusto?](#-why-qusto)
-- [Built on Plausible](#-built-on-plausible)
-- [Tech Stack](#-tech-stack-core-engine)
-- [Getting Started](#-getting-started)
-- [Contributors](#-contributors)
-- [License](#-license--trademarks)
+- **Privacy-First**: No cookies, fully GDPR/CCPA compliant
+- **Lightweight**: <1KB script size
+- **Real-Time**: Live visitor data and instant insights
+- **Event Tracking**: Custom events and goal tracking
+- **Basic Funnels**: Simple conversion funnel tracking
+- **Data Export**: CSV and API export capabilities
+- **Self-Hosted**: Full control of your data
 
----
+## Not Included in CE
 
-## 🔓 Open-Core Model
+This Community Edition does **NOT** include proprietary features:
+- ❌ Advanced e-commerce analytics
+- ❌ Multi-touch attribution
+- ❌ AI-powered insights and ChatGPT traffic detection
+- ❌ SSO/SAML authentication
+- ❌ Priority support
 
-Qusto uses an **open-core model** that balances open-source values with sustainable business practices.
+For enterprise features, see: [Qusto Cloud Pricing](https://qusto.io/pricing)
 
-### What's Open Source (This Repository)
+## Quick Start
 
-- ✅ Core analytics engine
-- ✅ Privacy-focused event tracking
-- ✅ Dashboard UI
-- ✅ API access
-- ✅ Self-hosting support
-- ✅ Basic goal tracking
-- ✅ CSV/API data export
+### Docker Compose (Recommended)
 
-### What's Proprietary (Qusto Cloud Only)
+```bash
+git clone https://github.com/Qusto-io/qusto-analytics.git
+cd qusto-analytics
+git checkout public-main
+cp config/config.example.env config/.env
+# Edit config/.env with your settings
+docker-compose up -d
+```
 
-- 💎 **E-commerce Funnels**: Multi-step conversion tracking, abandoned cart analysis
-- 💎 **AI Search Tracking**: Detect and analyze visits from ChatGPT, Perplexity, Claude, and other AI assistants
-- 💎 **Advanced Attribution**: Cookieless attribution with 94% accuracy
-- 💎 **Priority Support**: Dedicated support from our team
+Visit http://localhost:8000 to access your analytics dashboard.
 
-### Why This Model?
+### Manual Installation
 
-We believe in **sustainable open source**. The open-core model allows us to:
+See [Installation Guide](https://docs.qusto.io/self-hosting) for detailed instructions.
 
-1. **Keep the core free forever** - Self-host without limits
-2. **Fund ongoing development** - Premium features support the project
-3. **Maintain transparency** - Core analytics logic is open for audit
-4. **Give you choice** - Start free, upgrade when you need more
+## Documentation
 
----
+- **Self-Hosting Guide**: https://docs.qusto.io/self-hosting
+- **API Documentation**: https://docs.qusto.io/api
+- **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Architecture**: See [ARCHITECTURE.md](ARCHITECTURE.md)
 
-## 📊 Self-Hosting vs Qusto Cloud
+## Comparison: CE vs Cloud
 
-| Feature | Self-Hosted (Free) | Qusto Cloud |
-|---------|-------------------|-------------|
+| Feature | Community Edition | Qusto Cloud |
+|---------|------------------|-------------|
 | Core Analytics | ✅ | ✅ |
 | Dashboard | ✅ | ✅ |
 | API Access | ✅ | ✅ |
 | Goal Tracking | ✅ | ✅ |
 | Data Export | ✅ | ✅ |
-| E-commerce Funnels | ❌ | ✅ |
+| Basic Funnels | ✅ | ✅ |
+| E-commerce Analytics | ❌ | ✅ |
 | AI Search Tracking | ❌ | ✅ |
 | Advanced Attribution | ❌ | ✅ |
+| SSO/SAML | ❌ | ✅ |
 | Support | Community | Priority |
-| Hosting | Your servers | EU-hosted (Hetzner Germany) |
+| Hosting | Your servers | EU-hosted |
 | Maintenance | You manage | We manage |
-| GDPR Compliance | Your responsibility | Guaranteed |
 
-**[Start with Qusto Cloud →](https://qusto.io/pricing)** or **[Self-host →](#-getting-started)**
+## License
 
----
+**GNU Affero General Public License v3.0 (AGPL-3.0)**
 
-## ✨ Why Qusto?
+This ensures:
+- ✓ Free to use, modify, distribute
+- ✓ Open source forever
+- ✓ Network use requires source disclosure
+- ✗ Cannot relicense as proprietary
 
-Here's what makes Qusto Analytics a great choice for privacy-focused analytics:
+See [LICENSE](LICENSE) for full terms.
 
-- **Clutter Free**: Simple web analytics that cuts through the noise. Get all the important insights on one single page. No training necessary.
-- **GDPR/CCPA/PECR compliant**: Measure traffic, not individuals. No personal data or IP addresses are ever stored. We don't use cookies or any other persistent identifiers.
-- **Lightweight**: Our tracking script is tiny, making your website quicker to load. You can also send events directly to our Events API.
-- **Email or Slack reports**: Keep an eye on your traffic with weekly and/or monthly email or Slack reports. You can also get traffic spike notifications.
-- **Invite team members and share stats**: Your website stats are private by default but you can choose to make them public or invite team members with different roles.
-- **Define key goals and track conversions**: Create custom events with custom dimensions to track conversions and understand the trends that matter.
-- **EU-First**: All data processing happens exclusively in the EU on European-owned infrastructure.
+## Built on Plausible
 
----
+Qusto Analytics is a fork of [Plausible Analytics](https://github.com/plausible/analytics).
+We maintain compatibility with upstream and contribute improvements back.
 
-## 🙏 Built on Plausible
+**Key differences from Plausible**:
+- Enhanced for European e-commerce businesses
+- Focus on GDPR compliance and privacy
+- Improved dark mode and UI
+- Additional localization support
 
-Qusto Analytics is forked from [Plausible Analytics](https://github.com/plausible/analytics) (AGPLv3). We're grateful to the Plausible team for creating excellent open-source analytics software.
+## Support
 
-**Key differences from Plausible:**
+- **Community**: [GitHub Discussions](https://github.com/Qusto-io/qusto-analytics/discussions)
+- **Documentation**: https://docs.qusto.io
+- **Issues**: [GitHub Issues](https://github.com/Qusto-io/qusto-analytics/issues)
+- **Enterprise**: https://qusto.io/contact
 
-- 🇪🇺 Enhanced EU/GDPR focus with EU-only hosting
-- 🛒 Integration with proprietary premium features (funnels, AI tracking)
-- 🎯 Optimized for European SMB e-commerce businesses
-- 🤖 AI search bot detection and tracking (premium)
+## Contributing
 
-See [UPSTREAM.md](UPSTREAM.md) for detailed comparison and our upstream sync strategy.
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
----
+## Sponsors
 
-## 🛠 Tech Stack (Core Engine)
-
-- **Backend**: Elixir/Phoenix
-- **Analytics DB**: ClickHouse
-- **Metadata DB**: PostgreSQL
-- **Cache**: Redis
-- **Frontend**: React with TailwindCSS
-
-*Note: Premium features use additional microservices that are not included in this repository.*
+Qusto Analytics is developed by [Qusto.io](https://qusto.io) with support from our cloud customers.
 
 ---
 
-## 🚀 Getting Started
-
-### Qusto Cloud (Recommended)
-
-The easiest way to get started is with [Qusto Cloud](https://qusto.io/pricing). It takes 2 minutes to start counting your stats with high availability, backups, security and maintenance all done for you.
-
-### Self-Hosting
-
-Qusto Analytics can be self-hosted on your own infrastructure. We provide Docker images and detailed documentation.
-
-**Requirements:**
-- Docker and Docker Compose
-- PostgreSQL 14+
-- ClickHouse 23+
-- At least 2GB RAM
-
-**Quick Start:**
-
-```bash
-# Clone the repository
-git clone https://github.com/qusto-io/qusto-analytics.git
-cd qusto-analytics
-
-# Copy environment template
-cp .env.example .env
-
-# Start with Docker Compose
-docker-compose up -d
-```
-
-**Detailed Instructions:** See our [Self-Hosting Guide](https://docs.qusto.io/self-hosting).
-
-**Community Support:** Self-hosted installations are community supported. Ask questions in our [Discussions](https://github.com/qusto-io/qusto-analytics/discussions/categories/self-hosted-support).
-
----
-
-## 👥 Contributors
-
-We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) before submitting a pull request.
-
-For anyone wishing to contribute, please note that this repository uses an open-core model. Contributions to this repo remain AGPLv3 licensed.
-
----
-
-## 📜 License & Trademarks
-
-Qusto Analytics core is open source under the **GNU Affero General Public License Version 3 (AGPLv3)**. See [LICENSE](LICENSE).
-
-The JavaScript tracker is released under the **MIT license** to avoid AGPL virality issues. See [tracker/LICENSE.md](tracker/LICENSE.md).
-
-### Attribution
-
-This software is based on [Plausible Analytics](https://github.com/plausible/analytics) by Plausible Insights OÜ, licensed under AGPLv3.
-
-Copyright (c) 2024-present Qusto. Qusto Analytics name and logo are trademarks of Qusto.
-
-Original Plausible Analytics copyright (c) 2018-present Plausible Insights OÜ.
-
----
-
-<p align="center">
-  <strong>Questions?</strong> Open a <a href="https://github.com/qusto-io/qusto-analytics/discussions">Discussion</a> or contact <a href="mailto:support@qusto.io">support@qusto.io</a>
-</p>
+Made with ❤️ by the Qusto team | [Website](https://qusto.io) | [Docs](https://docs.qusto.io) | [Twitter](https://twitter.com/qusto_io)

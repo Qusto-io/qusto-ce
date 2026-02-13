@@ -361,7 +361,7 @@ defmodule PlausibleWeb.Live.Sites do
 
         <div class="flex gap-x-2">
           <.button_link
-            href="mailto:hello@plausible.io"
+            href="mailto:hello@qusto.io"
             mt?={false}
           >
             Contact us

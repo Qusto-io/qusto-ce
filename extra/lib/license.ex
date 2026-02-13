@@ -7,7 +7,7 @@ defmodule Plausible.License do
 
     Any attempt to disable or modify the behavior of this module will be considered a violation of copyright.
     If you wish to use the Plausible Analytics Enterprise Edition for your own requirements, please contact us
-    at hello@plausible.io to discuss obtaining a license.
+    at hello@qusto.io to discuss obtaining a license.
   """
 
   require Logger
@@ -18,7 +18,7 @@ defmodule Plausible.License do
         :ok
       else
         Logger.error(
-          "Invalid or no license key provided for Plausible Enterprise Edition. Please contact hello@plausible.io to acquire a license."
+          "Invalid or no license key provided for Plausible Enterprise Edition. Please contact hello@qusto.io to acquire a license."
         )
 
         Logger.error("Shutting down")

@@ -10,7 +10,7 @@ defmodule PlausibleWeb.Endpoint do
 
   @session_options [
     # in EE key is replaced dynamically via runtime_session_opts, see below
-    key: "_plausible_key",
+    key: "_qusto_key",
     store: :cookie,
     signing_salt: "I45i0SKHEku2f3tJh6y4v8gztrb/eG5KGCOe/o/AwFb7VHeuvDOn7AAq6KsdmOFM",
     # 5 years, this is super long but the SlidingSessionTimeout will log people out if they don't return for 2 weeks

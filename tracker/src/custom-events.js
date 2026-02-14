@@ -51,7 +51,7 @@ function isLink(element) {
 }
 
 function shouldInterceptNavigation(event, link) {
-  // If default has been prevented by an external script, Plausible should not intercept navigation.
+  // If default has been prevented by an external script, Qusto should not intercept navigation.
   if (event.defaultPrevented) return false
   var target = link.target
   // If the link directs to open the link in a different context, or we're not sure, do not intercept navigation
@@ -169,7 +169,7 @@ function isTagged(element) {
   var classList = element && element.classList
   if (classList) {
     for (var i = 0; i < classList.length; i++) {
-      if (classList.item(i).match(/plausible-event-name(=|--)(.+)/)) {
+      if (classList.item(i).match(/qusto-event-name(=|--)(.+)/)) {
         return true
       }
     }
@@ -208,7 +208,7 @@ function getTaggedEventAttributes(htmlElement) {
 
     var key
     var value
-    var matchList = className.match(/plausible-event-(.+)(=|--)(.+)/)
+    var matchList = className.match(/qusto-event-(.+)(=|--)(.+)/)
     if (matchList) {
       key = matchList[1]
       value = matchList[3].replace(/\+/g, ' ')
@@ -221,7 +221,7 @@ function getTaggedEventAttributes(htmlElement) {
     }
 
     if (COMPILE_REVENUE) {
-      var revenueMatchList = className.match(/plausible-revenue-(.+)(=|--)(.+)/)
+      var revenueMatchList = className.match(/qusto-revenue-(.+)(=|--)(.+)/)
       if (revenueMatchList) {
         key = revenueMatchList[1]
         value = revenueMatchList[3]

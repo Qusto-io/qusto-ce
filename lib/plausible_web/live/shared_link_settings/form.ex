@@ -162,7 +162,7 @@ defmodule PlausibleWeb.Live.SharedLinkSettings.Form do
     do: ~H"""
     <div class="mt-1">
       <PlausibleWeb.Components.Generic.unstyled_link
-        href="https://plausible.io/docs/filters-segments#how-to-save-a-segment"
+        href="https://docs.qusto.io/filters-segments#how-to-save-a-segment"
         new_tab
         class="text-xs text-indigo-600 dark:text-indigo-400"
       >

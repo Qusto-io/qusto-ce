@@ -64,7 +64,7 @@ defmodule PlausibleWeb.BillingController do
           latest_enterprise_plan: latest_enterprise_plan,
           price: price,
           subscription_resumable: subscription_resumable?,
-          contact_link: "https://plausible.io/contact",
+          contact_link: "https://qusto.io/contact",
           skip_plausible_tracking: true
         )
     end

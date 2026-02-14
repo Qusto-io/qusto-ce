@@ -3,7 +3,7 @@
  * that tries to detect Consent Management Platforms (CMPs)
  * and if it finds any, to opt in.
  *
- * This is necessary because it's possible that Plausible script
+ * This is necessary because it's possible that Qusto script
  * is conditional on the client opting in to tracking cookies.
  */
 

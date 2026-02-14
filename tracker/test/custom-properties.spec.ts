@@ -4,7 +4,7 @@ import {
 } from './support/initialize-page-dynamically'
 import {
   e,
-  expectPlausibleInAction,
+  expectQustoInAction,
   hideAndShowCurrentTab,
   isEngagementEvent,
   switchByMode
@@ -37,7 +37,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: ''
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await hideAndShowCurrentTab(page, { delay: 200 })
@@ -73,7 +73,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: ''
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await hideAndShowCurrentTab(page, { delay: 200 })
@@ -114,7 +114,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: ''
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await hideAndShowCurrentTab(page, { delay: 200 })
@@ -125,7 +125,7 @@ for (const mode of ['web', 'esm']) {
             p: {
               author: 'John Smith',
               eventName: 'pageview',
-              documentTitle: 'Plausible Playwright tests'
+              documentTitle: 'Qusto Playwright tests'
             }
           },
           {
@@ -134,7 +134,7 @@ for (const mode of ['web', 'esm']) {
             p: {
               author: 'John Smith',
               eventName: 'pageview',
-              documentTitle: 'Plausible Playwright tests'
+              documentTitle: 'Qusto Playwright tests'
             }
           }
         ]
@@ -170,7 +170,7 @@ for (const mode of ['web', 'esm']) {
         </button>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('button')
@@ -181,7 +181,7 @@ for (const mode of ['web', 'esm']) {
             n: 'pageview',
             p: {
               author: 'John Smith',
-              title: 'Plausible Playwright tests'
+              title: 'Qusto Playwright tests'
             }
           },
           {
@@ -221,7 +221,7 @@ for (const mode of ['web', 'esm']) {
         </button>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('button')
@@ -268,7 +268,7 @@ for (const mode of ['web', 'esm']) {
         </button>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('button')

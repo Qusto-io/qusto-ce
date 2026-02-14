@@ -10,8 +10,8 @@ defmodule PlausibleWeb.Live.ChoosePlan do
   alias Plausible.Billing.{Plans, Quota, PlanBenefits}
   alias PlausibleWeb.Router.Helpers, as: Routes
 
-  @contact_link "https://plausible.io/contact"
-  @billing_faq_link "https://plausible.io/docs/billing"
+  @contact_link "https://qusto.io/contact"
+  @billing_faq_link "https://docs.qusto.io/billing"
 
   def mount(_params, %{"remote_ip" => remote_ip}, socket) do
     socket =

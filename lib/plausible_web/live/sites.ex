@@ -147,7 +147,7 @@ defmodule PlausibleWeb.Live.Sites do
         <a
           :if={!@consolidated_view_cta_dismissed?}
           href={"/sites/new?flow=#{PlausibleWeb.Flows.provisioning()}"}
-          class="whitespace-nowrap truncate inline-flex items-center justify-center gap-x-2 max-w-fit font-medium rounded-md px-3.5 py-2.5 text-sm transition-all duration-150 cursor-pointer disabled:cursor-not-allowed bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-indigo-600 disabled:bg-indigo-400/60 disabled:dark:bg-indigo-600/30 disabled:dark:text-white/35"
+          class="whitespace-nowrap truncate inline-flex items-center justify-center gap-x-2 max-w-fit font-medium rounded-md px-3.5 py-2.5 text-sm transition-all duration-150 cursor-pointer disabled:cursor-not-allowed bg-indigo-600 text-white  focus-visible:outline-indigo-600 disabled:bg-indigo-400/60 disabled:dark:" theme="cta"
         >
           <Heroicons.plus class="size-4" /> Add website
         </a>
@@ -306,7 +306,7 @@ defmodule PlausibleWeb.Live.Sites do
           </.button_link>
           <.button_link
             theme="secondary"
-            href="https://plausible.io/docs/consolidated-views"
+            href="https://docs.qusto.io/consolidated-views"
             mt?={false}
           >
             Learn more
@@ -343,7 +343,7 @@ defmodule PlausibleWeb.Live.Sites do
 
           <.button_link
             theme="secondary"
-            href="https://plausible.io/docs/consolidated-views"
+            href="https://docs.qusto.io/consolidated-views"
             mt?={false}
           >
             Learn more
@@ -369,7 +369,7 @@ defmodule PlausibleWeb.Live.Sites do
 
           <.button_link
             theme="secondary"
-            href="https://plausible.io/docs/consolidated-views"
+            href="https://docs.qusto.io/consolidated-views"
             mt?={false}
           >
             Learn more
@@ -396,7 +396,7 @@ defmodule PlausibleWeb.Live.Sites do
       >
         <div class="flex flex-col flex-1 justify-between gap-y-5">
           <div class="flex flex-col gap-y-2 mb-auto">
-            <span class="size-8 sm:size-10 bg-indigo-600 text-white p-1.5 sm:p-2 rounded-lg sm:rounded-xl">
+            <span class="size-8 sm:size-10 " theme="cta">
               <.globe_icon />
             </span>
             <h3 class="text-gray-900 font-medium text-md sm:text-lg leading-tight dark:text-gray-100">

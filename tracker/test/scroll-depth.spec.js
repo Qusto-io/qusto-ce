@@ -1,5 +1,5 @@
 import {
-  expectPlausibleInAction,
+  expectQustoInAction,
   hideCurrentTab,
   hideAndShowCurrentTab
 } from './support/test-utils'
@@ -10,7 +10,7 @@ test.describe('scroll depth (engagement events)', () => {
   test('sends scroll_depth in the pageleave payload when navigating to the next page', async ({
     page
   }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.goto('/scroll-depth.html'),
       expectedRequests: [{ n: 'pageview' }]
     })
@@ -18,7 +18,7 @@ test.describe('scroll depth (engagement events)', () => {
     await page.evaluate(() => window.scrollBy(0, 300))
     await page.evaluate(() => window.scrollBy(0, 0))
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#navigate-away'),
       expectedRequests: [
         { n: 'engagement', u: `${LOCAL_SERVER_ADDR}/scroll-depth.html`, sd: 20 }
@@ -27,12 +27,12 @@ test.describe('scroll depth (engagement events)', () => {
   })
 
   test('sends scroll depth on hash navigation', async ({ page }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.goto('/scroll-depth-hash.html'),
       expectedRequests: [{ n: 'pageview' }]
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#about-link'),
       expectedRequests: [
         {
@@ -47,7 +47,7 @@ test.describe('scroll depth (engagement events)', () => {
       ]
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#home-link'),
       expectedRequests: [
         {
@@ -63,7 +63,7 @@ test.describe('scroll depth (engagement events)', () => {
   test('document height gets reevaluated after window load', async ({
     page
   }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.goto('/scroll-depth-slow-window-load.html'),
       expectedRequests: [{ n: 'pageview' }]
     })
@@ -73,7 +73,7 @@ test.describe('scroll depth (engagement events)', () => {
       return document.getElementById('slow-image').complete
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#navigate-away'),
       expectedRequests: [
         {
@@ -88,13 +88,13 @@ test.describe('scroll depth (engagement events)', () => {
   test('dynamically loaded content affects documentHeight', async ({
     page
   }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.goto('/scroll-depth-dynamic-content-load.html'),
       expectedRequests: [{ n: 'pageview' }]
     })
 
     // The link appears dynamically after 500ms.
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#navigate-away'),
       expectedRequests: [
         {
@@ -107,7 +107,7 @@ test.describe('scroll depth (engagement events)', () => {
   })
 
   test('document height gets reevaluated on scroll', async ({ page }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.goto('/scroll-depth-content-onscroll.html'),
       expectedRequests: [{ n: 'pageview' }]
     })
@@ -125,7 +125,7 @@ test.describe('scroll depth (engagement events)', () => {
 
     await page.evaluate(() => window.scrollBy(0, 1000))
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#navigate-away'),
       expectedRequests: [
         {
@@ -138,7 +138,7 @@ test.describe('scroll depth (engagement events)', () => {
   })
 
   test('sends scroll depth when minimizing the tab', async ({ page }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.goto('/scroll-depth.html'),
       expectedRequests: [{ n: 'pageview' }]
     })
@@ -146,7 +146,7 @@ test.describe('scroll depth (engagement events)', () => {
     await page.evaluate(() => window.scrollBy(0, 300))
     await page.waitForTimeout(100) // Wait for the scroll event to be processed
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => hideCurrentTab(page),
       expectedRequests: [
         { n: 'engagement', u: `${LOCAL_SERVER_ADDR}/scroll-depth.html`, sd: 20 }
@@ -160,7 +160,7 @@ test.describe('scroll depth (engagement events)', () => {
   }) => {
     test.skip(browserName === 'webkit', 'flaky')
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto('/scroll-depth.html')
         await hideAndShowCurrentTab(page)
@@ -171,7 +171,7 @@ test.describe('scroll depth (engagement events)', () => {
       ]
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => hideAndShowCurrentTab(page),
       expectedRequests: [],
       refutedRequests: [{ n: 'engagement' }]
@@ -179,7 +179,7 @@ test.describe('scroll depth (engagement events)', () => {
 
     await page.evaluate(() => window.scrollBy(0, 300))
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => hideCurrentTab(page),
       expectedRequests: [
         { n: 'engagement', u: `${LOCAL_SERVER_ADDR}/scroll-depth.html`, sd: 20 }
@@ -190,7 +190,7 @@ test.describe('scroll depth (engagement events)', () => {
   test('gets correct scroll depth when script has no async', async ({
     page
   }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto('/no-async.html')
         await hideAndShowCurrentTab(page)

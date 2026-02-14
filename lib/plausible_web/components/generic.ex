@@ -147,7 +147,7 @@ defmodule PlausibleWeb.Components.Generic do
           <span>Learn more</span>
         </:tooltip_content>
         <a
-          href={"https://plausible.io/docs/#{@slug}"}
+          href={"https://docs.qusto.io/#{@slug}"}
           rel="noopener noreferrer"
           target="_blank"
           class="inline-block"

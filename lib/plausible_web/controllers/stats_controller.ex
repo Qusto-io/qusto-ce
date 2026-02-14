@@ -256,7 +256,7 @@ defmodule PlausibleWeb.StatsController do
     The URL format for shared links was changed in [this pull request](https://github.com/plausible/analytics/pull/752) in order
     to make the URLs easier to bookmark. The old format is supported along with the new in order to not break old links.
 
-    See: https://plausible.io/docs/shared-links
+    See: https://docs.qusto.io/shared-links
   """
   def shared_link(conn, %{"domain" => domain, "auth" => auth}) do
     case find_shared_link(domain, auth) do

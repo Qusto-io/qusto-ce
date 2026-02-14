@@ -33,8 +33,8 @@ const RESPONSE_BODY_TEMPLATE = `
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Plausible Playwright tests</title>
-    <script>// Plausible script</script>
+    <title>Qusto Playwright tests</title>
+    <script>// Qusto script</script>
   </head>
   <body></body>
 </html>
@@ -70,7 +70,7 @@ export function serializeWithFunctions(obj: Record<string, unknown>): string {
   return result
 }
 
-export function getConfiguredPlausibleWebSnippet({
+export function getConfiguredQustoWebSnippet({
   hashBasedRouting,
   outboundLinks,
   fileDownloads,
@@ -121,10 +121,10 @@ export async function initializePageDynamically(
       responseBody = options.response
     } else {
       responseBody = RESPONSE_BODY_TEMPLATE.replace(
-        '<script>// Plausible script</script>',
+        '<script>// Qusto script</script>',
         typeof options.scriptConfig === 'string'
           ? options.scriptConfig
-          : getConfiguredPlausibleWebSnippet(options.scriptConfig)
+          : getConfiguredQustoWebSnippet(options.scriptConfig)
       ).replace('<body></body>', `<body>${options.bodyContent}</body>`)
     }
 

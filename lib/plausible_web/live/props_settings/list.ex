@@ -63,7 +63,7 @@ defmodule PlausibleWeb.Live.PropsSettings.List do
       </h3>
       <p class="text-center text-sm mt-1 text-gray-500 dark:text-gray-400 leading-5 text-pretty">
         Attach custom properties when sending a pageview or an event to create custom metrics.
-        <.styled_link href="https://plausible.io/docs/custom-props/introduction" target="_blank">
+        <.styled_link href="https://docs.qusto.io/custom-props/introduction" target="_blank">
           Learn more
         </.styled_link>
       </p>

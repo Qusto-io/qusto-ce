@@ -70,7 +70,7 @@ if (values.usePreviousData) {
     fs.readFileSync(path.join(__dirname, '.analyze-sizes.json'), 'utf8')
   )
 } else {
-  fileData = readPlausibleScriptSizes()
+  fileData = readQustoScriptSizes()
   fs.writeFileSync(
     path.join(__dirname, '.analyze-sizes.json'),
     JSON.stringify(fileData)
@@ -266,7 +266,7 @@ function addSign(value) {
   return +value >= 0 ? `+${value}` : +value
 }
 
-function readPlausibleScriptSizes() {
+function readQustoScriptSizes() {
   const trackerFileSizes = fs
     .readdirSync(TRACKER_FILES_DIR)
     .filter(isRelevantFile)

@@ -1,16 +1,16 @@
 /** Sets up the tracking library. Can be called once. */
-export function init(config: PlausibleConfig): void
+export function init(config: QustoConfig): void
 
 /** Tracks an event, requires `init` to be called first. */
-export function track(eventName: string, options: PlausibleEventOptions): void
+export function track(eventName: string, options: QustoEventOptions): void
 
-export interface PlausibleConfig {
-  /** Your site's domain, as declared by you in Plausible's settings. */
+export interface QustoConfig {
+  /** Your site's domain, as declared by you in Qusto's settings. */
   domain: string
 
   /**
-   * The URL of the Plausible API endpoint. Defaults to https://plausible.io/api/event
-   * See proxying guide at https://plausible.io/docs/proxy/introduction
+   * The URL of the Qusto API endpoint. Defaults to https://qusto.io/api/event
+   * See proxying guide at https://qusto.io/docs/proxy/introduction
    */
   endpoint?: string
 
@@ -19,7 +19,7 @@ export interface PlausibleConfig {
 
   /**
    * Whether the page uses hash based routing. Defaults to false.
-   * Read more at https://plausible.io/docs/hash-based-routing
+   * Read more at https://qusto.io/docs/hash-based-routing
    */
   hashBasedRouting?: boolean
 
@@ -54,8 +54,8 @@ export interface PlausibleConfig {
    * parameters, e.g. to clean URLs of values that should not be recorded.
    */
   transformRequest?: (
-    payload: PlausibleRequestPayload
-  ) => PlausibleRequestPayload | null
+    payload: QustoRequestPayload
+  ) => QustoRequestPayload | null
 
   /**
    * If enabled (the default), the script will set `window.plausible` after `init` is called.
@@ -64,10 +64,10 @@ export interface PlausibleConfig {
   bindToWindow?: boolean
 }
 
-export interface PlausibleEventOptions {
+export interface QustoEventOptions {
   /**
    * Custom properties to add to the event.
-   * Read more at https://plausible.io/docs/custom-props/introduction
+   * Read more at https://qusto.io/docs/custom-props/introduction
    */
   props?: CustomProperties
 
@@ -79,9 +79,9 @@ export interface PlausibleEventOptions {
 
   /**
    * Revenue data to add to the event.
-   * Read more at https://plausible.io/docs/ecommerce-revenue-tracking
+   * Read more at https://qusto.io/docs/ecommerce-revenue-tracking
    */
-  revenue?: PlausibleEventRevenue
+  revenue?: QustoEventRevenue
 
   /**
    * Called when request to `endpoint` completes or is ignored.
@@ -102,14 +102,14 @@ export interface PlausibleEventOptions {
 
 export type CustomProperties = Record<string, string>
 
-export type PlausibleEventRevenue = {
+export type QustoEventRevenue = {
   /** Revenue amount in `currency` */
   amount: number | string
   /** Currency is an ISO 4217 string representing the currency code, e.g. "USD" or "EUR" */
   currency: string
 }
 
-export type PlausibleRequestPayload = {
+export type QustoRequestPayload = {
   /** Event name */
   n: string
   /** URL of the event */
@@ -121,7 +121,7 @@ export type PlausibleRequestPayload = {
   /** Custom properties */
   p?: CustomProperties
   /** Revenue information */
-  $?: PlausibleEventRevenue
+  $?: QustoEventRevenue
   /** Whether the event is interactive */
   i?: boolean
 } & Record<string, unknown>

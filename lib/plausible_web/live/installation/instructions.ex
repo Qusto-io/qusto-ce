@@ -15,7 +15,7 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
     <div class="text-sm my-4 leading-6">
       Paste this snippet into the <code>&lt;head&gt;</code>
       section of your site. See our
-      <.styled_link href="https://plausible.io/docs/integration-guides" new_tab={true}>
+      <.styled_link href="https://docs.qusto.io/integration-guides" new_tab={true}>
         installation guides.
       </.styled_link>
       Once done, click the button below to verify your installation.
@@ -31,19 +31,19 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
       field={@tracker_script_configuration_form[:outbound_links]}
       label="Outbound links"
       tooltip="Automatically track clicks on external links. These count towards your billable pageviews."
-      learn_more="https://plausible.io/docs/outbound-link-click-tracking"
+      learn_more="https://docs.qusto.io/outbound-link-click-tracking"
     />
     <.script_config_control
       field={@tracker_script_configuration_form[:file_downloads]}
       label="File downloads"
       tooltip="Automatically track file downloads. These count towards your billable pageviews."
-      learn_more="https://plausible.io/docs/file-downloads-tracking"
+      learn_more="https://docs.qusto.io/file-downloads-tracking"
     />
     <.script_config_control
       field={@tracker_script_configuration_form[:form_submissions]}
       label="Form submissions"
       tooltip="Automatically track form submissions. These count towards your billable pageviews."
-      learn_more="https://plausible.io/docs/form-submissions-tracking"
+      learn_more="https://docs.qusto.io/form-submissions-tracking"
     />
 
     <.disclosure>
@@ -57,31 +57,31 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
             variant="tagged-events"
             label="Manual tagging"
             tooltip="Tag site elements like buttons, links and forms to track user activity. These count towards your billable pageviews. Additional action required."
-            learn_more="https://plausible.io/docs/custom-event-goals"
+            learn_more="https://docs.qusto.io/custom-event-goals"
           />
           <.advanced_option
             variant="404"
             label="404 error pages"
             tooltip="Find 404 error pages on your site. These count towards your billable pageviews. Additional action required."
-            learn_more="https://plausible.io/docs/error-pages-tracking-404"
+            learn_more="https://docs.qusto.io/error-pages-tracking-404"
           />
           <.advanced_option
             variant="hash"
             label="Hashed page paths"
             tooltip="Automatically track page paths that use a # in the URL."
-            learn_more="https://plausible.io/docs/hash-based-routing"
+            learn_more="https://docs.qusto.io/hash-based-routing"
           />
           <.advanced_option
             variant="pageview-props"
             label="Custom properties"
             tooltip="Attach custom properties (also known as custom dimensions) to pageviews or custom events to create custom metrics. Additional action required."
-            learn_more="https://plausible.io/docs/custom-props/introduction"
+            learn_more="https://docs.qusto.io/custom-props/introduction"
           />
           <.advanced_option
             variant="revenue"
             label="Ecommerce revenue"
             tooltip="Assign monetary values to purchases and track revenue attribution. Additional action required."
-            learn_more="https://plausible.io/docs/ecommerce-revenue-tracking"
+            learn_more="https://docs.qusto.io/ecommerce-revenue-tracking"
           />
         </ul>
       </.disclosure_panel>

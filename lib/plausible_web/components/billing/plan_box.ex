@@ -48,7 +48,7 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
         <%= if @available do %>
           <.checkout id={"#{@kind}-checkout"} {assigns} />
         <% else %>
-          <.contact_button class="bg-indigo-600 hover:bg-indigo-500 text-white" />
+          <.contact_button class="" theme="cta" />
         <% end %>
       </div>
       <PlanBenefits.render benefits={@benefits} class="text-gray-600 dark:text-gray-100" />
@@ -100,7 +100,7 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
     <div class="flex items-center justify-between gap-x-4">
       <p
         id="highlight-pill"
-        class="rounded-full bg-indigo-600/10 px-2.5 py-1 text-xs font-semibold leading-5 text-indigo-600 dark:text-indigo-300 dark:ring-1 dark:ring-indigo-300/50"
+        class=" " theme="cta"
       >
         {@text}
       </p>
@@ -421,7 +421,7 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
   defp contact_button(assigns) do
     ~H"""
     <.link
-      href="https://plausible.io/contact"
+      href="https://qusto.io/contact"
       class={[
         "mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 bg-gray-800 hover:bg-gray-700 text-white dark:bg-indigo-600 dark:hover:bg-indigo-500",
         @class

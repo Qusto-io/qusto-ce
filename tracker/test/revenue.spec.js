@@ -1,11 +1,11 @@
-import { expectPlausibleInAction } from './support/test-utils'
+import { expectQustoInAction } from './support/test-utils'
 import { test } from '@playwright/test'
 
 test.describe('with revenue script extension', () => {
   test('sends revenue currency and amount in manual mode', async ({ page }) => {
     await page.goto('/revenue.html')
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#manual-purchase'),
       expectedRequests: [
         { n: 'Purchase', $: { amount: 15.99, currency: 'USD' } }
@@ -18,7 +18,7 @@ test.describe('with revenue script extension', () => {
   }) => {
     await page.goto('/revenue.html')
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#tagged-purchase'),
       expectedRequests: [
         { n: 'Purchase', $: { amount: '13.32', currency: 'EUR' } }

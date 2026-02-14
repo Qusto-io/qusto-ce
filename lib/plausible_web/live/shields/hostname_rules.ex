@@ -47,7 +47,7 @@ defmodule PlausibleWeb.Live.Shields.HostnameRules do
               <p class="text-center text-sm mt-1 text-gray-500 dark:text-gray-400 leading-5 text-pretty">
                 Accept incoming traffic only from familiar hostnames. Traffic from all hostnames is recorded until you add your first rule.
                 <.styled_link
-                  href="https://plausible.io/docs/excluding#exclude-visits-by-hostname"
+                  href="https://docs.qusto.io/excluding#exclude-visits-by-hostname"
                   target="_blank"
                 >
                   Learn more

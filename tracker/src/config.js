@@ -1,5 +1,5 @@
 if (COMPILE_COMPAT) {
-  var scriptEl = document.getElementById('plausible')
+  var scriptEl = document.getElementById('qusto')
 } else if (COMPILE_PLAUSIBLE_LEGACY_VARIANT) {
   // eslint-disable-next-line no-redeclare
   var scriptEl = document.currentScript
@@ -40,18 +40,18 @@ export function init(options) {
     // This will be dynamically replaced by a config json object in the script serving endpoint
     config = '<%= @config_js %>'
     Object.assign(config, options, {
-      // Explicitly set domain after other options are applied as `plausible-web` does not support overriding it, except by transformRequest
+      // Explicitly set domain after other options are applied as `qusto-web` does not support overriding it, except by transformRequest
       domain: config.domain
     })
   } else if (COMPILE_PLAUSIBLE_NPM) {
     if (config.isInitialized) {
-      throw new Error('plausible.init() can only be called once')
+      throw new Error('qusto.init() can only be called once')
     }
     if (!options || !options.domain) {
-      throw new Error('plausible.init(): domain argument is required')
+      throw new Error('qusto.init(): domain argument is required')
     }
     if (!options.endpoint) {
-      options.endpoint = 'https://plausible.io/api/event'
+      options.endpoint = 'https://analytics.qusto.io/api/event'
     }
     Object.assign(config, options)
     config.isInitialized = true

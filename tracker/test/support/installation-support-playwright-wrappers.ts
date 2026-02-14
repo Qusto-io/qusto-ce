@@ -25,11 +25,11 @@ export async function executeVerifier(
 
   try {
     async function verify() {
-      await page.evaluate(verifierCode) // injects window.verifyPlausibleInstallation
+      await page.evaluate(verifierCode) // injects window.verifyQustoInstallation
       return await page.evaluate(
-        // @ts-expect-error - window.verifyPlausibleInstallation has been injected
+        // @ts-expect-error - window.verifyQustoInstallation has been injected
         (c) => {
-          return window.verifyPlausibleInstallation(c)
+          return window.verifyQustoInstallation(c)
         },
         { ...functionContext, responseHeaders }
       )
@@ -85,8 +85,8 @@ export async function detect(page, context) {
 
   return await page.evaluate(
     async (d) => {
-      // @ts-expect-error - window.scanPageBeforePlausibleInstallation has been injected
-      return await window.scanPageBeforePlausibleInstallation(d)
+      // @ts-expect-error - window.scanPageBeforeQustoInstallation has been injected
+      return await window.scanPageBeforeQustoInstallation(d)
     },
     { detectV1, debug, timeoutMs }
   )

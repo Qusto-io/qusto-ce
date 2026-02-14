@@ -20,6 +20,19 @@ defmodule Plausible.Release do
   end
 
   @doc """
+  Alias for interweave_migrate/1 for compatibility with deployment scripts.
+
+  Runs all pending migrations across multiple repositories in the correct order,
+  respecting cross-repository dependencies.
+  """
+  def migrate(repos \\ repos()) do
+    Logger.info("🔄 Running migrations for #{@app}")
+    interweave_migrate(repos)
+    Logger.info("✅ Migrations completed successfully")
+    :ok
+  end
+
+  @doc """
   `interweave_migrate/0` is a migration function that:
 
   - Lists all pending migrations across multiple repositories.
@@ -56,19 +69,6 @@ defmodule Plausible.Release do
 
   This ensures all dependencies are resolved in the correct order.
   """
-  @doc """
-  Alias for interweave_migrate/1 for compatibility with deployment scripts.
-
-  Runs all pending migrations across multiple repositories in the correct order,
-  respecting cross-repository dependencies.
-  """
-  def migrate(repos \\ repos()) do
-    Logger.info("🔄 Running migrations for #{@app}")
-    interweave_migrate(repos)
-    Logger.info("✅ Migrations completed successfully")
-    :ok
-  end
-
   def interweave_migrate(repos \\ repos()) do
     prepare()
 

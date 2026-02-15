@@ -29,7 +29,7 @@ defmodule PlausibleWeb.Components.Generic do
     "primary" =>
       "bg-blue-600 dark:bg-[var(--color-dark-primary)] text-white hover:bg-blue-700 dark:hover:bg-[var(--color-dark-primary-hover)] focus-visible:outline-blue-600 dark:focus-visible:outline-[var(--color-dark-primary)] disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0",
     "cta" =>
-      "bg-orange-600 dark:bg-[var(--color-dark-accent)] text-white hover:bg-orange-700 dark:hover:bg-[var(--color-dark-accent-hover)] focus-visible:outline-orange-600 disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg active:translate-y-0 active:scale-100",
+      "bg-[var(--qusto-accent)] dark:bg-[var(--color-dark-accent)] text-white hover:bg-[var(--qusto-orange-600)] dark:hover:bg-[var(--color-dark-accent-hover)] focus-visible:outline-[var(--qusto-accent)] disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg active:translate-y-0 active:scale-100",
     "secondary" =>
       "border-2 border-blue-600 dark:border-[var(--color-dark-primary)] bg-transparent text-blue-600 dark:text-[var(--color-dark-primary)] hover:bg-blue-50 dark:hover:bg-[rgba(74,158,255,0.1)] disabled:opacity-50 transition-all duration-150",
     "yellow" =>
@@ -147,12 +147,12 @@ defmodule PlausibleWeb.Components.Generic do
           <span>Learn more</span>
         </:tooltip_content>
         <a
-          href={"https://plausible.io/docs/#{@slug}"}
+          href={"https://docs.qusto.io/#{@slug}"}
           rel="noopener noreferrer"
           target="_blank"
           class="inline-block"
         >
-          <Heroicons.information_circle class="text-gray-400 dark:text-indigo-500 size-5 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors duration-150" />
+          <Heroicons.information_circle class="text-gray-400 dark:text-[var(--color-dark-primary)] size-5 hover:text-blue-600 dark:hover:text-[var(--color-dark-primary-hover)] transition-colors duration-150" />
         </a>
       </.tooltip>
     </div>
@@ -169,7 +169,7 @@ defmodule PlausibleWeb.Components.Generic do
     ~H"""
     <div class={["rounded-md p-5 bg-gray-100 dark:bg-[var(--color-dark-bg-elevated)]", @class]} {@rest}>
       <div class="flex flex-col gap-y-4">
-        <div class="flex-shrink-0 bg-white dark:bg-gray-700 max-w-max rounded-md p-2 border border-gray-200 dark:border-gray-600 text-indigo-500">
+        <div class="flex-shrink-0 bg-white dark:bg-gray-700 max-w-max rounded-md p-2 border border-gray-200 dark:border-gray-600 text-blue-600 dark:text-[var(--color-dark-primary)]">
           {render_slot(@icon)}
         </div>
         <div class="flex flex-col gap-y-2">
@@ -257,7 +257,7 @@ defmodule PlausibleWeb.Components.Generic do
       new_tab={@new_tab}
       href={@href}
       method={@method}
-      class={"text-indigo-600 hover:text-indigo-700 dark:text-indigo-500 dark:hover:text-indigo-400 transition-colors duration-150 " <> @class}
+      class={"text-blue-600 hover:text-blue-700 dark:text-[var(--color-dark-primary)] dark:hover:text-[var(--color-dark-primary-hover)] transition-colors duration-150 " <> @class}
       {@rest}
     >
       {render_slot(@inner_block)}
@@ -421,7 +421,7 @@ defmodule PlausibleWeb.Components.Generic do
   def spinner(assigns) do
     ~H"""
     <svg
-      class={["animate-spin h-4 w-4 text-indigo-500", @class]}
+      class={["animate-spin h-4 w-4 text-blue-600 dark:text-[var(--color-dark-primary)]", @class]}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
@@ -472,8 +472,8 @@ defmodule PlausibleWeb.Components.Generic do
       {@rest}
     >
       <span
-        class="relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
-        x-bind:class={"#{@js_active_var} ? 'bg-indigo-600' : 'dark:bg-gray-600 bg-gray-200'"}
+        class="relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-blue-600 dark:focus:ring-[var(--color-dark-primary)] focus:ring-offset-2"
+        x-bind:class={"#{@js_active_var} ? 'bg-blue-600 dark:bg-[var(--color-dark-primary)]' : 'dark:bg-gray-600 bg-gray-200'"}
       >
         <span
           aria-hidden="true"
@@ -756,7 +756,7 @@ defmodule PlausibleWeb.Components.Generic do
   def focus_list(assigns) do
     ~H"""
     <ol class="list-disc space-y-1 ml-4 text-sm">
-      <li :for={item <- @item} class="marker:text-indigo-700 dark:marker:text-indigo-700">
+      <li :for={item <- @item} class="marker:text-blue-700 dark:marker:text-[var(--color-dark-primary)]">
         {render_slot(item)}
       </li>
     </ol>
@@ -910,7 +910,7 @@ defmodule PlausibleWeb.Components.Generic do
         type="submit"
         class={[
           "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full transition-colors ease-in-out duration-200",
-          if(@set_to, do: "bg-indigo-600", else: "bg-gray-200 dark:bg-gray-600"),
+          if(@set_to, do: "bg-blue-600 dark:bg-[var(--color-dark-primary)]", else: "bg-gray-200 dark:bg-gray-600"),
           if(@disabled?, do: "cursor-not-allowed")
         ]}
         disabled={@disabled?}
@@ -968,10 +968,10 @@ defmodule PlausibleWeb.Components.Generic do
       case assigns.theme do
         "default" ->
           %{
-            light: "text-indigo-700",
-            light_hover: "text-indigo-600",
-            dark: "text-indigo-500",
-            dark_hover: "text-indigo-400"
+            light: "text-[var(--qusto-brand-blue)]",
+            light_hover: "text-[var(--qusto-primary)]",
+            dark: "text-[var(--color-dark-primary)]",
+            dark_hover: "text-[var(--color-dark-primary-hover)]"
           }
 
         "danger" ->
@@ -1109,7 +1109,7 @@ defmodule PlausibleWeb.Components.Generic do
               type="text"
               name="filter-text"
               id="filter-text"
-              class="w-full max-w-80 pl-8 text-sm dark:bg-gray-750 dark:text-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block border-gray-300 dark:border-gray-750 rounded-md dark:placeholder:text-gray-400 focus:outline-none focus:ring-3 focus:ring-indigo-500/20 dark:focus:ring-indigo-500/25 focus:border-indigo-500"
+              class="w-full max-w-80 pl-8 text-sm dark:bg-gray-750 dark:text-gray-300 focus:ring-blue-500 dark:focus:ring-[var(--color-dark-primary)] focus:border-blue-500 dark:focus:border-[var(--color-dark-primary)] block border-gray-300 dark:border-gray-750 rounded-md dark:placeholder:text-gray-400 focus:outline-none focus:ring-3 focus:ring-blue-500/20 dark:focus:ring-blue-500/25"
               placeholder="Press / to search"
               x-ref="filter_text"
               phx-debounce={200}
@@ -1205,14 +1205,14 @@ defmodule PlausibleWeb.Components.Generic do
 
   def highlighted(assigns) do
     ~H"""
-    <span class="font-medium text-indigo-600 dark:text-gray-100">
+    <span class="font-medium text-blue-600 dark:text-[var(--color-dark-primary)]">
       {render_slot(@inner_block)}
     </span>
     """
   end
 
   attr(:class, :string, default: "")
-  attr(:color, :atom, default: :gray, values: [:gray, :indigo, :yellow, :green])
+  attr(:color, :atom, default: :gray, values: [:gray, :indigo, :primary, :yellow, :green])
   attr(:rest, :global)
   slot(:inner_block, required: true)
 
@@ -1238,7 +1238,11 @@ defmodule PlausibleWeb.Components.Generic do
   end
 
   defp get_pill_color_classes(:indigo) do
-    "bg-indigo-100/60 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-300"
+    "bg-[var(--qusto-blue-50)] text-[var(--qusto-primary)] dark:bg-[var(--color-dark-bg-hover)] dark:text-[var(--color-dark-primary)]"
+  end
+
+  defp get_pill_color_classes(:primary) do
+    "bg-[var(--qusto-blue-50)] text-[var(--qusto-primary)] dark:bg-[var(--color-dark-bg-hover)] dark:text-[var(--color-dark-primary)]"
   end
 
   defp get_pill_color_classes(:yellow) do

@@ -1,9 +1,9 @@
-import { expectPlausibleInAction, isPageviewEvent } from './support/test-utils'
+import { expectQustoInAction, isPageviewEvent } from './support/test-utils'
 import { test } from '@playwright/test'
 
 test.describe('legacy custom properties support', () => {
   test('sends custom properties via dom attributes', async ({ page }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto('/legacy-pageview-properties.html')
         await page.click('#custom-event-button')
@@ -16,7 +16,7 @@ test.describe('legacy custom properties support', () => {
   })
 
   test('sends custom properties via `props`', async ({ page }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto('/legacy-custom-properties.html')
         await page.click('#custom-props-button')
@@ -27,7 +27,7 @@ test.describe('legacy custom properties support', () => {
   })
 
   test('sends custom properties via `meta`', async ({ page }) => {
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto('/legacy-custom-properties.html')
         await page.click('#custom-meta-button')

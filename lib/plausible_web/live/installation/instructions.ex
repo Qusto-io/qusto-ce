@@ -196,13 +196,13 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
               <br />Click to learn more.
             </:tooltip_content>
             <a href={@learn_more} target="_blank" rel="noopener noreferrer">
-              <Heroicons.information_circle class="inline-block text-indigo-700 dark:text-gray-500 size-5 hover:stroke-2" />
+              <Heroicons.information_circle class="inline-block text-blue-700 dark:text-[var(--color-dark-primary)] size-5 hover:stroke-2" />
             </a>
           </.tooltip>
         </div>
         <div class="ml-2 visible md:invisible">
           <a href={@learn_more} target="_blank" rel="noopener noreferrer">
-            <Heroicons.information_circle class="inline-block text-indigo-700 dark:text-gray-500 size-5 hover:stroke-2" />
+            <Heroicons.information_circle class="inline-block text-blue-700 dark:text-[var(--color-dark-primary)] size-5 hover:stroke-2" />
           </a>
         </div>
       </div>
@@ -222,13 +222,13 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
               <br />Click to learn more.
             </:tooltip_content>
             <a href={@learn_more} target="_blank" rel="noopener noreferrer">
-              <Heroicons.information_circle class="inline-block text-indigo-700 dark:text-gray-500 size-5 hover:stroke-2" />
+              <Heroicons.information_circle class="inline-block text-blue-700 dark:text-[var(--color-dark-primary)] size-5 hover:stroke-2" />
             </a>
           </.tooltip>
         </div>
         <div class="ml-2 visible md:invisible">
           <a href={@learn_more} target="_blank" rel="noopener noreferrer">
-            <Heroicons.information_circle class="inline-block text-indigo-700 dark:text-gray-500 size-5 hover:stroke-2" />
+            <Heroicons.information_circle class="inline-block text-blue-700 dark:text-[var(--color-dark-primary)] size-5 hover:stroke-2" />
           </a>
         </div>
       </div>
@@ -249,7 +249,7 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
       <a
         onclick="var input = document.getElementById('snippet'); input.focus(); input.select(); document.execCommand('copy'); event.stopPropagation();"
         href="javascript:void(0)"
-        class="absolute flex items-center text-xs font-medium text-indigo-600 no-underline bottom-2 right-4 p-2 bg-white transition-colors duration-150 hover:text-indigo-700 dark:text-indigo-500 dark:hover:text-indigo-400 dark:bg-gray-750"
+        class="absolute flex items-center text-xs font-medium text-blue-600 no-underline bottom-2 right-4 p-2 bg-white transition-colors duration-150 hover:text-blue-700 dark:text-[var(--color-dark-primary)] dark:hover:text-[var(--color-dark-primary-hover)] dark:bg-gray-750"
       >
         <Heroicons.document_duplicate class="pr-1 text-current size-5" />
         <span>

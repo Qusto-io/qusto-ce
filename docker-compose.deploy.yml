@@ -49,20 +49,25 @@ services:
       - qusto-internal
 
   # E-commerce Frontend (Module Federation)
-  ecommerce-frontend:
-    build:
-      context: ./modules/qusto-ecommerce/frontend
-      dockerfile: Dockerfile
-    environment:
-      - BACKEND_URL=http://ecommerce:8085
-      - PUBLIC_URL=${BASE_URL}
-    ports:
-      - "${ECOMMERCE_FRONTEND_PORT:-3001}:3001"
-    depends_on:
-      - ecommerce
-    restart: unless-stopped
-    networks:
-      - qusto-internal
+  # DISABLED: Frontend is a Module Federation remote loaded by analytics app
+  # The frontend remoteEntry.js is built and served by the analytics service
+  # Standalone deployment blocked - missing 23 modules that must come from host app
+  # See: /03-development/infrastructure/URGENT_FIX_NEEDED.md
+  #
+  # ecommerce-frontend:
+  #   build:
+  #     context: ./modules/qusto-ecommerce/frontend
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - BACKEND_URL=http://ecommerce:8085
+  #     - PUBLIC_URL=${BASE_URL}
+  #   ports:
+  #     - "${ECOMMERCE_FRONTEND_PORT:-3001}:3001"
+  #   depends_on:
+  #     - ecommerce
+  #   restart: unless-stopped
+  #   networks:
+  #     - qusto-internal
 
   # PostgreSQL Database
   postgres:
@@ -79,6 +84,12 @@ services:
     restart: unless-stopped
     networks:
       - qusto-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d plausible"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   # ClickHouse Analytics Database
   clickhouse:
@@ -99,6 +110,12 @@ services:
     restart: unless-stopped
     networks:
       - qusto-internal
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   # Redis Cache
   redis:
@@ -108,6 +125,11 @@ services:
     restart: unless-stopped
     networks:
       - qusto-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres-data:

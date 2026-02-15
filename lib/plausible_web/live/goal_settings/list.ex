@@ -100,7 +100,7 @@ defmodule PlausibleWeb.Live.GoalSettings.List do
                 Pageview
               </.pill>
               <.pill :if={goal.event_name && !goal.currency} color={:yellow}>Custom Event</.pill>
-              <.pill :if={goal.currency} color={:indigo}>Revenue Goal ({goal.currency})</.pill>
+              <.pill :if={goal.currency} color={:primary}>Revenue Goal ({goal.currency})</.pill>
             </.td>
             <.td actions height="h-16">
               <.edit_button

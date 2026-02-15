@@ -102,7 +102,7 @@
 
   /* Set v3 default ring behavior */
   --default-ring-width: 2px;
-  --default-ring-color: var(--color-indigo-500);
+  --default-ring-color: var(--qusto-primary);
 
   /* === QUSTO WARM DARK MODE - Backgrounds === */
   --color-dark-bg-base: #1a1612;           /* Warm charcoal base */
@@ -294,6 +294,18 @@ body {
   overflow-x: hidden;
   @apply bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)];
   @apply text-gray-800 dark:text-[var(--color-dark-text-primary)];
+}
+
+/* Header glassmorphism: semi-transparent background so backdrop blur is visible (rgba for broad support) */
+body > header {
+  background: rgba(248, 247, 242, 0.88) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.dark body > header {
+  background: rgba(37, 33, 24, 0.88) !important;
 }
 
 blockquote {
@@ -586,29 +598,43 @@ iframe[hidden] {
   /* Borders */
   --color-border: var(--qusto-gray-200);
   --color-border-dark: var(--qusto-gray-300);
+
+  /* Layout (match mockup dark-mode-preview.html) */
+  --bg-base: #eeece2;
+  --bg-elevated: #f8f7f2;
+  --bg-surface: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --border: rgba(0, 0, 0, 0.1);
 }
 
 /* ============================================================================
    DARK MODE VARIANTS - WARM DARK MODE (Qusto Brand)
+   Class-based: theme controlled by .dark on <html>, not OS preference
    ============================================================================ */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Warm Dark Mode Backgrounds */
-    --qusto-background: #1a1612;
-    --qusto-surface: #2d2820;
-    --color-bg-primary: var(--color-dark-bg-base);
-    --color-bg-surface: var(--color-dark-bg-card);
+.dark {
+  --qusto-background: #1a1612;
+  --qusto-surface: #2d2820;
+  --color-bg-primary: var(--color-dark-bg-base);
+  --color-bg-surface: var(--color-dark-bg-card);
 
-    /* Warm Dark Mode Text */
-    --color-text-primary: var(--color-dark-text-primary);
-    --color-text-secondary: var(--color-dark-text-secondary);
-    --color-text-tertiary: var(--color-dark-text-tertiary);
+  /* Warm Dark Mode Text */
+  --color-text-primary: var(--color-dark-text-primary);
+  --color-text-secondary: var(--color-dark-text-secondary);
+  --color-text-tertiary: var(--color-dark-text-tertiary);
 
-    /* Warm Dark Mode Borders (Orange-tinted) */
-    --color-border: var(--color-dark-border);
-    --color-border-dark: var(--color-dark-border-strong);
-  }
+  /* Warm Dark Mode Borders (Orange-tinted) */
+  --color-border: var(--color-dark-border);
+  --color-border-dark: var(--color-dark-border-strong);
+
+  /* Layout (match mockup) */
+  --bg-base: #1a1612;
+  --bg-elevated: #252118;
+  --bg-surface: #2d2820;
+  --text-primary: #f5f1e8;
+  --text-secondary: #d4cfc0;
+  --border: rgba(197, 81, 48, 0.15);
 }
 
 /* ============================================================================
@@ -690,8 +716,7 @@ iframe[hidden] {
 
 /* Dark Mode Adjustments */
 
-@media (prefers-color-scheme: dark) {
-  .shadow-blue-sm,
+.dark {
   .shadow-blue,
   .shadow-blue-md,
   .shadow-blue-lg,
@@ -865,23 +890,20 @@ iframe[hidden] {
   cursor: not-allowed;
 }
 
-/* Dark Mode Adjustments */
+/* Dark Mode Adjustments for .button-secondary */
+.dark .button-secondary {
+  border-color: var(--color-dark-primary);
+  color: var(--color-dark-primary);
+}
 
-@media (prefers-color-scheme: dark) {
-  .button-secondary {
-    border-color: var(--qusto-blue-400);
-    color: var(--qusto-blue-400);
-  }
+.dark .button-secondary:hover {
+  background: rgb(74 158 255 / 10%);
+  border-color: var(--color-dark-primary-hover);
+  color: var(--color-dark-primary-hover);
+}
 
-  .button-secondary:hover {
-    background: rgb(22 97 190 / 10%);
-    border-color: var(--qusto-blue-300);
-    color: var(--qusto-blue-300);
-  }
-
-  .button-secondary:active {
-    background: rgb(22 97 190 / 20%);
-  }
+.dark .button-secondary:active {
+  background: rgb(74 158 255 / 20%);
 }
 
 /* === ACCESSIBILITY - REDUCED MOTION === */

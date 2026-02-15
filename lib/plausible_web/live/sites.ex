@@ -147,7 +147,7 @@ defmodule PlausibleWeb.Live.Sites do
         <a
           :if={!@consolidated_view_cta_dismissed?}
           href={"/sites/new?flow=#{PlausibleWeb.Flows.provisioning()}"}
-          class="whitespace-nowrap truncate inline-flex items-center justify-center gap-x-2 max-w-fit font-medium rounded-md px-3.5 py-2.5 text-sm transition-all duration-150 cursor-pointer disabled:cursor-not-allowed bg-indigo-600 text-white  focus-visible:outline-indigo-600 disabled:bg-indigo-400/60 disabled:dark:" theme="cta"
+          class="whitespace-nowrap truncate inline-flex items-center justify-center gap-x-2 max-w-fit font-medium rounded-md px-3.5 py-2.5 text-sm transition-all duration-150 cursor-pointer disabled:cursor-not-allowed bg-[var(--qusto-primary)] dark:bg-[var(--color-dark-primary)] text-white focus-visible:outline-[var(--qusto-primary)] dark:focus-visible:outline-[var(--color-dark-primary)] disabled:opacity-60"
         >
           <Heroicons.plus class="size-4" /> Add website
         </a>
@@ -405,7 +405,7 @@ defmodule PlausibleWeb.Live.Sites do
           </div>
           <span
             :if={is_map(@consolidated_stats)}
-            class="max-w-sm sm:max-w-none text-indigo-500 my-auto"
+            class="max-w-sm sm:max-w-none text-[var(--qusto-primary)] my-auto"
             data-test-id="consolidated-view-chart-loaded"
           >
             <PlausibleWeb.Live.Components.Visitors.chart
@@ -600,7 +600,7 @@ defmodule PlausibleWeb.Live.Sites do
           <.icon_pin
             :if={@site.pinned_at}
             filled={true}
-            class="size-[1.15rem] text-indigo-600 dark:text-indigo-500 group-hover/item:text-indigo-700 dark:group-hover/item:text-indigo-400"
+            class="size-[1.15rem] text-[var(--qusto-primary)] dark:text-[var(--color-dark-primary)] group-hover/item:text-[var(--qusto-brand-blue)] dark:group-hover/item:text-[var(--color-dark-primary-hover)]"
           />
           <span :if={@site.pinned_at}>Unpin site</span>
 
@@ -657,7 +657,7 @@ defmodule PlausibleWeb.Live.Sites do
     </div>
     <div :if={is_map(@hourly_stats)}>
       <span class="flex flex-col gap-y-5 text-gray-600 dark:text-gray-400 text-sm truncate">
-        <span class="max-w-sm sm:max-w-none text-indigo-500">
+        <span class="max-w-sm sm:max-w-none text-[var(--qusto-primary)]">
           <PlausibleWeb.Live.Components.Visitors.chart
             intervals={@hourly_stats.intervals}
             height={80}

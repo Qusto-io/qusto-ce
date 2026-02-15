@@ -28,14 +28,14 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
       class={[
         "shadow-lg border border-gray-200 dark:border-none bg-white rounded-xl px-6 sm:px-4 py-4 sm:py-3 dark:bg-gray-850",
         !@highlight && "dark:ring-gray-600",
-        @highlight && "ring-2 ring-indigo-600 dark:ring-indigo-300"
+        @highlight && "ring-2 ring-[var(--qusto-primary)] dark:ring-[var(--color-dark-primary)]"
       ]}
     >
       <div class="flex items-center justify-between gap-x-4">
         <h3 class={[
           "text-lg font-semibold leading-8",
           !@highlight && "text-gray-900 dark:text-gray-100",
-          @highlight && "text-indigo-600 dark:text-indigo-300"
+          @highlight && "text-[var(--qusto-primary)] dark:text-[var(--color-dark-primary)]"
         ]}>
           {String.capitalize(to_string(@kind))}
         </h3>
@@ -65,21 +65,21 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
       class={[
         "rounded-xl px-6 sm:px-4 py-4 sm:py-3 bg-gray-900 shadow-xl dark:bg-gray-850",
         !@recommended && "dark:ring-gray-600",
-        @recommended && "ring-4 ring-indigo-500 dark:ring-2 dark:ring-indigo-300"
+        @recommended && "ring-4 ring-[var(--qusto-primary)] dark:ring-2 dark:ring-[var(--color-dark-primary)]"
       ]}
     >
       <div class="flex items-center justify-between gap-x-4">
         <h3 class={[
           "text-lg font-semibold leading-8",
           !@recommended && "text-white dark:text-gray-100",
-          @recommended && "text-indigo-400 dark:text-indigo-300"
+          @recommended && "text-[var(--qusto-primary)] dark:text-[var(--color-dark-primary)]"
         ]}>
           Enterprise
         </h3>
         <span
           :if={@recommended}
           id="enterprise-highlight-pill"
-          class="rounded-full ring-1 ring-indigo-500 px-2.5 py-1 text-xs font-semibold leading-5 text-indigo-400 dark:text-indigo-300 dark:ring-1 dark:ring-indigo-300/50"
+          class="rounded-full ring-1 ring-[var(--qusto-primary)] px-2.5 py-1 text-xs font-semibold leading-5 text-[var(--qusto-primary)] dark:text-[var(--color-dark-primary)] dark:ring-1 dark:ring-[var(--color-dark-primary)]/50"
         >
           Recommended
         </span>
@@ -398,7 +398,7 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
       onclick={"if (#{@confirmed}) {window.location = '#{Routes.billing_path(PlausibleWeb.Endpoint, :change_plan_preview, @paddle_product_id)}'}"}
       class={[
         "w-full mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 text-white",
-        !@checkout_disabled && "bg-indigo-600 hover:bg-indigo-500",
+        !@checkout_disabled && "bg-[var(--qusto-primary)] hover:bg-[var(--qusto-brand-blue)] dark:bg-[var(--color-dark-primary)] dark:hover:bg-[var(--color-dark-primary-hover)]",
         @checkout_disabled && "pointer-events-none bg-gray-400 dark:bg-gray-600"
       ]}
     >
@@ -423,7 +423,7 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
     <.link
       href="https://qusto.io/contact"
       class={[
-        "mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 bg-gray-800 hover:bg-gray-700 text-white dark:bg-indigo-600 dark:hover:bg-indigo-500",
+        "mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 bg-gray-800 hover:bg-gray-700 text-white dark:bg-[var(--color-dark-primary)] dark:hover:bg-[var(--color-dark-primary-hover)]",
         @class
       ]}
     >

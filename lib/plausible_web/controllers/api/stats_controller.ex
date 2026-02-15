@@ -26,7 +26,7 @@ defmodule PlausibleWeb.Api.StatsController do
     * `period` - x-axis of the graph, e.g. `12mo`, `day`, `custom`.
 
     * `metric` - y-axis of the graph, e.g. `visits`, `visitors`, `pageviews`.
-      See the Stats API ["Metrics"](https://plausible.io/docs/stats-api#metrics)
+      See the Stats API ["Metrics"](https://docs.qusto.io/stats-api#metrics)
       section for more details. Defaults to `visitors`.
 
     * `interval` - granularity of the time-series data. You can think of it as
@@ -35,7 +35,7 @@ defmodule PlausibleWeb.Api.StatsController do
       `Plausible.Query.from/2` for each default.
 
     * `filters` - optional filters to drill down data. See the Stats API
-      ["Filtering"](https://plausible.io/docs/stats-api#filtering) section for
+      ["Filtering"](https://docs.qusto.io/stats-api#filtering) section for
       more details.
 
     * `with_imported` - boolean indicating whether to include Google Analytics

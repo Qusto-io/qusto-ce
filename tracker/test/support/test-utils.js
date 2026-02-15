@@ -13,7 +13,7 @@ export const tracker_script_version = packageJson.tracker_script_version
  * @param {Object} args - The object configuring the action and related expectations.
  * @param {Function} args.action - A function that returns a promise. The function is called
  *  without arguments, and is `await`ed. This is the action that should or should not trigger
- *  Plausible requests on the page.
+ *  Qusto requests on the page.
  * @param {string} [args.pathToMock] - The path to create the route at and mock the response for.
  * @param {Array} [args.expectedRequests] - A list of partial JSON payloads that get matched
  *  against the bodies of event requests made. An `expectedRequest` is considered as having
@@ -29,11 +29,11 @@ export const tracker_script_version = packageJson.tracker_script_version
  * @param {number} [args.expectedRequestCount] - When provided, expects the total amount of
  *  event requests made to match this number.
  * @param {Array|Function} [args.shouldIgnoreRequest] - When provided, ignores certain requests
- * @param {number} [args.responseDelay] - When provided, delays the response from the Plausible
+ * @param {number} [args.responseDelay] - When provided, delays the response from the Qusto
  *  API by the given number of milliseconds.
  *  @param {number} [args.mockRequestTimeout] - How long to wait for the requests to be made
  */
-export const expectPlausibleInAction = async function (
+export const expectQustoInAction = async function (
   page,
   {
     action,
@@ -240,6 +240,6 @@ export function switchByMode(cases, mode) {
  * that work with event handlers registered on the document
  * will not be tracked if the event happens before the tracker script has attached the event listener.
  */
-export function ensurePlausibleInitialized(page) {
+export function ensureQustoInitialized(page) {
   return page.waitForFunction(() => window.plausible?.l === true)
 }

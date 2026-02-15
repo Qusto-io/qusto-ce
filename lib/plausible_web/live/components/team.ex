@@ -35,7 +35,7 @@ defmodule PlausibleWeb.Live.Components.Team do
             {@user.name}
             <span
               :if={@label}
-              class="ml-1 dark:bg-indigo-600 dark:text-gray-200 bg-gray-150 text-gray-500 text-xs px-1 py-0.5 rounded-md"
+              class="ml-1 dark:" theme="cta"
             >
               {@label}
             </span>

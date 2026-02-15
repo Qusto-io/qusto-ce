@@ -158,7 +158,7 @@ defmodule PlausibleWeb.Components.Layout do
     theme
   end
 
-  defp theme_preference(_assigns), do: "dark"
+  defp theme_preference(_assigns), do: "system"
 
   defdelegate logo_path(path), to: PlausibleWeb.LayoutView
 end

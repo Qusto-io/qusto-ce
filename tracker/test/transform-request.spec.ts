@@ -4,7 +4,7 @@ import {
 } from './support/initialize-page-dynamically'
 import {
   e,
-  expectPlausibleInAction,
+  expectQustoInAction,
   hideAndShowCurrentTab,
   isPageviewEvent,
   isEngagementEvent,
@@ -43,7 +43,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: ''
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await hideAndShowCurrentTab(page, { delay: 200 })
@@ -87,7 +87,7 @@ for (const mode of ['web', 'esm']) {
         </button>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('button')
@@ -128,7 +128,7 @@ for (const mode of ['web', 'esm']) {
         </button>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('button')
@@ -171,7 +171,7 @@ for (const mode of ['web', 'esm']) {
         </button>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('button')
@@ -212,7 +212,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: ''
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
         },
@@ -254,7 +254,7 @@ for (const mode of ['web', 'esm']) {
         </button>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('button')
@@ -310,7 +310,7 @@ test.describe(`transformRequest examples from /docs work`, () => {
       >`
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(url)
         await page.click('a')
@@ -375,7 +375,7 @@ test.describe(`transformRequest examples from /docs work`, () => {
 
       const [actualUrl] = url.split('*')
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(`${actualUrl}${urlSuffix}`)
           // await page.click('a')
@@ -426,7 +426,7 @@ test.describe(`transformRequest examples from /docs work`, () => {
     })
     const [actualUrl] = url.split('*')
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(`${actualUrl}?utm_source=example`)
       },

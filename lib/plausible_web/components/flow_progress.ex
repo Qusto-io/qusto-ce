@@ -32,7 +32,7 @@ defmodule PlausibleWeb.Components.FlowProgress do
             </div>
             <div
               :if={idx == @current_step_idx}
-              class="size-6 bg-indigo-600 text-xs text-white font-bold rounded-full flex items-center justify-center"
+              class="size-6 " theme="cta"
             >
               {idx + 1}
             </div>

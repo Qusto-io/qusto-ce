@@ -220,7 +220,7 @@ defmodule PlausibleWeb.Components.Billing.Notice do
         class="shadow-md dark:shadow-none"
       >
         You cannot start a subscription as your account doesn't own any sites. The account that owns the sites is responsible for the billing. Please either
-        <.styled_link href="https://plausible.io/docs/transfer-ownership">
+        <.styled_link href="https://docs.qusto.io/transfer-ownership">
           transfer the sites
         </.styled_link>
         to your account or start a subscription from the account that owns your sites.

@@ -1,5 +1,5 @@
 import { initializePageDynamically } from './support/initialize-page-dynamically'
-import { expectPlausibleInAction, switchByMode } from './support/test-utils'
+import { expectQustoInAction, switchByMode } from './support/test-utils'
 import { expect, test } from '@playwright/test'
 import { ScriptConfig } from './support/types'
 import { LOCAL_SERVER_ADDR } from './support/server'
@@ -34,7 +34,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: 'hello world'
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.goto(url),
         expectedRequests: [],
         refutedRequests: [{ n: 'pageview' }]
@@ -67,7 +67,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: 'hello world'
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.goto(url),
         expectedRequests: [],
         refutedRequests: [{ n: 'pageview' }]

@@ -9,7 +9,7 @@ import { config, scriptEl } from './config'
 export function track(eventName, options) {
   if (COMPILE_PLAUSIBLE_NPM && !config.isInitialized) {
     throw new Error(
-      'plausible.track() can only be called after plausible.init()'
+      'qusto.track() can only be called after qusto.init()'
     )
   }
 
@@ -33,13 +33,13 @@ export function track(eventName, options) {
         window.__nightmare ||
         window.navigator.webdriver ||
         window.Cypress) &&
-      !window.__plausible
+      !window.__qusto
     ) {
       return onIgnoredEvent(eventName, options)
     }
   }
   try {
-    if (window.localStorage.plausible_ignore === 'true') {
+    if (window.localStorage.qusto_ignore === 'true') {
       return onIgnoredEvent(eventName, options, 'localStorage flag')
     }
   } catch (_error) {

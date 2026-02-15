@@ -1,5 +1,5 @@
 import { initializePageDynamically } from './support/initialize-page-dynamically'
-import { expectPlausibleInAction } from './support/test-utils'
+import { expectQustoInAction } from './support/test-utils'
 import { test } from '@playwright/test'
 
 test.describe('combination of hash and exclusions script extensions', () => {
@@ -13,7 +13,7 @@ test.describe('combination of hash and exclusions script extensions', () => {
       ></script>`,
       bodyContent: ''
     })
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.goto(`${url}#this/hash/should/be/ignored`),
       expectedRequests: [],
       awaitedRequestCount: 1

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
 import {
   isEngagementEvent,
-  expectPlausibleInAction,
+  expectQustoInAction,
   tracker_script_version,
   hideAndShowCurrentTab
 } from './support/test-utils'
@@ -95,7 +95,7 @@ test('if `init` is called twice, it throws, but tracking still works', async ({
     bodyContent: 'body'
   })
 
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: async () => {
       await page.goto(url)
     },
@@ -107,7 +107,7 @@ test('if `init` is called twice, it throws, but tracking still works', async ({
     page.evaluate((config) => window.init(config), config)
   ).rejects.toThrow('plausible.init() can only be called once')
 
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: async () => {
       await hideAndShowCurrentTab(page, { delay: 200 })
     },
@@ -128,7 +128,7 @@ test('`bindToWindow` is true by default, and plausible is attached to window', a
     bodyContent: 'body'
   })
 
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: async () => {
       await page.goto(url)
     },
@@ -164,7 +164,7 @@ test('if `bindToWindow` is false, plausible is not attached to window', async ({
     bodyContent: 'body'
   })
 
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: async () => {
       await page.goto(url)
     },
@@ -191,7 +191,7 @@ test('allows overriding `endpoint` with a custom URL via `init`', async ({
     </script>`,
     bodyContent: 'body'
   })
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     pathToMock: config.endpoint,
     action: () => page.goto(url),
     expectedRequests: [

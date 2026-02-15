@@ -2,8 +2,8 @@ import { test } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
 import {
   e,
-  ensurePlausibleInitialized,
-  expectPlausibleInAction,
+  ensureQustoInitialized,
+  expectQustoInAction,
   isEngagementEvent,
   isPageviewEvent
 } from './support/test-utils'
@@ -28,7 +28,7 @@ test('does not track form submissions when the feature is disabled', async ({
     `
   })
 
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: async () => {
       await page.goto(url)
       await page.click('input[type="submit"]')
@@ -58,10 +58,10 @@ test.describe('form submissions feature is enabled', () => {
       `
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(url)
-        await ensurePlausibleInitialized(page)
+        await ensureQustoInitialized(page)
         await page.fill('input[type="text"]', 'Any Name')
         await page.click('input[type="submit"]')
       },
@@ -89,10 +89,10 @@ test.describe('form submissions feature is enabled', () => {
       `
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(url)
-        await ensurePlausibleInitialized(page)
+        await ensureQustoInitialized(page)
         await page.click('input[type="submit"]')
       },
       shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent],
@@ -131,10 +131,10 @@ test.describe('form submissions feature is enabled', () => {
       `
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(url)
-        await ensurePlausibleInitialized(page)
+        await ensureQustoInitialized(page)
         await page.click('button#dynamically-insert-form')
         await page.click('input[type="submit"]')
       },
@@ -163,10 +163,10 @@ test.describe('form submissions feature is enabled', () => {
       `
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(url)
-        await ensurePlausibleInitialized(page)
+        await ensureQustoInitialized(page)
 
         await page.fill('input[type="email"]', 'invalid email')
         await page.click('input[type="submit"]')
@@ -196,10 +196,10 @@ test.describe('form submissions feature is enabled', () => {
       `
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(url)
-        await ensurePlausibleInitialized(page)
+        await ensureQustoInitialized(page)
         await page.fill('input[type="email"]', 'invalid email')
         await page.click('input[type="submit"]')
       },
@@ -232,10 +232,10 @@ test.describe('form submissions feature is enabled', () => {
       `
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(url)
-        await ensurePlausibleInitialized(page)
+        await ensureQustoInitialized(page)
 
         await page.click('button#trigger-FormElement-submit')
       },
@@ -267,10 +267,10 @@ test.describe('form submissions feature is enabled', () => {
       `
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(url)
-        await ensurePlausibleInitialized(page)
+        await ensureQustoInitialized(page)
         await page.click('input[type="submit"]')
       },
       shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent],
@@ -283,7 +283,7 @@ test.describe('form submissions feature is enabled', () => {
       ]
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.fill('input[type="email"]', 'customer@example.com')
         await page.keyboard.press('Enter')

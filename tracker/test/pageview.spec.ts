@@ -1,7 +1,7 @@
 import { initializePageDynamically } from './support/initialize-page-dynamically'
 import {
   e,
-  expectPlausibleInAction,
+  expectQustoInAction,
   hideAndShowCurrentTab,
   isEngagementEvent,
   switchByMode,
@@ -37,7 +37,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: 'hello world'
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await hideAndShowCurrentTab(page, { delay: 200 })
@@ -92,12 +92,12 @@ for (const mode of ['web', 'esm']) {
         `
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.goto(url),
         refutedRequests: [{ n: 'pageview' }, { n: 'engagement' }]
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.click('#alfa')
           await page.click('#beta')
@@ -134,7 +134,7 @@ for (const mode of ['legacy', 'web', 'esm']) {
         bodyContent: ''
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.goto(url),
         expectedRequests: [
           {

@@ -4,7 +4,7 @@ import {
   resolveWithTimestamps
 } from './support/mock-many-requests'
 import {
-  expectPlausibleInAction,
+  expectQustoInAction,
   isEngagementEvent,
   isPageviewEvent,
   switchByMode
@@ -50,7 +50,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: /* HTML */ `<a href="${outboundUrl}">➡️</a>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('a')
@@ -97,7 +97,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: /* HTML */ `<a href="${outboundUrl}">➡️</a>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('a')
@@ -173,7 +173,7 @@ for (const mode of ['legacy', 'web'])
         })
         await page.goto(url)
 
-        await expectPlausibleInAction(page, {
+        await expectQustoInAction(page, {
           action: () =>
             page.click(click.element, { modifiers: click.modifiers }),
           expectedRequests: [
@@ -282,7 +282,7 @@ for (const mode of ['legacy', 'web'])
 
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a'),
         refutedRequests: [{ n: 'Outbound Link: Click' }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -365,7 +365,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click(click.element, { modifiers: click.modifiers }),
         expectedRequests: [
           { n: 'Outbound Link: Click', p: { url: outboundUrl } }
@@ -507,7 +507,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     })
     await page.goto(url)
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('a'),
       refutedRequests: [{ n: 'Outbound Link: Click' }]
     })

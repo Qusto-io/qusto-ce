@@ -4,14 +4,14 @@ import { initializeCookieConsentEngine } from './autoconsent-to-cookies'
 import { checkDisallowedByCSP } from './check-disallowed-by-csp'
 
 /**
- * Function that verifies if Plausible is installed correctly.
+ * Function that verifies if Qusto is installed correctly.
  * @param {VerifierArgs}
  * @returns {Promise<VerifierResult>}
  */
 
-const DEFAULT_TRACKER_SCRIPT_SELECTOR = 'script[src^="https://plausible.io/js"]'
+const DEFAULT_TRACKER_SCRIPT_SELECTOR = 'script[src^="https://analytics.qusto.io/js"]'
 
-async function verifyPlausibleInstallation(options) {
+async function verifyQustoInstallation(options) {
   const {
     timeoutMs,
     responseHeaders,
@@ -33,22 +33,22 @@ async function verifyPlausibleInstallation(options) {
   const { stopRecording, getInterceptedFetch } = startRecordingEventFetchCalls()
 
   const {
-    plausibleIsInitialized,
-    plausibleIsOnWindow,
+    qustoIsInitialized,
+    qustoIsOnWindow,
     plausibleVersion,
     plausibleVariant,
     testEvent,
     cookiesConsentResult,
-    error: testPlausibleFunctionError
-  } = await testPlausibleFunction({
+    error: testQustoFunctionError
+  } = await testQustoFunction({
     timeoutMs,
     debug
   })
   const trackerIsInHtml = isInHtml(trackerScriptSelector)
 
-  if (testPlausibleFunctionError) {
+  if (testQustoFunctionError) {
     log(
-      `There was an error testing plausible function: ${testPlausibleFunctionError}`
+      `There was an error testing plausible function: ${testQustoFunctionError}`
     )
   }
 
@@ -91,13 +91,13 @@ async function verifyPlausibleInstallation(options) {
   const diagnostics = {
     disallowedByCsp,
     trackerIsInHtml,
-    plausibleIsOnWindow,
-    plausibleIsInitialized,
+    qustoIsOnWindow,
+    qustoIsInitialized,
     plausibleVersion,
     plausibleVariant,
     testEvent: {
       ...testEvent, // callbackResult
-      testPlausibleFunctionError,
+      testQustoFunctionError,
       requestUrl: interceptedTestEvent?.request?.url,
       normalizedBody: interceptedTestEvent?.request?.normalizedBody,
       responseStatus: interceptedTestEvent?.response?.status,
@@ -118,7 +118,7 @@ async function verifyPlausibleInstallation(options) {
   }
 }
 
-function getNormalizedPlausibleEventBody(fetchOptions) {
+function getNormalizedQustoEventBody(fetchOptions) {
   try {
     const body = JSON.parse(fetchOptions.body ?? '{}')
 
@@ -148,7 +148,7 @@ function startRecordingEventFetchCalls() {
   window.fetch = function (url, options = {}) {
     let identifier = null
 
-    const normalizedEventBody = getNormalizedPlausibleEventBody(options)
+    const normalizedEventBody = getNormalizedQustoEventBody(options)
     if (normalizedEventBody) {
       identifier = normalizedEventBody.name
       interceptions.set(identifier, {
@@ -189,28 +189,28 @@ function isInHtml(selector) {
   return document.querySelector(selector) !== null
 }
 
-function isPlausibleOnWindow() {
-  return !!window.plausible
+function isQustoOnWindow() {
+  return !!window.qusto
 }
 
-function isPlausibleInitialized() {
-  return window.plausible?.l
+function isQustoInitialized() {
+  return window.qusto?.l
 }
 
-function getPlausibleVersion() {
-  return window.plausible?.v
+function getQustoVersion() {
+  return window.qusto?.v
 }
 
-function getPlausibleVariant() {
-  return window.plausible?.s
+function getQustoVariant() {
+  return window.qusto?.s
 }
 
-async function testPlausibleFunction({ timeoutMs, debug }) {
+async function testQustoFunction({ timeoutMs, debug }) {
   return new Promise((_resolve) => {
-    let plausibleIsOnWindow = isPlausibleOnWindow()
-    let plausibleIsInitialized = isPlausibleInitialized()
-    let plausibleVersion = getPlausibleVersion()
-    let plausibleVariant = getPlausibleVariant()
+    let qustoIsOnWindow = isQustoOnWindow()
+    let qustoIsInitialized = isQustoInitialized()
+    let plausibleVersion = getQustoVersion()
+    let plausibleVariant = getQustoVariant()
     let testEvent = {}
     let cookiesConsentResult = {
       handled: null,
@@ -234,8 +234,8 @@ async function testPlausibleFunction({ timeoutMs, debug }) {
 
       resolved = true
       _resolve({
-        plausibleIsOnWindow,
-        plausibleIsInitialized,
+        qustoIsOnWindow,
+        qustoIsInitialized,
         plausibleVersion,
         plausibleVariant,
         testEvent,
@@ -246,31 +246,31 @@ async function testPlausibleFunction({ timeoutMs, debug }) {
 
     timeout = setTimeout(() => {
       resolve({
-        error: 'Test Plausible function timeout exceeded'
+        error: 'Test Qusto function timeout exceeded'
       })
     }, timeoutMs)
 
     plausibleOnWindowPollInterval = setInterval(
       () =>
-        plausibleIsOnWindow
+        qustoIsOnWindow
           ? clearInterval(plausibleOnWindowPollInterval)
-          : (plausibleIsOnWindow = isPlausibleOnWindow()),
+          : (qustoIsOnWindow = isQustoOnWindow()),
       10
     )
 
     plausibleInitializedPollInterval = setInterval(() => {
-      if (plausibleIsInitialized) {
-        plausibleVersion = getPlausibleVersion()
-        plausibleVariant = getPlausibleVariant()
+      if (qustoIsInitialized) {
+        plausibleVersion = getQustoVersion()
+        plausibleVariant = getQustoVariant()
         clearInterval(plausibleInitializedPollInterval)
       } else {
-        plausibleIsInitialized = isPlausibleInitialized()
+        qustoIsInitialized = isQustoInitialized()
       }
     }, 10)
 
     testEventPollInterval = setInterval(() => {
-      if (plausibleIsOnWindow && plausibleIsInitialized) {
-        window.plausible('verification-agent-test', {
+      if (qustoIsOnWindow && qustoIsInitialized) {
+        window.qusto('verification-agent-test', {
           callback: (testEventCallbackResult) => {
             resolve({
               testEvent: {
@@ -311,4 +311,4 @@ function forceIgnoreWebdriverCondition() {
   window.__plausible = true
 }
 
-window.verifyPlausibleInstallation = verifyPlausibleInstallation
+window.verifyQustoInstallation = verifyQustoInstallation

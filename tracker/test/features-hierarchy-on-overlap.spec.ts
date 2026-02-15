@@ -1,6 +1,6 @@
 import {
-  ensurePlausibleInitialized,
-  expectPlausibleInAction,
+  ensureQustoInitialized,
+  expectQustoInAction,
   isEngagementEvent,
   isPageviewEvent,
   switchByMode
@@ -58,7 +58,7 @@ for (const mode of ['legacy', 'web'] as const) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a'),
         expectedRequests: [{ n: 'Custom Event', p: { url: downloadUrl } }],
         awaitedRequestCount: 2
@@ -101,7 +101,7 @@ for (const mode of ['legacy', 'web'] as const) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a'),
         expectedRequests: [
           { n: 'Outbound Link: Click', p: { url: downloadUrl } }
@@ -145,7 +145,7 @@ for (const mode of ['legacy', 'web'] as const) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a'),
         expectedRequests: [
           {
@@ -192,10 +192,10 @@ for (const mode of ['web', 'esm'] as const) {
         `
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
-          await ensurePlausibleInitialized(page)
+          await ensureQustoInitialized(page)
           await page.fill('input[type="text"]', 'Any Name')
           await page.click('input[type="submit"]')
         },
@@ -239,10 +239,10 @@ for (const mode of ['web', 'esm'] as const) {
         `
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
-          await ensurePlausibleInitialized(page)
+          await ensureQustoInitialized(page)
           await page.fill('input[type="email"]', 'any@example.com')
           await page.press('input[type="email"]', 'Enter')
         },

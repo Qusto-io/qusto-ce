@@ -1,9 +1,9 @@
-# Plausible Analytics tracker
+# Qusto Analytics Tracker
 
 [![NPM](https://flat.badgen.net/npm/v/@plausible-analytics/tracker)](https://www.npmjs.com/package/@plausible-analytics/tracker)
 [![MIT License](https://img.shields.io/badge/License-MIT-red.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-Add [Plausible Analytics](https://plausible.io/) to your website.
+Add [Qusto Analytics](https://qusto.io/) to your website.
 
 ## Features
 
@@ -42,10 +42,10 @@ See also [plausible.d.ts](https://github.com/plausible/analytics/blob/master/tra
 
 | Option                 | Description                                                                                                                                                                                                                                                                          | Default                            |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
-| `domain`               | **Required** Your site's domain, as declared by you in Plausible's settings.                                                                                                                                                                                                         |                                    |
-| `endpoint`             | The URL of the Plausible API endpoint. See proxying guide at https://plausible.io/docs/proxy/introduction                                                                                                                                                                            | `"https://plausible.io/api/event"` |
+| `domain`               | **Required** Your site's domain, as declared by you in Qusto's settings.                                                                                                                                                                                                         |                                    |
+| `endpoint`             | The URL of the Qusto API endpoint. See proxying guide at https://docs.qusto.io/proxy/introduction                                                                                                                                                                            | `"https://analytics.qusto.io/api/event"` |
 | `autoCapturePageviews` | Whether to automatically capture pageviews.                                                                                                                                                                                                                                          | `true`                             |
-| `hashBasedRouting`     | Whether the page uses hash based routing. Read more at https://plausible.io/docs/hash-based-routing                                                                                                                                                                                  | `false`                            |
+| `hashBasedRouting`     | Whether the page uses hash based routing. Read more at https://docs.qusto.io/hash-based-routing                                                                                                                                                                                  | `false`                            |
 | `outboundLinks`        | Whether to track outbound link clicks.                                                                                                                                                                                                                                               | `false`                            |
 | `fileDownloads`        | Whether to track file downloads.                                                                                                                                                                                                                                                     | `false`                            |
 | `formSubmissions`      | Whether to track form submissions.                                                                                                                                                                                                                                                   | `false`                            |
@@ -53,7 +53,7 @@ See also [plausible.d.ts](https://github.com/plausible/analytics/blob/master/tra
 | `logging`              | Whether to log on ignored events.                                                                                                                                                                                                                                                    | `true`                             |
 | `customProperties`     | Object or function that returns custom properties for a given event.                                                                                                                                                                                                                 | `{}`                               |
 | `transformRequest`     | Function that allows transforming or ignoring requests                                                                                                                                                                                                                               |                                    |
-| `bindToWindow`         | Binds `track` to `window.plausible` which is used by Plausible installation verification tool to detect whether Plausible has been installed correctly. If `bindToWindow` is set to false, the installation verification tool won't be able to automatically detect it on your site. | `true`                             |
+| `bindToWindow`         | Binds `track` to `window.plausible` which is used by Qusto installation verification tool to detect whether Qusto has been installed correctly. If `bindToWindow` is set to false, the installation verification tool won't be able to automatically detect it on your site. | `true`                             |
 
 #### Using `customProperties`
 
@@ -101,7 +101,7 @@ import { track } from '@plausible-analytics/tracker'
 track('Purchase', { revenue: { amount: 15.99, currency: 'USD' } })
 ```
 
-More information can be found in [ecommerce revenue tracking docs](https://plausible.io/docs/ecommerce-revenue-tracking)
+More information can be found in [ecommerce revenue tracking docs](https://docs.qusto.io/ecommerce-revenue-tracking)
 
 ### Callbacks
 
@@ -125,6 +125,6 @@ track('some-event', {
 
 ### Opt out and exclude yourself from the analytics
 
-Since plausible-tracker is bundled with your application code, using an ad-blocker to exclude your visits isn't an option. Fortunately Plausible has an alternative for this scenario: plausible-tracker will not send events if `localStorage.plausible_ignore` is set to `"true"`.
+Since qusto-tracker is bundled with your application code, using an ad-blocker to exclude your visits isn't an option. Fortunately Qusto has an alternative for this scenario: qusto-tracker will not send events if `localStorage.plausible_ignore` is set to `"true"`.
 
-More information about this method can be found in the [Plausible documentation](https://plausible.io/docs/excluding-localstorage).
+More information about this method can be found in the [Qusto documentation](https://docs.qusto.io/excluding-localstorage).

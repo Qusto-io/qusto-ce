@@ -3,13 +3,13 @@
 This document describes the design goals informing the architecture of the Qusto tracker script codebase as well as a map
 to how the code is laid out.
 
-> **Note:** The tracker is based on the Plausible Analytics open-source project. This document preserves the original architecture documentation with Qusto-specific updates.
+> **Note:** The tracker is based on the Qusto Analytics open-source project. This document preserves the original architecture documentation with Qusto-specific updates.
 
 ## Installation Support
 
 The tracker subdirectory also includes site verification and pre-installation checks that are run in headless browser, via
-browserless.io. These files live under the `/tracker/installation-support/` director and are meant to provide Plausible
-installation support - checking the site for what technologies to recommend and verifying whether Plausible has been
+browserless.io. These files live under the `/tracker/installation-support/` director and are meant to provide Qusto
+installation support - checking the site for what technologies to recommend and verifying whether Qusto has been
 installed correctly. Please see `lib/plausible/installation_support/checks/installation.ex` for the Elixir context and how
 this JS code ends up being used.
 
@@ -52,7 +52,7 @@ Qusto tracker endpoints dynamically interpolate site-specific configuration into
 
 We want to avoid intentionally breaking existing installations of the script.
 
-In a previous version of the script, Plausible allowed toggling features by changing their script extension. We still generate and serve each of these legacy variants.
+In a previous version of the script, Qusto allowed toggling features by changing their script extension. We still generate and serve each of these legacy variants.
 
 ### 5. Great development experience
 
@@ -73,7 +73,7 @@ Contains tracker code itself which is to be compiled. `plausible.js` is the entr
 
 ### `tracker/installation_support/`
 
-Contains source code to verify that the tracker script is installed correctly with Plausible.InstallationSupport modules. There are multiple entrypoints, see variants.json for details.
+Contains source code to verify that the tracker script is installed correctly with Qusto.InstallationSupport modules. There are multiple entrypoints, see variants.json for details.
 
 ### `tracker/compiler/variants.json`
 

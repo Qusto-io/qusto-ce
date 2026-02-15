@@ -186,7 +186,7 @@ defmodule PlausibleWeb.Live.Installation do
           <.focus_list>
             <:item>
               Still using the legacy snippet with the data-domain attribute? See
-              <.styled_link href="https://plausible.io/docs/script-update-guide">
+              <.styled_link href="https://docs.qusto.io/script-update-guide">
                 migration guide
               </.styled_link>
             </:item>
@@ -233,7 +233,7 @@ defmodule PlausibleWeb.Live.Installation do
       }>
         <.notice class="mt-4" theme={:yellow}>
           Your website is running an outdated version of the tracking script. Please
-          <.styled_link new_tab href="https://plausible.io/docs/script-update-guide">
+          <.styled_link new_tab href="https://docs.qusto.io/script-update-guide">
             update
           </.styled_link>
           your tracking script before continuing
@@ -247,7 +247,7 @@ defmodule PlausibleWeb.Live.Installation do
         <.notice class="mt-4" theme={:yellow}>
           Your website might be using an outdated version of our Google Tag Manager template.
           If so,
-          <.styled_link new_tab href="https://plausible.io/docs/script-update-guide#gtm">
+          <.styled_link new_tab href="https://docs.qusto.io/script-update-guide#gtm">
             update
           </.styled_link>
           your Google Tag Manager template before continuing

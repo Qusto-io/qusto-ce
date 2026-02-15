@@ -1,16 +1,16 @@
-// This snippet is shown to users to install plausible tracker script
+// This snippet is shown to users to install qusto tracker script
 
 //<script>
-window.plausible =
-  window.plausible ||
+window.qusto =
+  window.qusto ||
   function () {
-    ;(plausible.q = plausible.q || []).push(arguments)
+    ;(qusto.q = qusto.q || []).push(arguments)
   }
-plausible.init =
-  plausible.init ||
+qusto.init =
+  qusto.init ||
   function (overrides) {
-    plausible.o = overrides || {}
+    qusto.o = overrides || {}
   }
 
-//   plausible.init()
+//   qusto.init()
 //</script>

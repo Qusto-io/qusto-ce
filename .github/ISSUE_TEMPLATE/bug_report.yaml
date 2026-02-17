@@ -13,7 +13,7 @@ body:
         - **Self-hosted users**: You're in the right place! Community support is available here
         - **Feature requests**: Please use the Feature Request template instead
 
-        [Documentation](https://docs.qusto.io) | [Self-hosted Support Forum](https://github.com/qusto-io/qusto-analytics/discussions/categories/self-hosted-support)
+        [Documentation](https://docs.qusto.io) | [Self-hosted Support Forum](https://github.com/qusto-io/qusto-ce/discussions/categories/self-hosted-support)
 
   - type: dropdown
     id: bug-location

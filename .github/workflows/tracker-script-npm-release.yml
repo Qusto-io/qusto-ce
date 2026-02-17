@@ -78,4 +78,4 @@ jobs:
           url: ${{ secrets.BUILD_NOTIFICATION_URL }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"content": "<a href=\"https://github.com/Qusto-io/qusto-analytics/actions/workflows/tracker-script-npm-release.yml\">NPM release failed</a>"}'
+          data: '{"content": "<a href=\"https://github.com/Qusto-io/qusto-ce/actions/workflows/tracker-script-npm-release.yml\">NPM release failed</a>"}'

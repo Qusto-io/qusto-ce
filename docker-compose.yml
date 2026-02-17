@@ -1,6 +1,54 @@
-version: '3.8'
-
 services:
+  # ===========================================
+  # Qusto Analytics - CE (Community Edition)
+  # ===========================================
+  analytics:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MIX_ENV: ce
+    image: qusto/qusto-ce:${VERSION:-latest}
+    container_name: qusto-ce-ce
+    hostname: analytics
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-qusto_dev}
+      CLICKHOUSE_DATABASE_URL: http://clickhouse:8123/${CLICKHOUSE_DB:-qusto_events_dev}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      BASE_URL: ${BASE_URL:-http://localhost:8000}
+      DISABLE_REGISTRATION: ${DISABLE_REGISTRATION:-false}
+      DISABLE_AUTH: ${DISABLE_AUTH:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - qusto-network
+    labels:
+      - "com.qusto.edition=ce"
+      - "com.qusto.component=analytics"
+
   # ===========================================
   # PostgreSQL - Metadata & Configuration Store
   # ===========================================

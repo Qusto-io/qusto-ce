@@ -19,7 +19,7 @@ We welcome everyone to contribute to Qusto Analytics! This document helps you un
 
 Qusto uses an **open-core model**. Understanding this is important before contributing.
 
-### This Repository (qusto-analytics) - Open Source (AGPLv3)
+### This Repository (qusto-ce) - Open Source (AGPLv3)
 
 - ✅ Core analytics engine
 - ✅ Dashboard UI
@@ -142,13 +142,13 @@ To remove: `pre-commit uninstall`
 
 ### Bug Fixes
 
-Bugs can be found in our [issue tracker](https://github.com/qusto-io/qusto-analytics/issues). Issues labeled `good first issue` are great for newcomers.
+Bugs can be found in our [issue tracker](https://github.com/qusto-io/qusto-ce/issues). Issues labeled `good first issue` are great for newcomers.
 
 ### New Features
 
 New features need to be discussed first. Please:
 
-1. Check the [Discussions tab](https://github.com/qusto-io/qusto-analytics/discussions) for existing proposals
+1. Check the [Discussions tab](https://github.com/qusto-io/qusto-ce/discussions) for existing proposals
 2. Open a new discussion to propose your feature
 3. Wait for feedback before starting implementation
 
@@ -288,8 +288,8 @@ Before opening a PR, ensure:
 
 ## Questions?
 
-- **General questions**: [Discussions](https://github.com/qusto-io/qusto-analytics/discussions)
-- **Self-hosted support**: [Self-hosted forum](https://github.com/qusto-io/qusto-analytics/discussions/categories/self-hosted-support)
+- **General questions**: [Discussions](https://github.com/qusto-io/qusto-ce/discussions)
+- **Self-hosted support**: [Self-hosted forum](https://github.com/qusto-io/qusto-ce/discussions/categories/self-hosted-support)
 - **Security issues**: Email security@qusto.io (do not open public issues)
 
 Thank you for contributing to Qusto Analytics! 🙏

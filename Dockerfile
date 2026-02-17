@@ -82,6 +82,11 @@ USER 999
 WORKDIR /app
 ENV LISTEN_IP=0.0.0.0
 ENTRYPOINT ["/entrypoint.sh"]
+
+# ✅ Kubernetes-ready: Health check endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD wget --spider -q http://localhost:8000/api/health || exit 1
+
 EXPOSE 8000
 ENV DEFAULT_DATA_DIR=/var/lib/plausible
 VOLUME /var/lib/plausible

@@ -6,7 +6,7 @@ This guide explains how to deploy Qusto Analytics in various configurations.
 
 Qusto uses a dual-repository architecture:
 
-1. **qusto-analytics** (Public AGPL)
+1. **qusto-ce** (Public AGPL)
    - Core analytics engine
    - Basic dashboards and reporting
    - Open source, community edition
@@ -29,8 +29,8 @@ Deploy the open-source core without proprietary features.
 
 ```bash
 # Clone public repo
-git clone https://github.com/Qusto-io/qusto-analytics.git
-cd qusto-analytics
+git clone https://github.com/Qusto-io/qusto-ce.git
+cd qusto-ce
 git checkout public-main
 
 # Configure
@@ -63,8 +63,8 @@ Deploy with all proprietary features included.
 
 ```bash
 # Clone with private access
-git clone --recursive git@github.com:Qusto-io/qusto-analytics.git
-cd qusto-analytics
+git clone --recursive git@github.com:Qusto-io/qusto-ce.git
+cd qusto-ce
 git checkout deploy-production
 
 # Initialize submodules (if not already done)
@@ -146,7 +146,7 @@ helm repo add qusto https://charts.qusto.io
 helm repo update
 
 # Install CE (public charts)
-helm install qusto-ce qusto/qusto-analytics \
+helm install qusto-ce qusto/qusto-ce \
   --namespace qusto \
   --create-namespace \
   --set ingress.enabled=true \
@@ -185,19 +185,19 @@ Deploy analytics and e-commerce as independent services.
 ### Analytics Service
 
 ```bash
-cd qusto-analytics
+cd qusto-ce
 git checkout public-main
 
 # Deploy to your infrastructure
-docker build -t qusto-analytics:latest .
-docker push your-registry/qusto-analytics:latest
+docker build -t qusto-ce:latest .
+docker push your-registry/qusto-ce:latest
 
 # Run
 docker run -d \
   -p 8000:8000 \
   -e DATABASE_URL=... \
   -e CLICKHOUSE_DATABASE_URL=... \
-  your-registry/qusto-analytics:latest
+  your-registry/qusto-ce:latest
 ```
 
 ### E-commerce Service
@@ -220,7 +220,7 @@ docker push your-registry/qusto-ecommerce-frontend:latest
 
 ## Branch Strategy
 
-### qusto-analytics Branches
+### qusto-ce Branches
 
 - **public-main**: Public CE development (default for open source)
 - **deploy-production**: Production with submodules (PRIVATE, never public)
@@ -261,7 +261,7 @@ docker push your-registry/qusto-ecommerce-frontend:latest
 ### Update CE Only
 
 ```bash
-cd qusto-analytics
+cd qusto-ce
 git checkout public-main
 git pull origin public-main
 
@@ -272,7 +272,7 @@ docker-compose up -d --build analytics
 ### Update E-commerce
 
 ```bash
-cd qusto-analytics
+cd qusto-ce
 git checkout deploy-production
 
 # Update submodule
@@ -417,10 +417,10 @@ docker-compose exec clickhouse clickhouse-client --query "RESTORE DATABASE plaus
 ## Support
 
 - **CE Documentation**: https://docs.qusto.io/self-hosting
-- **CE Issues**: https://github.com/Qusto-io/qusto-analytics/issues
+- **CE Issues**: https://github.com/Qusto-io/qusto-ce/issues
 - **Enterprise Support**: support@qusto.io
 - **Emergency**: emergency@qusto.io
 
 ---
 
-For questions about deployment, open a [GitHub Discussion](https://github.com/Qusto-io/qusto-analytics/discussions) or contact support@qusto.io.
+For questions about deployment, open a [GitHub Discussion](https://github.com/Qusto-io/qusto-ce/discussions) or contact support@qusto.io.

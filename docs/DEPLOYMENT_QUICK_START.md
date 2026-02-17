@@ -26,18 +26,18 @@ Or add secrets manually via GitHub CLI:
 
 ```bash
 # Staging secrets
-gh secret set STAGING_DEPLOY_HOST --repo Qusto-io/qusto-analytics
-gh secret set STAGING_DEPLOY_USER --repo Qusto-io/qusto-analytics
-gh secret set STAGING_DEPLOY_SSH_KEY --repo Qusto-io/qusto-analytics
+gh secret set STAGING_DEPLOY_HOST --repo Qusto-io/qusto-ce
+gh secret set STAGING_DEPLOY_USER --repo Qusto-io/qusto-ce
+gh secret set STAGING_DEPLOY_SSH_KEY --repo Qusto-io/qusto-ce
 
 # Production secrets
-gh secret set PRODUCTION_DEPLOY_HOST --repo Qusto-io/qusto-analytics
-gh secret set PRODUCTION_DEPLOY_USER --repo Qusto-io/qusto-analytics
-gh secret set PRODUCTION_DEPLOY_SSH_KEY --repo Qusto-io/qusto-analytics
+gh secret set PRODUCTION_DEPLOY_HOST --repo Qusto-io/qusto-ce
+gh secret set PRODUCTION_DEPLOY_USER --repo Qusto-io/qusto-ce
+gh secret set PRODUCTION_DEPLOY_SSH_KEY --repo Qusto-io/qusto-ce
 ```
 
 Or via GitHub UI:
-1. Go to: https://github.com/Qusto-io/qusto-analytics/settings/secrets/actions
+1. Go to: https://github.com/Qusto-io/qusto-ce/settings/secrets/actions
 2. Click "New repository secret"
 3. Add each secret with its value
 
@@ -47,10 +47,10 @@ Check branch protection rules:
 
 ```bash
 # Master branch
-gh api repos/Qusto-io/qusto-analytics/branches/master/protection
+gh api repos/Qusto-io/qusto-ce/branches/master/protection
 
 # Develop branch
-gh api repos/Qusto-io/qusto-analytics/branches/develop/protection
+gh api repos/Qusto-io/qusto-ce/branches/develop/protection
 ```
 
 **Current Configuration:**
@@ -100,7 +100,7 @@ View workflow runs:
 
 ```bash
 # List recent workflow runs
-gh run list --repo Qusto-io/qusto-analytics
+gh run list --repo Qusto-io/qusto-ce
 
 # Watch a specific run
 gh run watch <run-id>
@@ -110,7 +110,7 @@ gh run view <run-id> --log
 ```
 
 Or via GitHub UI:
-https://github.com/Qusto-io/qusto-analytics/actions
+https://github.com/Qusto-io/qusto-ce/actions
 
 ### 5. Prepare Servers for Deployment
 
@@ -145,13 +145,13 @@ git merge your-feature-branch
 git push origin develop
 
 # Deployment workflow triggers automatically
-# Monitor: https://github.com/Qusto-io/qusto-analytics/actions/workflows/deploy.yml
+# Monitor: https://github.com/Qusto-io/qusto-ce/actions/workflows/deploy.yml
 ```
 
 **Manual Production Deployment:**
 ```bash
 # Via GitHub UI
-1. Go to: https://github.com/Qusto-io/qusto-analytics/actions/workflows/deploy.yml
+1. Go to: https://github.com/Qusto-io/qusto-ce/actions/workflows/deploy.yml
 2. Click "Run workflow"
 3. Select branch: main
 4. Choose environment: production

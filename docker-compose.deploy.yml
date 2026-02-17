@@ -11,6 +11,7 @@ services:
       - BASE_URL=${BASE_URL}
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/plausible
       - CLICKHOUSE_DATABASE_URL=http://clickhouse:8123/plausible
+      - DISABLE_REGISTRATION=${DISABLE_REGISTRATION:-false}
       # Enable proprietary features via env var
       - QUSTO_ECOMMERCE_ENABLED=true
       - QUSTO_ECOMMERCE_URL=http://ecommerce:8085

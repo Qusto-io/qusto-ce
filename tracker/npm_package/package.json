@@ -1,5 +1,5 @@
 {
-  "name": "@qusto-analytics/tracker",
+  "name": "@qusto-ce/tracker",
   "version": "0.4.4",
   "description": "Qusto Analytics official frontend tracking library",
   "scripts": {

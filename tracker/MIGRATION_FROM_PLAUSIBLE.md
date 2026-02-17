@@ -5,7 +5,7 @@ This tracker has been rebranded from Plausible Analytics to Qusto Analytics.
 ## Package Name Change
 
 **Old:** `@plausible-analytics/tracker`
-**New:** `@qusto-analytics/tracker`
+**New:** `@qusto-ce/tracker`
 
 ## API Endpoint Change
 

@@ -127,6 +127,16 @@
   --color-dark-border: rgba(197, 81, 48, 0.15);
   --color-dark-border-strong: rgba(197, 81, 48, 0.25);
   --color-dark-divider: rgba(197, 81, 48, 0.08);
+
+  /* === QUSTO WARM DARK MODE - Headers (EE-aligned accent) === */
+  --color-dark-heading: #e97a52;      /* Accent orange - matches EE */
+  --color-dark-heading-sub: #f0a068; /* Lighter accent - matches EE */
+
+  /* === QUSTO WARM DARK MODE - Header border (blue trace for brand) === */
+  --color-dark-header-border: rgba(74, 158, 255, 0.2);
+
+  /* === QUSTO WARM DARK MODE - Card hover (blue trace) === */
+  --color-dark-card-hover-border: rgba(74, 158, 255, 0.3);
 }
 
 @media print {
@@ -180,6 +190,16 @@
     @apply bg-white/80 dark:bg-[rgba(45,40,32,0.6)]
            backdrop-blur-lg backdrop-saturate-180
            border border-gray-200 dark:border-[var(--color-dark-border)];
+  }
+
+  /* === EE-ALIGNED CARD HOVER (blue trace in dark mode) === */
+  .card-hover-border {
+    @apply border border-gray-200 dark:border-[var(--color-dark-border)]
+           transition-all duration-300;
+  }
+
+  .card-hover-border:hover {
+    @apply dark:border-[var(--color-dark-card-hover-border)];
   }
 
   /* === MICRO-INTERACTIONS === */
@@ -594,6 +614,11 @@ iframe[hidden] {
   --color-text-primary: var(--qusto-gray-900);
   --color-text-secondary: var(--qusto-gray-600);
   --color-text-tertiary: var(--qusto-gray-500);
+  --color-text-disabled: #999999;
+
+  /* Headers (EE-aligned: charcoal in light mode) */
+  --color-heading: #36454f;
+  --color-heading-sub: #4a5568;
 
   /* Borders */
   --color-border: var(--qusto-gray-200);
@@ -606,6 +631,7 @@ iframe[hidden] {
   --text-primary: #1a1a1a;
   --text-secondary: #666666;
   --border: rgba(0, 0, 0, 0.1);
+  --header-border: var(--border);
 }
 
 /* ============================================================================
@@ -624,6 +650,10 @@ iframe[hidden] {
   --color-text-secondary: var(--color-dark-text-secondary);
   --color-text-tertiary: var(--color-dark-text-tertiary);
 
+  /* Warm Dark Mode Headers (EE-aligned: accent orange) */
+  --color-heading: var(--color-dark-heading);
+  --color-heading-sub: var(--color-dark-heading-sub);
+
   /* Warm Dark Mode Borders (Orange-tinted) */
   --color-border: var(--color-dark-border);
   --color-border-dark: var(--color-dark-border-strong);
@@ -635,6 +665,9 @@ iframe[hidden] {
   --text-primary: #f5f1e8;
   --text-secondary: #d4cfc0;
   --border: rgba(197, 81, 48, 0.15);
+
+  /* EE-aligned: header border with blue trace in dark mode */
+  --header-border: var(--color-dark-header-border);
 }
 
 /* ============================================================================

@@ -52,10 +52,17 @@ defmodule PlausibleWeb.FirstLaunchPlugTest do
   end
 
   describe "first launch plug in :browser pipeline" do
-    test "redirects to /register on first launch", %{conn: conn} do
+    test "shows homepage at / on first launch (hero + marketing)", %{conn: conn} do
       assert Release.should_be_first_launch?()
 
       conn = get(conn, "/")
+      assert html_response(conn, 200) =~ "Privacy-First"
+    end
+
+    test "redirects /sites to /register on first launch", %{conn: conn} do
+      assert Release.should_be_first_launch?()
+
+      conn = get(conn, "/sites")
       assert redirected_to(conn) == "/register"
     end
   end

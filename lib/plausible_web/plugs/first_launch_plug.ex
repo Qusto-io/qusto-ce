@@ -25,6 +25,8 @@ defmodule PlausibleWeb.FirstLaunchPlug do
   @impl true
   def call(%Plug.Conn{private: %{__MODULE__ => :skip}} = conn, _), do: conn
   def call(%Plug.Conn{request_path: path} = conn, path), do: conn
+  # Allow homepage (hero + marketing) to show on first launch; only redirect other paths
+  def call(%Plug.Conn{request_path: "/"} = conn, _redirect_to), do: conn
 
   def call(conn, redirect_to) do
     if Release.should_be_first_launch?() do

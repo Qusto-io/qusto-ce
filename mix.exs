@@ -4,7 +4,7 @@ defmodule Plausible.MixProject do
   def project do
     [
       name: "Qusto",
-      source_url: "https://github.com/plausible/analytics",
+      source_url: "https://github.com/qusto-io/qusto-analytics",
       docs: docs(),
       app: :plausible,
       version: System.get_env("APP_VERSION", "0.0.1"),

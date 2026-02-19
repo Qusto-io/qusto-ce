@@ -782,8 +782,8 @@ iframe[hidden] {
   --text-secondary: #666666;
   --border: rgba(0, 0, 0, 0.1);
   --header-border: var(--border);
-  /* CTA section: blue gradient (light mode), typography charcoal */
-  --cta-section-bg: linear-gradient(135deg, #e6f0ff 0%, #b3d1ff 40%, #80b3ff 70%, #4a9eff 100%);
+  /* CTA section: subtle blue gradient (light mode), typography charcoal */
+  --cta-section-bg: linear-gradient(135deg, #f8fafc 0%, #f2f6fb 25%, #eef4fc 50%, #e8f0ff 75%, #e0ebff 100%);
   --cta-section-text: #36454f;
   --cta-section-btn: #c55130;
   --cta-section-btn-text: white;

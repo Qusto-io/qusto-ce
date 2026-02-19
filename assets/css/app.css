@@ -128,9 +128,9 @@
   --color-dark-border-strong: rgba(197, 81, 48, 0.25);
   --color-dark-divider: rgba(197, 81, 48, 0.08);
 
-  /* === QUSTO WARM DARK MODE - Headers (EE-aligned accent) === */
-  --color-dark-heading: #e97a52;      /* Accent orange - matches EE */
-  --color-dark-heading-sub: #f0a068; /* Lighter accent - matches EE */
+  /* === QUSTO WARM DARK MODE - Headers INVERTED: light orange for headers, darker for subheaders === */
+  --color-dark-heading: #f0a068;      /* Light orange - was subheader, now primary headers */
+  --color-dark-heading-sub: #e97a52;  /* Darker orange - was header, now subheaders/cards */
 
   /* === QUSTO WARM DARK MODE - Header border (blue trace for brand) === */
   --color-dark-header-border: rgba(74, 158, 255, 0.2);
@@ -192,9 +192,39 @@
            border border-gray-200 dark:border-[var(--color-dark-border)];
   }
 
-  /* PRO-aligned CTA section */
+  /* Section transitions: flowless, headers signal division */
+  .section-transition {
+    transition: background-color 0.3s ease;
+  }
+  .section-header {
+    color: var(--color-heading);
+  }
+  .dark .section-header {
+    color: var(--color-dark-heading);
+  }
+  /* PRO-aligned headings: charcoal in light, orange in dark */
+  .heading-qusto {
+    color: var(--color-heading);
+    font-family: var(--qusto-font-heading);
+  }
+  .dark .heading-qusto {
+    color: var(--color-dark-heading);
+  }
+  .heading-sub {
+    color: var(--color-heading-sub);
+    font-family: var(--qusto-font-heading);
+  }
+  .dark .heading-sub {
+    color: var(--color-dark-heading-sub);
+  }
+  /* CTA section: blue gradient (light) or orange gradient (dark) */
   .cta-section {
-    background: var(--cta-section-bg);
+    background: var(--cta-section-bg) !important;
+    transition: background 0.3s ease;
+  }
+  .cta-section.cta-pale h2,
+  .cta-section.cta-pale p {
+    color: var(--cta-section-text);
   }
   .cta-section h2,
   .cta-section p {
@@ -206,6 +236,31 @@
   }
   .btn-cta-section:hover {
     filter: brightness(0.98);
+  }
+  /* Orange-based secondary buttons (View Demo, See Full Pricing) - light: orange, dark: glassmorphism orange */
+  .btn-secondary-ce {
+    background: transparent;
+    border: 2px solid var(--qusto-accent);
+    color: var(--qusto-accent);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .btn-secondary-ce:hover {
+    background: rgba(197, 81, 48, 0.1);
+    box-shadow: 0 4px 12px rgba(197, 81, 48, 0.2);
+    transform: translateY(-2px);
+  }
+  .dark .btn-secondary-ce {
+    background: rgba(233, 122, 82, 0.15);
+    backdrop-filter: blur(8px);
+    border-color: var(--color-dark-accent);
+    color: var(--color-dark-accent);
+  }
+  .dark .btn-secondary-ce:hover {
+    background: rgba(233, 122, 82, 0.25);
+    box-shadow: 0 4px 16px rgba(233, 122, 82, 0.3);
   }
 
   /* === EE-ALIGNED CARD HOVER (blue trace in dark mode) === */
@@ -348,6 +403,61 @@ body > header {
 
 .dark body > header {
   background: rgba(37, 33, 24, 0.88) !important;
+}
+
+/* Footer: slightly darker derivation of default bg, branding aligned */
+.footer-branded {
+  background: var(--footer-bg);
+  color: var(--color-heading);
+}
+.dark .footer-branded {
+  background: var(--footer-bg);
+  color: var(--color-dark-text-secondary);
+}
+.footer-branded a {
+  color: var(--color-heading-sub);
+}
+.footer-branded a:hover {
+  color: var(--color-heading);
+}
+.dark .footer-branded a {
+  color: var(--color-dark-text-tertiary);
+}
+.dark .footer-branded a:hover {
+  color: var(--color-dark-text-primary);
+}
+.footer-branded h4,
+.footer-branded p,
+.footer-branded a,
+.footer-branded .footer-copyright {
+  color: var(--color-heading-sub) !important;
+}
+.footer-branded a:hover,
+.footer-branded .footer-link:hover {
+  color: var(--color-heading) !important;
+}
+.footer-branded .footer-heading {
+  color: var(--color-heading) !important;
+}
+.dark .footer-branded h4,
+.dark .footer-branded p,
+.dark .footer-branded a,
+.dark .footer-branded .footer-copyright {
+  color: var(--color-dark-text-tertiary) !important;
+}
+.dark .footer-branded a:hover,
+.dark .footer-branded .footer-link:hover {
+  color: var(--color-dark-primary) !important;
+}
+.dark .footer-branded .footer-heading {
+  color: var(--color-dark-text-primary) !important;
+}
+/* Page links hover: light=orange, dark=blue (Login, Sign up, nav, content links) */
+a.link-accent:hover {
+  color: var(--qusto-accent) !important;
+}
+.dark a.link-accent:hover {
+  color: var(--color-dark-primary) !important;
 }
 
 blockquote {
@@ -657,13 +767,16 @@ iframe[hidden] {
   --text-secondary: #666666;
   --border: rgba(0, 0, 0, 0.1);
   --header-border: var(--border);
-  /* PRO-aligned: CTA section, card hover, secondary btn */
-  --cta-section-bg: linear-gradient(135deg, #5a9fd4 0%, #3d7bb5 100%);
-  --cta-section-text: white;
-  --cta-section-btn: white;
-  --cta-section-btn-text: #2d5a8a;
+  /* CTA section: blue gradient (light mode), typography charcoal */
+  --cta-section-bg: linear-gradient(135deg, #e6f0ff 0%, #b3d1ff 40%, #80b3ff 70%, #4a9eff 100%);
+  --cta-section-text: #36454f;
+  --cta-section-btn: #c55130;
+  --cta-section-btn-text: white;
   --card-hover-border: rgba(197, 81, 48, 0.25);
   --btn-secondary-hover-border: var(--qusto-accent);
+  /* Section transitions: flowless, headers signal division */
+  --section-bg-default: var(--qusto-background);
+  --footer-bg: #e2e0d6;
 }
 
 /* ============================================================================
@@ -701,14 +814,15 @@ iframe[hidden] {
 
   /* EE-aligned: header border with blue trace in dark mode */
   --header-border: var(--color-dark-header-border);
-  /* PRO-aligned: CTA section (chocolate gradient), card hover */
+  /* CTA section: orange gradient (dark mode), typography as per theme */
   --bg-overlay: #363027;
   --bg-hover: #443c33;
   --bg-subtle: #3d352d;
-  --cta-section-bg: linear-gradient(135deg, #3d2a1f 0%, #5c4238 100%);
+  --cta-section-bg: linear-gradient(90deg, #5c2213 0%, #822f18 30%, #a33f22 60%, #c55130 100%);
   --cta-section-text: #f5f1e8;
   --cta-section-btn: white;
   --cta-section-btn-text: #c55130;
+  --footer-bg: #14110e;
 }
 
 /* ============================================================================

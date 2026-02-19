@@ -1,8 +1,19 @@
-<div class="mt-24 bg-gray-800 dark:bg-[var(--color-dark-bg-card)]">
+<div class="mt-24 footer-branded">
   <div class="container px-4 py-12 sm:px-6 lg:py-16 lg:px-8">
     <div class="xl:grid xl:grid-cols-3 xl:gap-8">
       <div class="my-8 xl:my-0">
-        <h4 class="font-semibold tracking-wider text-gray-300 leading-5">
+        <h4 class="font-semibold tracking-wider leading-5">
+          <img
+            src={
+              PlausibleWeb.Router.Helpers.static_path(
+                @conn,
+                logo_path("logo_light.svg")
+              )
+            }
+            class="inline-block w-40 dark:hidden"
+            alt="Qusto logo"
+            loading="lazy"
+          />
           <img
             src={
               PlausibleWeb.Router.Helpers.static_path(
@@ -10,12 +21,12 @@
                 logo_path("logo_dark.svg")
               )
             }
-            class="inline-block w-40 mr-1"
+            class="hidden dark:inline-block w-40"
             alt="Qusto logo"
             loading="lazy"
           />
         </h4>
-        <p class="mt-4 text-base text-gray-400 leading-6">
+        <p class="mt-4 text-base footer-link leading-6">
           <%= if ee?() do %>
             Privacy-first web analytics<br /> Built with ❤️ for ethical data collection
           <% end %>
@@ -35,7 +46,7 @@
       <div class="grid grid-cols-2 gap-8 xl:col-span-2">
         <div class="md:grid md:grid-cols-2 md:gap-8 print:hidden">
           <div>
-            <h4 class="text-sm font-semibold tracking-wider text-gray-400 uppercase leading-5">
+            <h4 class="text-sm font-semibold tracking-wider footer-heading uppercase leading-5">
               Documentation
             </h4>
             <ul class="mt-4">
@@ -43,7 +54,7 @@
                 <a
                   rel="noreferrer"
                   href="https://docs.qusto.io"
-                  class="text-base text-gray-300 leading-6 hover:text-white"
+                  class="text-base footer-link leading-6"
                 >
                   User Guide
                 </a>
@@ -52,7 +63,7 @@
                 <a
                   rel="noreferrer"
                   href="https://docs.qusto.io/integration-guides"
-                  class="text-base text-gray-300 leading-6 hover:text-white"
+                  class="text-base footer-link leading-6"
                 >
                   Integration Guides
                 </a>
@@ -61,7 +72,7 @@
                 <a
                   rel="noreferrer"
                   href="https://docs.qusto.io/troubleshoot-integration"
-                  class="text-base text-gray-300 leading-6 hover:text-white"
+                  class="text-base footer-link leading-6"
                 >
                   Troubleshooting
                 </a>
@@ -70,7 +81,7 @@
                 <a
                   rel="noreferrer"
                   href="https://docs.qusto.io/goal-conversions"
-                  class="text-base leading-6 text-gray-300 hover:text-white"
+                  class="text-base footer-link leading-6"
                 >
                   Goals & Conversions
                 </a>
@@ -79,7 +90,7 @@
                 <a
                   rel="noreferrer"
                   href="https://docs.qusto.io/stats-api"
-                  class="text-base leading-6 text-gray-300 hover:text-white"
+                  class="text-base footer-link leading-6"
                 >
                   API Reference
                 </a>
@@ -87,15 +98,15 @@
             </ul>
           </div>
           <div class="mt-12 md:mt-0">
-            <h4 class="text-sm font-semibold tracking-wider text-gray-400 uppercase leading-5">
+            <h4 class="text-sm font-semibold tracking-wider footer-heading uppercase leading-5">
               Resources
             </h4>
             <ul class="mt-4">
               <li>
                 <a
-                  rel="noferrer"
+                  rel="noreferrer"
                   href="https://github.com/qusto-io/qusto-analytics"
-                  class="text-base text-gray-300 leading-6 hover:text-white"
+                  class="text-base footer-link leading-6"
                 >
                   Source Code
                 </a>
@@ -105,7 +116,7 @@
         </div>
         <div class="md:grid md:grid-cols-2 md:gap-8">
           <div>
-            <h4 class="text-sm font-semibold tracking-wider text-gray-400 uppercase leading-5">
+            <h4 class="text-sm font-semibold tracking-wider footer-heading uppercase leading-5">
               Legal
             </h4>
             <ul class="mt-4">
@@ -113,7 +124,7 @@
                 <a
                   rel="noreferrer"
                   href="https://github.com/qusto-io/qusto-analytics/blob/main/LICENSE.md"
-                  class="text-base text-gray-300 leading-6 hover:text-white"
+                  class="text-base footer-link leading-6"
                 >
                   License (AGPL-3.0)
                 </a>
@@ -122,14 +133,14 @@
           </div>
           <%= if ee?() do %>
             <div class="mt-12 md:mt-0">
-              <h4 class="text-sm font-semibold tracking-wider text-gray-400 uppercase leading-5">
+              <h4 class="text-sm font-semibold tracking-wider footer-heading uppercase leading-5">
                 Support
               </h4>
               <ul class="mt-4">
                 <li>
                   <a
                     href="/settings"
-                    class="text-base text-gray-300 leading-6 hover:text-white"
+                    class="text-base footer-link leading-6"
                   >
                     Account Settings
                   </a>
@@ -140,12 +151,12 @@
         </div>
       </div>
     </div>
-    <div class="mt-12 border-t border-gray-700 pt-8">
-      <p class="text-base text-gray-400 xl:text-center">
+    <div class="mt-12 border-t border-[var(--color-border)] dark:border-[var(--color-dark-border)] pt-8">
+      <p class="text-base footer-copyright xl:text-center">
         &copy; {DateTime.utc_now().year} Qusto Analytics.
-        <span class="text-gray-500">
+        <span class="footer-copyright">
           Open-source software licensed under
-          <a href="https://github.com/qusto-io/qusto-analytics/blob/main/LICENSE.md" class="hover:text-gray-300">AGPL-3.0</a>.
+          <a href="https://github.com/qusto-io/qusto-analytics/blob/main/LICENSE.md" class="footer-link">AGPL-3.0</a>.
         </span>
       </p>
     </div>

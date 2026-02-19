@@ -273,6 +273,21 @@
     @apply dark:border-[var(--color-dark-card-hover-border)];
   }
 
+  /* Card title: charcoal default, orange on hover (PRO-aligned) */
+  .card-title-hover {
+    color: var(--color-heading-sub);
+    transition: color 0.2s ease;
+  }
+  .dark .card-title-hover {
+    color: var(--color-dark-heading-sub);
+  }
+  .card-hover-header:hover .card-title-hover {
+    color: var(--qusto-accent);
+  }
+  .dark .card-hover-header:hover .card-title-hover {
+    color: var(--color-dark-accent);
+  }
+
   /* === MICRO-INTERACTIONS === */
   .interact-lift {
     @apply transition-all duration-200
@@ -814,12 +829,12 @@ iframe[hidden] {
 
   /* EE-aligned: header border with blue trace in dark mode */
   --header-border: var(--color-dark-header-border);
-  /* CTA section: orange gradient (dark mode), typography as per theme */
+  /* CTA section: pale orange to darker orange (dark mode), typography charcoal */
   --bg-overlay: #363027;
   --bg-hover: #443c33;
   --bg-subtle: #3d352d;
-  --cta-section-bg: linear-gradient(90deg, #5c2213 0%, #822f18 30%, #a33f22 60%, #c55130 100%);
-  --cta-section-text: #f5f1e8;
+  --cta-section-bg: linear-gradient(90deg, #fff5f2 0%, #ffe6df 30%, #ffc7b8 60%, #ffa891 100%);
+  --cta-section-text: #36454f;
   --cta-section-btn: white;
   --cta-section-btn-text: #c55130;
   --footer-bg: #14110e;

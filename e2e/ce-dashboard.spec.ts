@@ -14,8 +14,8 @@ test.describe('CE Landing Page', () => {
   test('loads root and shows general web analytics focus', async ({ page }) => {
     await page.goto(BASE)
     await expect(page).toHaveURL(/\/$|\/register|\/login/)
-    // Should have Qusto branding
-    await expect(page.locator('img[alt="Qusto logo"]')).toBeVisible({ timeout: 5000 })
+    // Should have Qusto branding (header + footer logos)
+    await expect(page.locator('img[alt="Qusto logo"]')).toHaveCount(4)
   })
 
   test('registration page loads (HTTP 200)', async ({ page }) => {

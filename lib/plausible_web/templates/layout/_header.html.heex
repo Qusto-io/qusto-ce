@@ -157,7 +157,7 @@
                 <div class="inline-flex">
                   <a
                     href="/login"
-                    class="font-medium text-[var(--qusto-primary)] dark:text-gray-200 hover:text-[var(--qusto-brand-blue)] dark:hover:text-gray-100 focus:outline-hidden focus:text-[var(--qusto-primary)] transition duration-150 ease-in-out"
+                    class="link-accent font-medium text-[var(--qusto-primary)] dark:text-gray-200 transition duration-150 ease-in-out"
                   >
                     Login
                   </a>
@@ -170,18 +170,20 @@
                 <div class="inline-flex">
                   <a
                     href="/login"
-                    class="font-medium text-[var(--qusto-primary)] dark:text-gray-200 hover:text-[var(--qusto-brand-blue)] dark:hover:text-gray-100 focus:outline-hidden focus:text-[var(--qusto-primary)] transition duration-150 ease-in-out"
+                    class="link-accent font-medium text-[var(--qusto-primary)] dark:text-gray-200 transition duration-150 ease-in-out"
                   >
                     Login
                   </a>
                 </div>
                 <div class="inline-flex ml-6 rounded-sm shadow-sm">
-                  <a
+                  <.button_link
                     href="/register"
-                    class="inline-flex items-center justify-center px-5 py-2 text-base font-medium  " theme="cta"
+                    theme="cta"
+                    mt?={false}
+                    class="!px-5 !py-2 text-base"
                   >
                     Sign up
-                  </a>
+                  </.button_link>
                 </div>
               </li>
             </ul>

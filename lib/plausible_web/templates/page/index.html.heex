@@ -15,7 +15,7 @@
             class="inline-flex items-center px-8 py-4 text-lg font-semibold !text-white rounded-lg shadow-lg dark:shadow-revenue transition-all hover:shadow-xl dark:hover:shadow-revenue hover:-translate-y-0.5 dark:hover:scale-[1.02]"
             style="background: linear-gradient(135deg, #c55130 0%, #a33f22 100%);"
           >
-            Start Free Trial →
+            Get Started Free →
           </.styled_link>
           <.unstyled_link
             href={Routes.auth_path(@conn, :login)}
@@ -41,7 +41,7 @@
 </section>
 
 <!-- Social Proof -->
-<section class="section-transition py-12 bg-[var(--qusto-surface)] dark:bg-[var(--color-dark-bg-base)]">
+<section class="section-transition py-12 bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)]">
   <div class="container mx-auto px-6 text-center">
     <p class="text-sm text-gray-600 dark:text-[var(--color-dark-text-secondary)] mb-6">Trusted by European websites</p>
     <div class="flex justify-center items-center space-x-12 opacity-60 flex-wrap gap-4">
@@ -64,29 +64,29 @@
       </p>
     </div>
     <div class="grid md:grid-cols-3 gap-8">
-      <!-- Feature 1: Goals & Funnels -->
+      <!-- Feature 1: Goals & Conversions -->
       <div class="card-hover-border bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-8 shadow-lg dark:shadow-warm-lg hover:shadow-xl dark:hover:shadow-warm-xl transition-all hover:-translate-y-1">
         <div class="text-5xl mb-4 text-center">🎯</div>
         <h3 class="card-title-hover card-hover-header text-2xl font-bold heading-sub mb-3 text-center">
-          Goals & Funnels
+          Goals & Conversions
         </h3>
         <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)] text-center">
-          Track custom goals, conversion funnels, and key events. Understand visitor journeys.
+          Track custom goals and key events. Measure conversions and understand what matters for your site.
         </p>
       </div>
 
-<!-- Feature 2: AI Search Tracking -->
+      <!-- Feature 2: Lightweight & API -->
       <div class="card-hover-border bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-8 shadow-lg dark:shadow-warm-lg hover:shadow-xl dark:hover:shadow-warm-xl transition-all hover:-translate-y-1">
-        <div class="text-5xl mb-4 text-center">🤖</div>
+        <div class="text-5xl mb-4 text-center">⚡</div>
         <h3 class="card-title-hover card-hover-header text-2xl font-bold heading-sub mb-3 text-center">
-          AI Search Tracking
+          Lightweight & API
         </h3>
         <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)] text-center">
-          See traffic from ChatGPT & Perplexity. Understand AI search visibility. First privacy-first platform with AI tracking.
+          Tiny tracking script for fast page loads. Full API access and CSV export for your data.
         </p>
       </div>
 
-<!-- Feature 3: Privacy by Default -->
+      <!-- Feature 3: Privacy by Default -->
       <div class="card-hover-border bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-8 shadow-lg dark:shadow-warm-lg hover:shadow-xl dark:hover:shadow-warm-xl transition-all hover:-translate-y-1">
         <div class="text-5xl mb-4 text-center">🔒</div>
         <h3 class="card-title-hover card-hover-header text-2xl font-bold heading-sub mb-3 text-center">
@@ -101,7 +101,7 @@
 </section>
 
 <!-- Testimonials -->
-<section class="section-transition py-20 bg-[var(--qusto-surface)] dark:bg-[var(--color-dark-bg-base)]">
+<section class="section-transition py-20 bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)]">
   <div class="container mx-auto px-6">
     <h2 class="text-4xl font-bold heading-qusto text-center mb-12">
       Loved by Website Owners
@@ -139,7 +139,7 @@
 
       <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-6 border-l-4 border-[var(--qusto-accent)] dark:border-[var(--color-dark-accent)] shadow-md dark:shadow-warm">
         <p class="mb-4 text-lg text-gray-700 dark:text-[var(--color-dark-text-secondary)] italic">
-          "The AI search tracking feature is incredible. 18% of our traffic comes from ChatGPT!"
+          "Self-hosted and fully under our control. No vendor lock-in, no surprise bills."
         </p>
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-full bg-[#1661be] dark:bg-[#4a9eff] flex items-center justify-center text-white font-semibold">
@@ -155,14 +155,14 @@
   </div>
 </section>
 
-<!-- Pricing Teaser -->
+<!-- Get Started -->
 <section id="pricing" class="section-transition py-20 bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)]">
   <div class="container mx-auto px-6 text-center">
     <h2 class="text-4xl font-bold heading-qusto mb-4">
-      Simple, Transparent Pricing
+      Free Forever. Self-Hosted.
     </h2>
     <p class="text-xl text-gray-600 dark:text-[var(--color-dark-text-secondary)] mb-12">
-      Start free. Scale as you grow. Cancel anytime.
+      No credit card. No limits. Your data stays on your infrastructure.
     </p>
     <div class="flex justify-center gap-4 flex-wrap">
       <.styled_link
@@ -170,13 +170,14 @@
         class="inline-flex items-center px-8 py-4 text-lg font-semibold !text-white rounded-lg shadow-lg dark:shadow-revenue hover:shadow-xl dark:hover:shadow-revenue dark:hover:scale-[1.02] transition-all"
         style="background: linear-gradient(135deg, #c55130 0%, #a33f22 100%);"
       >
-        Start Free Trial →
+        Get Started Free →
       </.styled_link>
       <.unstyled_link
-        href="#pricing"
+        href="https://docs.qusto.io"
+        new_tab={true}
         class="btn-secondary-ce inline-flex items-center px-8 py-4 text-lg font-semibold rounded-lg transition-all"
       >
-        See Full Pricing
+        Documentation
       </.unstyled_link>
     </div>
   </div>
@@ -189,13 +190,13 @@
       Ready for Privacy-First Analytics?
     </h2>
     <p class="text-xl mb-8 text-[var(--color-heading-sub)] dark:text-[var(--color-dark-heading-sub)]">
-      14-day free trial. No credit card required. Cancel anytime.
+      Open-source. No credit card. Self-host or use Qusto Cloud.
     </p>
     <.styled_link
       href={Routes.auth_path(@conn, :register_form)}
       class="btn-cta-section inline-flex items-center px-8 py-4 text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transition-all"
     >
-      Start Free Trial →
+      Get Started Free →
     </.styled_link>
     <p class="mt-4 text-sm text-[var(--color-heading-sub)] dark:text-[var(--color-dark-heading-sub)]">
       GDPR compliant • EU-hosted • No cookie banner

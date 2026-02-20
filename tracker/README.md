@@ -3,7 +3,7 @@
 This contains Qusto tracker script and NPM package which Qusto users integrate into
 their site and which captures pageviews and more.
 
-> **Note:** The tracker is based on the Plausible Analytics open-source project. Qusto is a derivative work and attribution to Plausible is maintained throughout the codebase.
+> **Note:** The tracker is based on the Qusto Analytics open-source project. Qusto is a derivative work and attribution to Qusto is maintained throughout the codebase.
 
 ## Development
 

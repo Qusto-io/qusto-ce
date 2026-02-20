@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: 🚑 Self-Hosted Help & Support
-    url: https://github.com/qusto-io/qusto-analytics/discussions/categories/self-hosted-support
+    url: https://github.com/qusto-io/qusto-ce/discussions/categories/self-hosted-support
     about: Community support for self-hosted Qusto Analytics installations
 
   - name: 💬 General Discussions
-    url: https://github.com/qusto-io/qusto-analytics/discussions
+    url: https://github.com/qusto-io/qusto-ce/discussions
     about: Ask questions, share ideas, and connect with the community
 
   - name: 📖 Documentation

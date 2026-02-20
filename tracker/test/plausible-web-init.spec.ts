@@ -6,13 +6,13 @@ better test the script in isolation of the plausible codebase.
 */
 
 import {
-  expectPlausibleInAction,
+  expectQustoInAction,
   isEngagementEvent
 } from './support/test-utils'
 import { test, expect } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
 import {
-  getConfiguredPlausibleWebSnippet,
+  getConfiguredQustoWebSnippet,
   initializePageDynamically
 } from './support/initialize-page-dynamically'
 
@@ -32,7 +32,7 @@ test('with queue code from the web snippet, tracks `plausible` calls made before
     bodyContent:
       '<script>window.plausible("loaded", { props: { plausibleLoadedAtEventTime: window.plausible.l ? true : false }, interactive: false })</script>'
   })
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: () => page.goto(url),
     expectedRequests: [
       {
@@ -63,7 +63,7 @@ test('handles double-initialization of the script with a console.warn', async ({
     messages.push([message.type(), message.text()])
   })
 
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: () => page.goto(url),
     expectedRequests: [{ n: 'pageview', p: { init: 1 } }],
     shouldIgnoreRequest: isEngagementEvent
@@ -82,11 +82,11 @@ test('handles double-initialization of the script with a console.warn', async ({
   expect(messages).toEqual([
     [
       'warning',
-      'Plausible analytics script was already initialized, skipping init'
+      'Qusto analytics script was already initialized, skipping init'
     ]
   ])
 
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: () => page.click('button'),
     expectedRequests: [{ n: 'Purchase', p: { init: 1 } }]
   })
@@ -96,14 +96,14 @@ test('if there are two snippets on the page, one wins, no warning is emitted', a
   page
 }, { testId }) => {
   const config = { ...DEFAULT_CONFIG }
-  const snippetAlfa = getConfiguredPlausibleWebSnippet({
+  const snippetAlfa = getConfiguredQustoWebSnippet({
     ...config,
     customProperties: { alfa: true }
   })
   const initCallAlfa =
     'plausible.init({"captureOnLocalhost":true,"customProperties":{"alfa":true}})'
   expect(snippetAlfa).toEqual(expect.stringContaining(initCallAlfa))
-  const snippetBeta = getConfiguredPlausibleWebSnippet({
+  const snippetBeta = getConfiguredQustoWebSnippet({
     ...config,
     customProperties: { beta: true }
   })
@@ -120,7 +120,7 @@ test('if there are two snippets on the page, one wins, no warning is emitted', a
     scriptConfig: /* HTML */ `${snippetAlfa}${snippetBeta}`,
     bodyContent: ''
   })
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: () => page.goto(url),
     expectedRequests: [
       {
@@ -139,7 +139,7 @@ test('if domain is provided in `init`, it is ignored', async ({ page }, {
   testId
 }) => {
   const config = { ...DEFAULT_CONFIG }
-  const scriptConfig = getConfiguredPlausibleWebSnippet(config)
+  const scriptConfig = getConfiguredQustoWebSnippet(config)
   const originalInitCall = 'plausible.init({"captureOnLocalhost":true})'
   // verify that the original snippet is what we expect it to be
   expect(scriptConfig).toEqual(expect.stringContaining(originalInitCall))
@@ -158,7 +158,7 @@ test('if domain is provided in `init`, it is ignored', async ({ page }, {
     scriptConfig: updatedScriptConfig,
     bodyContent: ''
   })
-  await expectPlausibleInAction(page, {
+  await expectQustoInAction(page, {
     action: () => page.goto(url),
     expectedRequests: [
       { n: 'pageview', d: config.domain, u: `${LOCAL_SERVER_ADDR}${url}` }

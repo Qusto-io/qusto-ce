@@ -1,4 +1,4 @@
-import { expectPlausibleInAction } from './support/test-utils'
+import { expectQustoInAction } from './support/test-utils'
 import { test } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
 
@@ -8,19 +8,19 @@ test.describe('manual extension', () => {
   }) => {
     await page.goto('/manual.html')
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#pageview-trigger'),
       expectedRequests: [
         { n: 'pageview', u: `${LOCAL_SERVER_ADDR}/manual.html` }
       ]
     })
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#custom-event-trigger'),
       expectedRequests: [
         { n: 'CustomEvent', u: `${LOCAL_SERVER_ADDR}/manual.html` }
       ]
     })
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#custom-event-trigger-custom-url'),
       expectedRequests: [
         { n: 'CustomEvent', u: `https://example.com/custom/location` }
@@ -33,19 +33,19 @@ test.describe('manual extension', () => {
   }) => {
     await page.goto('/manual.html')
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#pageview-trigger-custom-url'),
       expectedRequests: [
         { n: 'pageview', u: `https://example.com/custom/location` }
       ]
     })
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#custom-event-trigger'),
       expectedRequests: [
         { n: 'CustomEvent', u: `${LOCAL_SERVER_ADDR}/manual.html` }
       ]
     })
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('#custom-event-trigger-custom-url'),
       expectedRequests: [
         { n: 'CustomEvent', u: `https://example.com/custom/location` }
@@ -57,7 +57,7 @@ test.describe('manual extension', () => {
     page
   }) => {
     await page.goto('/manual.html')
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () =>
         page.evaluate(() =>
           window.plausible('Non-Interactive Custom Event', {

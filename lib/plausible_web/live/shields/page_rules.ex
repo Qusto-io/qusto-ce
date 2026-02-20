@@ -47,7 +47,7 @@ defmodule PlausibleWeb.Live.Shields.PageRules do
               <p class="text-center text-sm mt-1 text-gray-500 dark:text-gray-400 leading-5 text-pretty">
                 Reject incoming traffic for specific pages.
                 <.styled_link
-                  href="https://plausible.io/docs/top-pages#block-traffic-from-specific-pages-or-sections"
+                  href="https://docs.qusto.io/top-pages#block-traffic-from-specific-pages-or-sections"
                   target="_blank"
                 >
                   Learn more

@@ -1,7 +1,7 @@
 import { initializePageDynamically } from './support/initialize-page-dynamically'
 import {
   e,
-  expectPlausibleInAction,
+  expectQustoInAction,
   hideAndShowCurrentTab,
   switchByMode
 } from './support/test-utils'
@@ -34,7 +34,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: ''
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await hideAndShowCurrentTab(page, { delay: 200 })
@@ -67,7 +67,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: ''
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(`${url}#page1`)
           await hideAndShowCurrentTab(page, { delay: 200 })
@@ -103,7 +103,7 @@ test.describe('hash-based routing (legacy)', () => {
       bodyContent: ''
     })
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(`${url}#page1`)
         await hideAndShowCurrentTab(page, { delay: 200 })

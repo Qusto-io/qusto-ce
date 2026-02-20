@@ -1,4 +1,5 @@
-<nav class="relative z-20 py-8">
+<header class="sticky top-0 z-20 border-b border-[var(--header-border)] bg-[var(--bg-elevated)] py-4 shadow-sm backdrop-blur-xl [background:var(--bg-elevated)] [-webkit-backdrop-filter:blur(12px)] [backdrop-filter:blur(12px)]">
+  <nav class="relative">
   <div class="container print:max-w-full">
     <nav class="relative flex items-center justify-between sm:h-10 md:justify-center">
       <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
@@ -10,7 +11,7 @@
                 logo_path("logo_dark.svg")
               )
             }
-            class="w-32 hidden dark:inline"
+            class="w-44 hidden dark:inline"
             alt="Qusto logo"
             loading="lazy"
           />
@@ -21,7 +22,7 @@
                 logo_path("logo_light.svg")
               )
             }
-            class="w-32 inline dark:hidden"
+            class="w-44 inline dark:hidden"
             alt="Qusto logo"
             loading="lazy"
           />
@@ -114,7 +115,7 @@
                     <.dropdown_item
                       class="!flex justify-between gap-x-12"
                       new_tab
-                      href="https://plausible.io/docs"
+                      href="https://docs.qusto.io"
                     >
                       Help center
                     </.dropdown_item>
@@ -122,7 +123,7 @@
                       :if={ee?()}
                       class="!flex justify-between gap-x-12"
                       new_tab
-                      href="https://plausible.io/contact"
+                      href="https://qusto.io/contact"
                     >
                       Contact support
                     </.dropdown_item>
@@ -138,7 +139,7 @@
                       :if={ce?()}
                       class="!flex justify-between gap-x-12"
                       new_tab
-                      href="https://github.com/plausible/analytics"
+                      href="https://github.com/qusto-io/qusto-analytics"
                     >
                       Github repo
                     </.dropdown_item>
@@ -156,7 +157,7 @@
                 <div class="inline-flex">
                   <a
                     href="/login"
-                    class="font-medium text-gray-500 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-hidden focus:text-gray-900 transition duration-150 ease-in-out"
+                    class="link-accent font-medium text-[var(--qusto-primary)] dark:text-gray-200 transition duration-150 ease-in-out"
                   >
                     Login
                   </a>
@@ -169,18 +170,20 @@
                 <div class="inline-flex">
                   <a
                     href="/login"
-                    class="font-medium text-gray-500 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-hidden focus:text-gray-900 transition duration-150 ease-in-out"
+                    class="link-accent font-medium text-[var(--qusto-primary)] dark:text-gray-200 transition duration-150 ease-in-out"
                   >
                     Login
                   </a>
                 </div>
                 <div class="inline-flex ml-6 rounded-sm shadow-sm">
-                  <a
+                  <.button_link
                     href="/register"
-                    class="inline-flex items-center justify-center px-5 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent leading-6 rounded-md hover:bg-indigo-500 focus:outline-hidden focus:ring transition duration-150 ease-in-out"
+                    theme="cta"
+                    mt?={false}
+                    class="!px-5 !py-2 text-base"
                   >
                     Sign up
-                  </a>
+                  </.button_link>
                 </div>
               </li>
             </ul>
@@ -189,3 +192,4 @@
     </nav>
   </div>
 </nav>
+</header>

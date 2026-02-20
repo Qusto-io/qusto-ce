@@ -3,15 +3,15 @@ Congrats! We've recorded the first visitor on
 <br /><br />
 Do check out your <a href={"#{plausible_url()}/#{URI.encode_www_form(@site.domain)}?__team=#{@site_team.identifier}"}>easy to use, fast-loading and privacy-friendly dashboard</a>.
 <br /><br />
-Something looks off? Take a look at our <a href="https://plausible.io/docs/troubleshoot-integration">installation troubleshooting guide</a>.
+Something looks off? Take a look at our <a href="https://docs.qusto.io/troubleshoot-integration">installation troubleshooting guide</a>.
 <br /><br />
 <%= if (ee?() and Plausible.Teams.on_trial?(@site_team)) do %>
   You're on a 30-day free trial with no obligations so do take your time to explore Qusto.
-  Here's how to get <a href="https://plausible.io/docs/your-plausible-experience">the most out of your Qusto experience</a>.
+  Here's how to get <a href="https://docs.qusto.io/your-plausible-experience">the most out of your Qusto experience</a>.
   <br /><br />
 <% end %>
 PS: You can import your historical Google Analytics stats into your Qusto dashboard.
-<a href="https://plausible.io/docs/google-analytics-import">Learn how our GA importer works</a>.
+<a href="https://docs.qusto.io/google-analytics-import">Learn how our GA importer works</a>.
 <br /><br />
 <%= unless Plausible.ce?() do %>
   Do reply back to this email if you have any questions. We're here to help.

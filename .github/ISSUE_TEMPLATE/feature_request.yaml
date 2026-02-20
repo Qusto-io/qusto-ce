@@ -12,7 +12,7 @@ body:
         Premium features (funnels, AI tracking, attribution) are developed in private repositories.
         Consider whether your feature belongs in the open-source core or would be better as a premium feature.
 
-        [Documentation](https://docs.qusto.io) | [Discussions](https://github.com/qusto-io/qusto-analytics/discussions)
+        [Documentation](https://docs.qusto.io) | [Discussions](https://github.com/qusto-io/qusto-ce/discussions)
 
   - type: dropdown
     id: feature-scope

@@ -144,7 +144,7 @@ brew install gh
 gh auth login
 
 # Configure main branch protection
-gh api repos/qusto-io/qusto-analytics/branches/main/protection \
+gh api repos/qusto-io/qusto-ce/branches/main/protection \
   --method PUT \
   --field required_status_checks='{"strict":true,"contexts":["build (test, postgres:18, 1)","build (test, postgres:18, 2)","build (test, postgres:18, 3)","build (test, postgres:18, 4)","build (test, postgres:18, 5)","build (test, postgres:18, 6)","build (ce_test, postgres:18, 1)","build (ce_test, postgres:18, 2)","build (ce_test, postgres:18, 3)","build (ce_test, postgres:18, 4)","build (ce_test, postgres:18, 5)","build (ce_test, postgres:18, 6)","static","security","build"]}' \
   --field enforce_admins=true \
@@ -155,7 +155,7 @@ gh api repos/qusto-io/qusto-analytics/branches/main/protection \
   --field allow_deletions=false
 
 # Configure develop branch protection
-gh api repos/qusto-io/qusto-analytics/branches/develop/protection \
+gh api repos/qusto-io/qusto-ce/branches/develop/protection \
   --method PUT \
   --field required_status_checks='{"strict":true,"contexts":["build (test, postgres:18, 1)","build (test, postgres:18, 2)","build (test, postgres:18, 3)","build (test, postgres:18, 4)","build (test, postgres:18, 5)","build (test, postgres:18, 6)","build (ce_test, postgres:18, 1)","build (ce_test, postgres:18, 2)","build (ce_test, postgres:18, 3)","build (ce_test, postgres:18, 4)","build (ce_test, postgres:18, 5)","build (ce_test, postgres:18, 6)","static","security","build"]}' \
   --field enforce_admins=false \

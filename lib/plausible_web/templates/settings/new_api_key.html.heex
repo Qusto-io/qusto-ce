@@ -15,7 +15,7 @@
         <.input
           x-on:click="submitDisabled = false"
           type="radio"
-          class="block h-5 w-5 dark:bg-gray-700 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+          class="block h-5 w-5 dark:bg-gray-700 border-gray-300 text-blue-600 focus:ring-blue-600"
           id={f[:type].id <> "_0"}
           name={f[:type].name}
           value="stats_api"
@@ -24,7 +24,7 @@
         >
           <:help_content>
             Full access to
-            <.styled_link href="https://plausible.io/docs/stats-api">Stats API</.styled_link>
+            <.styled_link href="https://docs.qusto.io/stats-api">Stats API</.styled_link>
           </:help_content>
         </.input>
 
@@ -39,8 +39,8 @@
         >
           <:help_content>
             Full access to
-            <.styled_link href="https://plausible.io/docs/stats-api">Stats API</.styled_link>
-            and <.styled_link href="https://plausible.io/docs/sites-api">Sites API</.styled_link>
+            <.styled_link href="https://docs.qusto.io/stats-api">Stats API</.styled_link>
+            and <.styled_link href="https://docs.qusto.io/sites-api">Sites API</.styled_link>
           </:help_content>
         </.input>
 
@@ -48,7 +48,7 @@
           <Heroicons.exclamation_triangle class="mt-1 block w-4 h-4 shrink-0" />
           <div>
             Your current subscription plan does not include Sites API access.
-            <a href="https://plausible.io/contact" class="underline">Contact us</a>
+            <a href="https://qusto.io/contact" class="underline">Contact us</a>
             if interested.
           </div>
         </div>

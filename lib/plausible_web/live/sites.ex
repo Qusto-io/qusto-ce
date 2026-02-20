@@ -101,7 +101,7 @@ defmodule PlausibleWeb.Live.Sites do
       } />
 
       <div class="group mt-6 pb-5 border-b border-gray-200 dark:border-gray-750 flex items-center gap-2">
-        <h2 class="text-xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-2xl md:text-3xl sm:leading-9 min-w-0 truncate">
+        <h2 class="text-xl font-bold leading-7 sm:text-2xl md:text-3xl sm:leading-9 min-w-0 truncate" style="color: #374151 !important;">
           {Teams.name(@current_team)}
         </h2>
         <.unstyled_link
@@ -147,7 +147,7 @@ defmodule PlausibleWeb.Live.Sites do
         <a
           :if={!@consolidated_view_cta_dismissed?}
           href={"/sites/new?flow=#{PlausibleWeb.Flows.provisioning()}"}
-          class="whitespace-nowrap truncate inline-flex items-center justify-center gap-x-2 max-w-fit font-medium rounded-md px-3.5 py-2.5 text-sm transition-all duration-150 cursor-pointer disabled:cursor-not-allowed bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-indigo-600 disabled:bg-indigo-400/60 disabled:dark:bg-indigo-600/30 disabled:dark:text-white/35"
+          class="whitespace-nowrap truncate inline-flex items-center justify-center gap-x-2 max-w-fit font-medium rounded-md px-3.5 py-2.5 text-sm transition-all duration-150 cursor-pointer disabled:cursor-not-allowed bg-[var(--qusto-primary)] dark:bg-[var(--color-dark-primary)] text-white focus-visible:outline-[var(--qusto-primary)] dark:focus-visible:outline-[var(--color-dark-primary)] disabled:opacity-60"
         >
           <Heroicons.plus class="size-4" /> Add website
         </a>
@@ -279,7 +279,7 @@ defmodule PlausibleWeb.Live.Sites do
     ~H"""
     <li
       data-test-id="consolidated-view-card-cta"
-      class="relative col-span-1 flex flex-col justify-between bg-white p-6 dark:bg-gray-800 rounded-md shadow-lg dark:shadow-xl"
+      class="relative col-span-1 flex flex-col justify-between bg-white p-6 dark:bg-[var(--color-dark-bg-elevated)] rounded-md shadow-lg dark:shadow-xl"
     >
       <div class="flex flex-col">
         <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
@@ -306,7 +306,7 @@ defmodule PlausibleWeb.Live.Sites do
           </.button_link>
           <.button_link
             theme="secondary"
-            href="https://plausible.io/docs/consolidated-views"
+            href="https://docs.qusto.io/consolidated-views"
             mt?={false}
           >
             Learn more
@@ -343,7 +343,7 @@ defmodule PlausibleWeb.Live.Sites do
 
           <.button_link
             theme="secondary"
-            href="https://plausible.io/docs/consolidated-views"
+            href="https://docs.qusto.io/consolidated-views"
             mt?={false}
           >
             Learn more
@@ -361,7 +361,7 @@ defmodule PlausibleWeb.Live.Sites do
 
         <div class="flex gap-x-2">
           <.button_link
-            href="mailto:hello@plausible.io"
+            href="mailto:hello@qusto.io"
             mt?={false}
           >
             Contact us
@@ -369,7 +369,7 @@ defmodule PlausibleWeb.Live.Sites do
 
           <.button_link
             theme="secondary"
-            href="https://plausible.io/docs/consolidated-views"
+            href="https://docs.qusto.io/consolidated-views"
             mt?={false}
           >
             Learn more
@@ -392,11 +392,11 @@ defmodule PlausibleWeb.Live.Sites do
     >
       <.unstyled_link
         href={"/#{URI.encode_www_form(@consolidated_view.domain)}"}
-        class="flex flex-col justify-between gap-6 h-full bg-white p-6 dark:bg-gray-900 rounded-md shadow-sm cursor-pointer hover:shadow-lg transition-shadow duration-150"
+        class="flex flex-col justify-between gap-6 h-full bg-white p-6 dark:bg-[var(--color-dark-bg-card)] rounded-md shadow-sm cursor-pointer hover:shadow-lg transition-shadow duration-150"
       >
         <div class="flex flex-col flex-1 justify-between gap-y-5">
           <div class="flex flex-col gap-y-2 mb-auto">
-            <span class="size-8 sm:size-10 bg-indigo-600 text-white p-1.5 sm:p-2 rounded-lg sm:rounded-xl">
+            <span class="size-8 sm:size-10 " theme="cta">
               <.globe_icon />
             </span>
             <h3 class="text-gray-900 font-medium text-md sm:text-lg leading-tight dark:text-gray-100">
@@ -405,7 +405,7 @@ defmodule PlausibleWeb.Live.Sites do
           </div>
           <span
             :if={is_map(@consolidated_stats)}
-            class="max-w-sm sm:max-w-none text-indigo-500 my-auto"
+            class="max-w-sm sm:max-w-none text-[var(--qusto-primary)] my-auto"
             data-test-id="consolidated-view-chart-loaded"
           >
             <PlausibleWeb.Live.Components.Visitors.chart
@@ -500,7 +500,7 @@ defmodule PlausibleWeb.Live.Sites do
       data-domain={@site.domain}
       phx-click={Prima.Modal.JS.open(@modal_id)}
     >
-      <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-gray-900 rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
+      <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-[var(--color-dark-bg-card)] rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
         <div class="w-full flex items-center justify-between gap-x-2.5">
           <.favicon domain={@site.domain} />
           <div class="flex-1 w-full truncate">
@@ -542,7 +542,7 @@ defmodule PlausibleWeb.Live.Sites do
       }
     >
       <.unstyled_link href={"/#{URI.encode_www_form(@site.domain)}"} class="block">
-        <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-gray-900 rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
+        <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-[var(--color-dark-bg-card)] rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
           <div class="w-full flex items-center justify-between gap-x-2.5">
             <.favicon domain={@site.domain} />
             <div class="flex-1 w-full">
@@ -600,7 +600,7 @@ defmodule PlausibleWeb.Live.Sites do
           <.icon_pin
             :if={@site.pinned_at}
             filled={true}
-            class="size-[1.15rem] text-indigo-600 dark:text-indigo-500 group-hover/item:text-indigo-700 dark:group-hover/item:text-indigo-400"
+            class="size-[1.15rem] text-[var(--qusto-primary)] dark:text-[var(--color-dark-primary)] group-hover/item:text-[var(--qusto-brand-blue)] dark:group-hover/item:text-[var(--color-dark-primary-hover)]"
           />
           <span :if={@site.pinned_at}>Unpin site</span>
 
@@ -657,7 +657,7 @@ defmodule PlausibleWeb.Live.Sites do
     </div>
     <div :if={is_map(@hourly_stats)}>
       <span class="flex flex-col gap-y-5 text-gray-600 dark:text-gray-400 text-sm truncate">
-        <span class="max-w-sm sm:max-w-none text-indigo-500">
+        <span class="max-w-sm sm:max-w-none text-[var(--qusto-primary)]">
           <PlausibleWeb.Live.Components.Visitors.chart
             intervals={@hourly_stats.intervals}
             height={80}

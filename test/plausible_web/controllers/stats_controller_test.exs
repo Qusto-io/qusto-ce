@@ -36,7 +36,7 @@ defmodule PlausibleWeb.StatsControllerTest do
                |> find("meta[name=robots]")
                |> text_of_attr("content")
 
-      assert text_of_element(resp, "title") == "Plausible · #{site.domain}"
+      assert text_of_element(resp, "title") == "Qusto · #{site.domain}"
     end
 
     test "public site - all segments (personal or site) are stuffed into dataset, without their owner_id and owner_name",
@@ -87,7 +87,7 @@ defmodule PlausibleWeb.StatsControllerTest do
                |> find("meta[name=robots]")
                |> text_of_attr("content")
 
-      assert text_of_element(resp, "title") == "Plausible Analytics: Live Demo"
+      assert text_of_element(resp, "title") == "Qusto Analytics: Live Demo"
       assert resp =~ "Login"
       assert resp =~ "Want these stats for your website?"
       assert resp =~ "Getting started"

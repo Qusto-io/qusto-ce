@@ -102,7 +102,41 @@
 
   /* Set v3 default ring behavior */
   --default-ring-width: 2px;
-  --default-ring-color: var(--color-indigo-500);
+  --default-ring-color: var(--qusto-primary);
+
+  /* === QUSTO WARM DARK MODE - Backgrounds === */
+  --color-dark-bg-base: #1a1612;           /* Warm charcoal base */
+  --color-dark-bg-elevated: #252118;       /* Elevated surfaces */
+  --color-dark-bg-card: #2d2820;          /* Cards, panels */
+  --color-dark-bg-overlay: #363027;        /* Modals, dropdowns */
+  --color-dark-bg-hover: #443c33;          /* Hover states */
+
+  /* === QUSTO WARM DARK MODE - Text === */
+  --color-dark-text-primary: #f5f1e8;      /* 17.2:1 contrast */
+  --color-dark-text-secondary: #d4cfc0;    /* 11.8:1 contrast */
+  --color-dark-text-tertiary: #a8a196;     /* 7.1:1 contrast */
+  --color-dark-text-disabled: #7a736a;     /* 4.2:1 contrast */
+
+  /* === QUSTO WARM DARK MODE - Brand Colors (Brightened) === */
+  --color-dark-primary: #4a9eff;           /* Brighter blue */
+  --color-dark-primary-hover: #6bb0ff;
+  --color-dark-accent: #e97a52;            /* Brighter orange */
+  --color-dark-accent-hover: #ff8f66;
+
+  /* === QUSTO WARM DARK MODE - Borders (Orange-tinted) === */
+  --color-dark-border: rgba(197, 81, 48, 0.15);
+  --color-dark-border-strong: rgba(197, 81, 48, 0.25);
+  --color-dark-divider: rgba(197, 81, 48, 0.08);
+
+  /* === QUSTO WARM DARK MODE - Headers INVERTED: light orange for headers, darker for subheaders === */
+  --color-dark-heading: #f0a068;      /* Light orange - was subheader, now primary headers */
+  --color-dark-heading-sub: #e97a52;  /* Darker orange - was header, now subheaders/cards */
+
+  /* === QUSTO WARM DARK MODE - Header border (blue trace for brand) === */
+  --color-dark-header-border: rgba(74, 158, 255, 0.2);
+
+  /* === QUSTO WARM DARK MODE - Card hover (blue trace) === */
+  --color-dark-card-hover-border: rgba(74, 158, 255, 0.3);
 }
 
 @media print {
@@ -123,12 +157,193 @@
 @custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
 @custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
 
+/* === WARM DARK MODE SHADOWS === */
+@layer utilities {
+  .shadow-warm-sm {
+    box-shadow: 0 1px 2px 0 rgba(197, 81, 48, 0.08);
+  }
+
+  .shadow-warm {
+    box-shadow: 0 4px 6px -1px rgba(197, 81, 48, 0.12);
+  }
+
+  .shadow-warm-lg {
+    box-shadow:
+      0 4px 8px -2px rgba(197, 81, 48, 0.12),
+      0 12px 24px -6px rgba(197, 81, 48, 0.16);
+  }
+
+  .shadow-warm-xl {
+    box-shadow:
+      0 8px 16px -4px rgba(197, 81, 48, 0.16),
+      0 20px 40px -10px rgba(197, 81, 48, 0.20);
+  }
+
+  .shadow-revenue {
+    box-shadow:
+      0 8px 20px rgba(197, 81, 48, 0.20),
+      0 0 60px rgba(197, 81, 48, 0.15);
+  }
+
+  /* === GLASSMORPHISM === */
+  .glass-surface {
+    @apply bg-white/80 dark:bg-[rgba(45,40,32,0.6)]
+           backdrop-blur-lg backdrop-saturate-180
+           border border-gray-200 dark:border-[var(--color-dark-border)];
+  }
+
+  /* Section transitions: flowless, headers signal division */
+  .section-transition {
+    transition: background-color 0.3s ease;
+  }
+  .section-header {
+    color: var(--color-heading);
+  }
+  .dark .section-header {
+    color: var(--color-dark-heading);
+  }
+  /* PRO-aligned headings: charcoal in light, orange in dark */
+  .heading-qusto {
+    color: var(--color-heading);
+    font-family: var(--qusto-font-heading);
+  }
+  .dark .heading-qusto {
+    color: var(--color-dark-heading);
+  }
+  .heading-sub {
+    color: var(--color-heading-sub);
+    font-family: var(--qusto-font-heading);
+  }
+  .dark .heading-sub {
+    color: var(--color-dark-heading-sub);
+  }
+  /* CTA section: blue gradient (light) or orange gradient (dark) */
+  .cta-section {
+    background: var(--cta-section-bg) !important;
+    transition: background 0.3s ease;
+  }
+  .cta-section.cta-pale h2,
+  .cta-section.cta-pale p {
+    color: var(--cta-section-text);
+  }
+  .cta-section h2,
+  .cta-section p {
+    color: var(--cta-section-text);
+  }
+  .btn-cta-section {
+    background: var(--cta-section-btn) !important;
+    color: var(--cta-section-btn-text) !important;
+  }
+  .btn-cta-section:hover {
+    filter: brightness(0.98);
+  }
+  /* Orange-based secondary buttons (View Demo, See Full Pricing) - light: orange, dark: glassmorphism orange */
+  .btn-secondary-ce {
+    background: transparent;
+    border: 2px solid var(--qusto-accent);
+    color: var(--qusto-accent);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .btn-secondary-ce:hover {
+    background: rgba(197, 81, 48, 0.1);
+    box-shadow: 0 4px 12px rgba(197, 81, 48, 0.2);
+    transform: translateY(-2px);
+  }
+  .dark .btn-secondary-ce {
+    background: rgba(233, 122, 82, 0.15);
+    backdrop-filter: blur(8px);
+    border-color: var(--color-dark-accent);
+    color: var(--color-dark-accent);
+  }
+  .dark .btn-secondary-ce:hover {
+    background: rgba(233, 122, 82, 0.25);
+    box-shadow: 0 4px 16px rgba(233, 122, 82, 0.3);
+  }
+
+  /* === EE-ALIGNED CARD HOVER (blue trace in dark mode) === */
+  .card-hover-border {
+    @apply border border-gray-200 dark:border-[var(--color-dark-border)]
+           transition-all duration-300;
+  }
+
+  .card-hover-border:hover {
+    @apply dark:border-[var(--color-dark-card-hover-border)];
+  }
+
+  /* Card title: charcoal default, orange on hover (PRO-aligned) */
+  .card-title-hover {
+    color: var(--color-heading-sub);
+    transition: color 0.2s ease;
+  }
+  .dark .card-title-hover {
+    color: var(--color-dark-heading-sub);
+  }
+  .card-hover-header:hover .card-title-hover {
+    color: var(--qusto-accent);
+  }
+  .dark .card-hover-header:hover .card-title-hover {
+    color: var(--color-dark-accent);
+  }
+
+  /* === MICRO-INTERACTIONS === */
+  .interact-lift {
+    @apply transition-all duration-200
+           hover:-translate-y-1 hover:shadow-lg
+           active:translate-y-0;
+  }
+
+  .interact-scale {
+    @apply transition-transform duration-200
+           hover:scale-105 active:scale-95;
+  }
+
+  .interact-glow {
+    @apply transition-all duration-300;
+  }
+
+  .interact-glow:hover {
+    @apply shadow-lg;
+  }
+
+  :is(.dark, .dark *) .interact-glow:hover {
+    box-shadow:
+      0 8px 16px -4px rgba(197, 81, 48, 0.16),
+      0 20px 40px -10px rgba(197, 81, 48, 0.20);
+  }
+
+  /* Link underline animation */
+  .link-animated {
+    @apply relative inline-block transition-colors duration-200;
+  }
+
+  .link-animated::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5
+           bg-gradient-to-r from-blue-600 to-orange-600
+           dark:from-[var(--color-dark-primary)] dark:to-[var(--color-dark-accent)]
+           transition-all duration-300;
+  }
+
+  .link-animated:hover::after {
+    @apply w-full;
+  }
+}
+
 [x-cloak] {
   display: none;
 }
 
 .button {
-  @apply inline-flex justify-center px-3.5 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md leading-5 transition hover:bg-blue-600;
+  @apply inline-flex justify-center px-3.5 py-2 text-sm font-medium
+         text-white bg-blue-600 dark:bg-[var(--color-dark-primary)]
+         border border-transparent rounded-md leading-5
+         transition-all duration-200
+         hover:bg-blue-700 dark:hover:bg-[var(--color-dark-primary-hover)]
+         hover:-translate-y-0.5 hover:shadow-lg
+         active:translate-y-0;
 }
 
 .button[disabled] {
@@ -147,8 +362,41 @@
   @apply px-4 py-2;
 }
 
+/* === ENHANCED FORM INPUTS === */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  @apply
+    bg-white dark:bg-[var(--color-dark-bg-elevated)]
+    text-gray-900 dark:text-[var(--color-dark-text-primary)]
+    border border-gray-300 dark:border-[var(--color-dark-border)]
+    rounded-lg px-4 py-2
+    transition-all duration-200
+    placeholder:text-gray-400 dark:placeholder:text-[var(--color-dark-text-tertiary)];
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  @apply text-[var(--color-text-disabled)];
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  @apply
+    border-blue-500 dark:border-[var(--color-dark-primary)]
+    ring-4 ring-blue-100 dark:ring-[rgba(74,158,255,0.2)]
+    outline-none
+    scale-[1.01];
+}
+
 html {
-  @apply text-gray-800;
+  @apply text-gray-800 dark:text-[var(--color-dark-text-primary)];
+  @apply bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)];
 }
 
 body {
@@ -156,6 +404,75 @@ body {
   -moz-osx-font-smoothing: grayscale;
   width: 100vw; /* Prevents content from jumping when scrollbar is added/removed due to vertical overflow */
   overflow-x: hidden;
+  @apply bg-[var(--qusto-background)] dark:bg-[var(--color-dark-bg-base)];
+  @apply text-gray-800 dark:text-[var(--color-dark-text-primary)];
+}
+
+/* Header glassmorphism: semi-transparent background so backdrop blur is visible (rgba for broad support) */
+body > header {
+  background: rgba(248, 247, 242, 0.88) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.dark body > header {
+  background: rgba(37, 33, 24, 0.88) !important;
+}
+
+/* Footer: slightly darker derivation of default bg, branding aligned */
+.footer-branded {
+  background: var(--footer-bg);
+  color: var(--color-heading);
+}
+.dark .footer-branded {
+  background: var(--footer-bg);
+  color: var(--color-dark-text-secondary);
+}
+.footer-branded a {
+  color: var(--color-heading-sub);
+}
+.footer-branded a:hover {
+  color: var(--color-heading);
+}
+.dark .footer-branded a {
+  color: var(--color-dark-text-tertiary);
+}
+.dark .footer-branded a:hover {
+  color: var(--color-dark-text-primary);
+}
+.footer-branded h4,
+.footer-branded p,
+.footer-branded a,
+.footer-branded .footer-copyright {
+  color: var(--color-heading-sub) !important;
+}
+.footer-branded a:hover,
+.footer-branded .footer-link:hover {
+  color: var(--color-heading) !important;
+}
+.footer-branded .footer-heading {
+  color: var(--color-heading) !important;
+}
+.dark .footer-branded h4,
+.dark .footer-branded p,
+.dark .footer-branded a,
+.dark .footer-branded .footer-copyright {
+  color: var(--color-dark-text-tertiary) !important;
+}
+.dark .footer-branded a:hover,
+.dark .footer-branded .footer-link:hover {
+  color: var(--color-dark-primary) !important;
+}
+.dark .footer-branded .footer-heading {
+  color: var(--color-dark-text-primary) !important;
+}
+/* Page links hover: light=orange, dark=blue (Login, Sign up, nav, content links) */
+a.link-accent:hover {
+  color: var(--qusto-accent) !important;
+}
+.dark a.link-accent:hover {
+  color: var(--color-dark-primary) !important;
 }
 
 blockquote {
@@ -444,28 +761,83 @@ iframe[hidden] {
   --color-text-primary: var(--qusto-gray-900);
   --color-text-secondary: var(--qusto-gray-600);
   --color-text-tertiary: var(--qusto-gray-500);
+  --color-text-disabled: #999999;
+
+  /* Headers (EE-aligned: charcoal in light mode) */
+  --color-heading: #36454f;
+  --color-heading-sub: #4a5568;
 
   /* Borders */
   --color-border: var(--qusto-gray-200);
   --color-border-dark: var(--qusto-gray-300);
+
+  /* Layout (match mockup dark-mode-preview.html) - PRO-aligned */
+  --bg-base: #eeece2;
+  --bg-elevated: #f8f7f2;
+  --bg-surface: #ffffff;
+  --bg-overlay: #f0efe8;
+  --bg-hover: #e2e0d6;
+  --bg-subtle: #e8e6de;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --border: rgba(0, 0, 0, 0.1);
+  --header-border: var(--border);
+  /* CTA section: subtle blue gradient (light mode), typography charcoal */
+  --cta-section-bg: linear-gradient(135deg, #f8fafc 0%, #f2f6fb 25%, #eef4fc 50%, #e8f0ff 75%, #e0ebff 100%);
+  --cta-section-text: #36454f;
+  --cta-section-btn: #c55130;
+  --cta-section-btn-text: white;
+  --card-hover-border: rgba(197, 81, 48, 0.25);
+  --btn-secondary-hover-border: var(--qusto-accent);
+  /* Section transitions: flowless, headers signal division */
+  --section-bg-default: var(--qusto-background);
+  --footer-bg: #e2e0d6;
 }
 
 /* ============================================================================
-   DARK MODE VARIANTS
+   DARK MODE VARIANTS - WARM DARK MODE (Qusto Brand)
+   Class-based: theme controlled by .dark on <html>, not OS preference
    ============================================================================ */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --qusto-background: #111827;
-    --qusto-surface: #1f2937;
-    --color-bg-primary: var(--qusto-gray-900);
-    --color-bg-surface: var(--qusto-gray-800);
-    --color-text-primary: var(--qusto-gray-50);
-    --color-text-secondary: var(--qusto-gray-400);
-    --color-text-tertiary: var(--qusto-gray-500);
-    --color-border: var(--qusto-gray-700);
-    --color-border-dark: var(--qusto-gray-600);
-  }
+.dark {
+  --qusto-background: #1a1612;
+  --qusto-surface: #2d2820;
+  --color-bg-primary: var(--color-dark-bg-base);
+  --color-bg-surface: var(--color-dark-bg-card);
+
+  /* Warm Dark Mode Text */
+  --color-text-primary: var(--color-dark-text-primary);
+  --color-text-secondary: var(--color-dark-text-secondary);
+  --color-text-tertiary: var(--color-dark-text-tertiary);
+  --color-text-disabled: var(--color-dark-text-disabled);
+
+  /* Warm Dark Mode Headers (EE-aligned: accent orange) */
+  --color-heading: var(--color-dark-heading);
+  --color-heading-sub: var(--color-dark-heading-sub);
+
+  /* Warm Dark Mode Borders (Orange-tinted) */
+  --color-border: var(--color-dark-border);
+  --color-border-dark: var(--color-dark-border-strong);
+
+  /* Layout (match mockup) */
+  --bg-base: #1a1612;
+  --bg-elevated: #252118;
+  --bg-surface: #2d2820;
+  --text-primary: #f5f1e8;
+  --text-secondary: #d4cfc0;
+  --border: rgba(197, 81, 48, 0.15);
+
+  /* EE-aligned: header border with blue trace in dark mode */
+  --header-border: var(--color-dark-header-border);
+  /* CTA section: pale orange to darker orange (dark mode), typography charcoal */
+  --bg-overlay: #363027;
+  --bg-hover: #443c33;
+  --bg-subtle: #3d352d;
+  --cta-section-bg: linear-gradient(90deg, #fff5f2 0%, #ffe6df 30%, #ffc7b8 60%, #ffa891 100%);
+  --cta-section-text: #36454f;
+  --cta-section-btn: white;
+  --cta-section-btn-text: #c55130;
+  --footer-bg: #14110e;
 }
 
 /* ============================================================================
@@ -547,8 +919,7 @@ iframe[hidden] {
 
 /* Dark Mode Adjustments */
 
-@media (prefers-color-scheme: dark) {
-  .shadow-blue-sm,
+.dark {
   .shadow-blue,
   .shadow-blue-md,
   .shadow-blue-lg,
@@ -722,21 +1093,29 @@ iframe[hidden] {
   cursor: not-allowed;
 }
 
-/* Dark Mode Adjustments */
+/* Dark Mode Adjustments for .button-secondary */
+.dark .button-secondary {
+  border-color: var(--color-dark-primary);
+  color: var(--color-dark-primary);
+}
 
-@media (prefers-color-scheme: dark) {
-  .button-secondary {
-    border-color: var(--qusto-blue-400);
-    color: var(--qusto-blue-400);
-  }
+.dark .button-secondary:hover {
+  background: rgb(74 158 255 / 10%);
+  border-color: var(--color-dark-primary-hover);
+  color: var(--color-dark-primary-hover);
+}
 
-  .button-secondary:hover {
-    background: rgb(22 97 190 / 10%);
-    border-color: var(--qusto-blue-300);
-    color: var(--qusto-blue-300);
-  }
+.dark .button-secondary:active {
+  background: rgb(74 158 255 / 20%);
+}
 
-  .button-secondary:active {
-    background: rgb(22 97 190 / 20%);
+/* === ACCESSIBILITY - REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

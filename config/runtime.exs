@@ -14,6 +14,12 @@ if config_env() == :ce_test do
   Envy.load(["config/.env.test"])
 end
 
+# Load .env.dev for local CE development (SECRET_KEY_BASE, BASE_URL, etc.)
+if config_env() == :ce do
+  env_dev = Path.join(__DIR__, ".env.dev")
+  if File.exists?(env_dev), do: Envy.load([env_dev])
+end
+
 config_dir = System.get_env("CONFIG_DIR", "/run/secrets")
 
 log_format =

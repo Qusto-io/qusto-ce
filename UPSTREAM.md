@@ -152,7 +152,7 @@ The JavaScript tracker remains under MIT license (as in Plausible) to avoid AGPL
 
 ### About our relationship with Plausible
 
-Open a [Discussion](https://github.com/qusto-io/qusto-analytics/discussions) with the `upstream` tag.
+Open a [Discussion](https://github.com/qusto-io/qusto-ce/discussions) with the `upstream` tag.
 
 ### About the open-core model
 

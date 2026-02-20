@@ -1,5 +1,5 @@
 import {
-  expectPlausibleInAction,
+  expectQustoInAction,
   isPageviewEvent,
   isEngagementEvent,
   switchByMode
@@ -48,7 +48,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: /* HTML */ `<a href="${filePath}">📥</a>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('a')
@@ -93,7 +93,7 @@ for (const mode of ['web', 'esm']) {
         bodyContent: /* HTML */ `<a href="${filePath}">📥</a>`
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.goto(url)
           await page.click('a')
@@ -153,14 +153,14 @@ for (const mode of ['web', 'esm']) {
           ><a href="${csvFileURL}" target="_blank">📥</a>`
       })
       await page.goto(url)
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click(`a[href="${csvFileURL}"]`),
         expectedRequests: [{ n: 'File Download', p: { url: csvFileURL } }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
       })
       await expect(csvMock.getRequestList()).resolves.toHaveLength(1)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click(`a[href="${isoFileURL}"]`),
         refutedRequests: [{ n: 'File Download' }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -198,7 +198,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a'),
         expectedRequests: [
           { n: 'File Download', p: { url: `${LOCAL_SERVER_ADDR}${filePath}` } }
@@ -235,7 +235,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a'),
         expectedRequests: [{ n: 'File Download', p: { url: pdfUrl } }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -275,7 +275,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a', { modifiers: ['ControlOrMeta'] }),
         expectedRequests: [{ n: 'File Download', p: { url: pdfUrl } }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -312,7 +312,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('span'),
         expectedRequests: [{ n: 'File Download', p: { url: pdfUrl } }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -405,7 +405,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a'),
         expectedRequests: [{ n: 'File Download', p: { url: pdfUrl } }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -439,7 +439,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a'),
         refutedRequests: [{ n: 'File Download' }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -485,14 +485,14 @@ for (const mode of ['legacy', 'web']) {
           ><a href="${csvFileURL}" target="_blank">📥</a>`
       })
       await page.goto(url)
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click(`a[href="${csvFileURL}"]`),
         refutedRequests: [{ n: 'File Download' }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
       })
       await expect(csvMock.getRequestList()).resolves.toHaveLength(1)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click(`a[href="${isoFileURL}"]`),
         expectedRequests: [{ n: 'File Download', p: { url: isoFileURL } }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -535,7 +535,7 @@ for (const mode of ['legacy', 'web']) {
 
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a'),
         refutedRequests: [{ n: 'File Download' }],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]

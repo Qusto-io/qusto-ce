@@ -204,7 +204,7 @@ defmodule PlausibleWeb.Live.GoalSettings.Form do
       <div class="text-sm pb-6 text-gray-600 dark:text-gray-400 text-pretty">
         Pageview goals allow you to measure how many people visit a specific page or section of your site.
         <.styled_link
-          href="https://plausible.io/docs/pageview-goals"
+          href="https://docs.qusto.io/pageview-goals"
           new_tab={true}
         >
           Learn more
@@ -283,7 +283,7 @@ defmodule PlausibleWeb.Live.GoalSettings.Form do
       <div class="text-sm pb-6 text-gray-500 dark:text-gray-400 text-justify rounded-md">
         Scroll Depth goals allow you to see how many people scroll beyond your desired scroll depth percentage threshold.
         <.styled_link
-          href="https://plausible.io/docs/scroll-depth"
+          href="https://docs.qusto.io/scroll-depth"
           new_tab={true}
         >
           Learn more
@@ -358,7 +358,7 @@ defmodule PlausibleWeb.Live.GoalSettings.Form do
       <div id="event-fields">
         <div class="text-sm pb-6 text-gray-500 dark:text-gray-400 text-justify rounded-md">
           Custom Events are not tracked by default - you have to configure them on your site to be sent to Plausible. See examples and learn more in <.styled_link
-            href="https://plausible.io/docs/custom-event-goals"
+            href="https://docs.qusto.io/custom-event-goals"
             new_tab={true}
           >
             our docs

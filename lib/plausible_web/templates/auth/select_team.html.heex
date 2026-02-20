@@ -7,14 +7,14 @@
     <ul>
       <li
         :for={team <- @teams_selection}
-        class={if team.current?, do: ["border-indigo-400 border-r-4 m-2"], else: ["m-2"]}
+        class={if team.current?, do: ["border-[var(--qusto-primary)] border-r-4 m-2"], else: ["m-2"]}
       >
         <.unstyled_link href={
           if team.current?,
             do: "#",
             else: Routes.site_path(@conn, :index, __team: team.identifier)
         }>
-          <div class="hover:bg-indigo-100 dark:hover:bg-gray-700 p-4">
+          <div class="hover:bg-[var(--qusto-blue-50)] dark:hover:bg-gray-700 p-4">
             <p class="truncate font-medium text-gray-900 dark:text-gray-100" role="none">
               {team.name}
             </p>

@@ -2,39 +2,39 @@
   <:title>Qusto Blog</:title>
 
   <div class="mb-8">
-    <h1 class="text-4xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-4">
+    <h1 class="text-4xl font-['Arbutus_Slab',Georgia,serif] text-[var(--color-heading)] dark:text-[var(--color-dark-heading)] mb-4">
       Qusto Blog
     </h1>
-    <p class="text-xl text-gray-600">
+    <p class="text-xl text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
       Insights on privacy-first analytics, e-commerce optimization, and AI search trends.
     </p>
   </div>
 
   <div class="space-y-8">
     <%= for post <- @posts do %>
-      <article class="bg-white rounded-xl p-8 border-l-4 border-[#1661be] shadow-md hover:shadow-lg transition-all">
+      <article class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-8 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow-md dark:shadow-warm hover:shadow-lg dark:hover:shadow-warm-lg transition-all">
         <div class="mb-3">
           <.styled_link href={"/blog/#{post.id}"} class="block">
-            <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[#002d9c] mb-2 hover:text-[#1661be] transition-colors">
+            <h2 class="text-3xl font-['Arbutus_Slab',Georgia,serif] text-[var(--color-heading)] dark:text-[var(--color-dark-heading)] mb-2 hover:text-[#1661be] dark:hover:text-[#4a9eff] transition-colors">
               {post.title}
             </h2>
           </.styled_link>
-          <div class="flex items-center text-sm text-gray-500 space-x-4">
+          <div class="flex items-center text-sm text-gray-500 dark:text-[var(--color-dark-text-tertiary)] space-x-4">
             <span>📅 {format_date(post.date)}</span>
             <span>✍️ {post.author}</span>
           </div>
         </div>
-        <p class="text-gray-600 mb-4">{post.description}</p>
+        <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)] mb-4">{post.description}</p>
         <div class="flex items-center justify-between">
           <.styled_link
             href={"/blog/#{post.id}"}
-            class="text-[#1661be] font-semibold hover:underline"
+            class="text-[#1661be] dark:text-[#4a9eff] font-semibold hover:underline"
           >
             Read more →
           </.styled_link>
           <div class="flex gap-2">
             <%= for tag <- post.tags do %>
-              <span class="px-3 py-1 bg-[#e6f0ff] text-[#1661be] text-sm rounded-full">
+              <span class="px-3 py-1 bg-[#e6f0ff] dark:bg-[var(--color-dark-bg-hover)] text-[#1661be] dark:text-[#4a9eff] text-sm rounded-full">
                 {tag}
               </span>
             <% end %>

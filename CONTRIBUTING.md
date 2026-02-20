@@ -19,7 +19,7 @@ We welcome everyone to contribute to Qusto Analytics! This document helps you un
 
 Qusto uses an **open-core model**. Understanding this is important before contributing.
 
-### This Repository (qusto-analytics) - Open Source (AGPLv3)
+### This Repository (qusto-ce) - Open Source (AGPLv3)
 
 - ✅ Core analytics engine
 - ✅ Dashboard UI

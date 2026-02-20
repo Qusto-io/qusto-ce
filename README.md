@@ -150,7 +150,7 @@ Qusto Analytics can be self-hosted on your own infrastructure. We provide Docker
 ```bash
 # Clone the repository
 git clone https://github.com/qusto-io/qusto-ce.git
-cd qusto-analytics
+cd qusto-ce
 
 # Copy environment template
 cp .env.example .env

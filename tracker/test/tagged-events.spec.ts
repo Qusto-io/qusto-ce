@@ -1,5 +1,5 @@
 import {
-  expectPlausibleInAction,
+  expectQustoInAction,
   isPageviewEvent,
   isEngagementEvent,
   switchByMode
@@ -61,7 +61,7 @@ for (const mode of ['web', 'esm']) {
         >Purchase</a
       >`
     })
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: async () => {
         await page.goto(url)
         await page.click('a')
@@ -113,13 +113,13 @@ for (const mode of ['legacy', 'web']) {
           }
         }
       ]
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('a', { modifiers: ['ControlOrMeta'] }), // open in new tab
         expectedRequests,
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('h1'),
         expectedRequests,
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -149,7 +149,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.press('a', 'Enter'),
         expectedRequests: [
           {
@@ -191,7 +191,7 @@ for (const mode of ['legacy', 'web']) {
       await page.goto(url)
 
       // if the form is tagged, clicks within the form should not trigger events
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.click('form')
           await page.click('h2')
@@ -201,7 +201,7 @@ for (const mode of ['legacy', 'web']) {
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.fill('input[type="email"]', 'anything@example.com')
           await page.press('input[type="email"]', 'Enter')
@@ -239,7 +239,7 @@ for (const mode of ['legacy', 'web']) {
       await page.goto(url)
 
       // if the form parent is tagged, clicks within the form should not trigger events
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: async () => {
           await page.click('form')
           await page.click('input[type="text"]')
@@ -248,7 +248,7 @@ for (const mode of ['legacy', 'web']) {
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('input[type="submit"]'),
         expectedRequests: [
           {
@@ -286,13 +286,13 @@ for (const mode of ['legacy', 'web']) {
         }
       ]
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('span'),
         expectedRequests,
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('strong'),
         expectedRequests,
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -318,7 +318,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('button'),
         expectedRequests: [
           {
@@ -364,7 +364,7 @@ for (const mode of ['legacy', 'web']) {
         })
       })
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('button'),
         expectedRequests: [
           {
@@ -461,7 +461,7 @@ for (const mode of ['legacy', 'web']) {
 
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('circle'),
         expectedRequests: [
           {
@@ -497,7 +497,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('button'),
         refutedRequests: [{}],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -523,7 +523,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click('span'),
         refutedRequests: [{}],
         shouldIgnoreRequest: [isPageviewEvent, isEngagementEvent]
@@ -616,7 +616,7 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
       })
       await page.goto(url)
 
-      await expectPlausibleInAction(page, {
+      await expectQustoInAction(page, {
         action: () => page.click(click.element, { modifiers: click.modifiers }),
         expectedRequests: [{ n: 'outbound', p: { url: outboundUrl } }]
       })
@@ -732,7 +732,7 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     await page.goto(url)
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('a'),
       refutedRequests: [{}]
     })
@@ -765,7 +765,7 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     page.on('pageerror', (err) => pageErrors.push(err))
     await page.goto(url)
 
-    await expectPlausibleInAction(page, {
+    await expectQustoInAction(page, {
       action: () => page.click('a'),
       refutedRequests: [{}],
       responseDelay: 500,

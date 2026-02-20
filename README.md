@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="https://qusto.io/">
-    <img src="https://raw.githubusercontent.com/qusto-io/qusto-analytics/main/assets/static/images/qusto-logo.png" width="140px" alt="Qusto Analytics" />
+    <img src="https://raw.githubusercontent.com/qusto-io/qusto-ce/main/assets/static/images/qusto-logo.png" width="140px" alt="Qusto Analytics" />
   </a>
 </p>
 <p align="center">
@@ -14,7 +14,7 @@
     <a href="https://qusto.io/privacy-focused-web-analytics">Privacy Focused</a> |
     <a href="https://qusto.io/open-source-website-analytics">Open Source</a> |
     <a href="https://docs.qusto.io">Docs</a> |
-    <a href="https://github.com/qusto-io/qusto-analytics/blob/main/CONTRIBUTING.md">Contributing</a>
+    <a href="https://github.com/qusto-io/qusto-ce/blob/main/CONTRIBUTING.md">Contributing</a>
     <br /><br />
 </p>
 
@@ -149,8 +149,8 @@ Qusto Analytics can be self-hosted on your own infrastructure. We provide Docker
 
 ```bash
 # Clone the repository
-git clone https://github.com/qusto-io/qusto-analytics.git
-cd qusto-analytics
+git clone https://github.com/qusto-io/qusto-ce.git
+cd qusto-ce
 
 # Copy environment template
 cp .env.example .env
@@ -161,7 +161,7 @@ docker-compose up -d
 
 **Detailed Instructions:** See our [Self-Hosting Guide](https://docs.qusto.io/self-hosting).
 
-**Community Support:** Self-hosted installations are community supported. Ask questions in our [Discussions](https://github.com/qusto-io/qusto-analytics/discussions/categories/self-hosted-support).
+**Community Support:** Self-hosted installations are community supported. Ask questions in our [Discussions](https://github.com/qusto-io/qusto-ce/discussions/categories/self-hosted-support).
 
 ---
 
@@ -190,5 +190,5 @@ Original Plausible Analytics copyright (c) 2018-present Plausible Insights OÜ.
 ---
 
 <p align="center">
-  <strong>Questions?</strong> Open a <a href="https://github.com/qusto-io/qusto-analytics/discussions">Discussion</a> or contact <a href="mailto:support@qusto.io">support@qusto.io</a>
+  <strong>Questions?</strong> Open a <a href="https://github.com/qusto-io/qusto-ce/discussions">Discussion</a> or contact <a href="mailto:support@qusto.io">support@qusto.io</a>
 </p>

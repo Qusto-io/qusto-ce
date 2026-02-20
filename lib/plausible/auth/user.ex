@@ -192,15 +192,11 @@ defmodule Plausible.Auth.User do
       %{suggestions: [], warning: "", score: 3}
   end
 
-  def profile_img_url(%__MODULE__{email: email}) do
-    hash =
-      email
-      |> String.trim()
-      |> String.downcase()
-      |> :erlang.md5()
-      |> Base.encode16(case: :lower)
-
-    Path.join(PlausibleWeb.Endpoint.url(), ["avatar/", hash])
+  def profile_img_url(%__MODULE__{} = _user) do
+    # Return Qusto logo instead of Gravatar
+    # Theme switching handled by CSS in header template
+    edition = if ee?(), do: "ee", else: "ce"
+    "/images/#{edition}/logo_profile.svg"
   end
 
   def profile_img_url(email) when is_binary(email) do

@@ -13,8 +13,8 @@ defmodule PlausibleWeb.Live.ChangeDomain do
     alias Plausible.InstallationSupport.{Detection, Result}
   end
 
-  @change_domain_docs_link "https://plausible.io/docs/change-domain-name"
-  @change_domain_checklist_docs_link "https://plausible.io/docs/change-domain-name#domain-change-checklist"
+  @change_domain_docs_link "https://docs.qusto.io/change-domain-name"
+  @change_domain_checklist_docs_link "https://docs.qusto.io/change-domain-name#domain-change-checklist"
 
   def change_domain_docs_link(), do: @change_domain_docs_link
 

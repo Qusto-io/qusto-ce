@@ -71,7 +71,7 @@ test.describe('installed plausible web variant', () => {
           },
           responseStatus: 202,
           error: undefined,
-          testPlausibleFunctionError: undefined
+          testQustoFunctionError: undefined
         },
         cookiesConsentResult: incompleteCookiesConsentResult
       }
@@ -134,7 +134,7 @@ test.describe('installed plausible web variant', () => {
           },
           responseStatus: undefined,
           error: undefined,
-          testPlausibleFunctionError: 'Test Plausible function timeout exceeded'
+          testQustoFunctionError: 'Test Qusto function timeout exceeded'
         },
         cookiesConsentResult: incompleteCookiesConsentResult
       }
@@ -193,7 +193,7 @@ test.describe('installed plausible web variant', () => {
           },
           responseStatus: 400,
           error: undefined,
-          testPlausibleFunctionError: undefined
+          testQustoFunctionError: undefined
         },
         cookiesConsentResult: incompleteCookiesConsentResult
       }
@@ -237,7 +237,7 @@ test.describe('installed plausible web variant', () => {
           normalizedBody: undefined,
           responseStatus: undefined,
           error: undefined,
-          testPlausibleFunctionError: undefined
+          testQustoFunctionError: undefined
         },
         cookiesConsentResult: incompleteCookiesConsentResult
       }
@@ -277,7 +277,7 @@ test.describe('installed plausible web variant', () => {
       }),
       (async () => {
         // start navigation timer only when the verifier code has been added to the page
-        await page.waitForFunction(`() => !!window.verifyPlausibleInstallation`)
+        await page.waitForFunction(`() => !!window.verifyQustoInstallation`)
         await page.evaluate(
           ({ targetUrl }) => {
             setTimeout(() => {
@@ -359,7 +359,7 @@ test.describe('installed plausible web variant', () => {
       }),
       (async () => {
         // start navigation timer only when the verifier code has been added to the page
-        await page.waitForFunction(`() => !!window.verifyPlausibleInstallation`)
+        await page.waitForFunction(`() => !!window.verifyQustoInstallation`)
         await page.evaluate(
           ({ targetUrl }) => {
             setTimeout(() => {
@@ -371,7 +371,7 @@ test.describe('installed plausible web variant', () => {
         )
         await expect(page.getByText('beta')).toBeVisible()
         // start navigation timer only when the verifier code has been added to the page
-        await page.waitForFunction(`() => !!window.verifyPlausibleInstallation`)
+        await page.waitForFunction(`() => !!window.verifyQustoInstallation`)
         await page.evaluate(
           ({ targetUrl }) => {
             setTimeout(() => {
@@ -446,7 +446,7 @@ test.describe('installed plausible web variant', () => {
           normalizedBody: undefined,
           requestUrl: undefined,
           responseStatus: undefined,
-          testPlausibleFunctionError: 'Test Plausible function timeout exceeded'
+          testQustoFunctionError: 'Test Qusto function timeout exceeded'
         },
         cookiesConsentResult: incompleteCookiesConsentResult
       }
@@ -509,7 +509,7 @@ test.describe('installed plausible web variant', () => {
           normalizedBody: undefined,
           requestUrl: undefined,
           responseStatus: undefined,
-          testPlausibleFunctionError: 'Test Plausible function timeout exceeded'
+          testQustoFunctionError: 'Test Qusto function timeout exceeded'
         },
         cookiesConsentResult: incompleteCookiesConsentResult
       }

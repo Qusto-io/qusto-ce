@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GHCR_REPO: ghcr.io/qusto-io/qusto-analytics-ce
+  GHCR_REPO: ghcr.io/qusto-io/qusto-ce-ce
 
 jobs:
   build:
@@ -82,7 +82,7 @@ jobs:
           url: ${{ secrets.BUILD_NOTIFICATION_URL }}
           method: "POST"
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"content": "<a href=\"https://github.com/Qusto-io/qusto-analytics/actions/workflows/build-public-images-ghcr.yml\">Build failed</a>"}'
+          data: '{"content": "<a href=\"https://github.com/Qusto-io/qusto-ce/actions/workflows/build-public-images-ghcr.yml\">Build failed</a>"}'
 
   push:
     runs-on: ubuntu-latest

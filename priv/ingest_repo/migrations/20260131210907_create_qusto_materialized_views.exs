@@ -22,8 +22,8 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
     execute """
     CREATE MATERIALIZED VIEW IF NOT EXISTS qusto_ai_traffic_daily_mv #{on_cluster}
     ENGINE = SummingMergeTree()
-    PARTITION BY toYYYYMM(toDate(timestamp))
-    ORDER BY (site_id, toDate(timestamp), ai_referral_source)
+    PARTITION BY toYYYYMM(date)
+    ORDER BY (site_id, date, ai_referral_source)
     AS SELECT
         site_id,
         toDate(timestamp) as date,
@@ -37,7 +37,7 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
         uniqIf(user_id, name = 'Purchase') as conversions,
 
         avgState(engagement_time) as avg_engagement_state
-    FROM events_v2
+    FROM qusto_events_ce.events_v2
     WHERE ai_referral_source != ''
     GROUP BY site_id, toDate(timestamp), ai_referral_source
     """
@@ -46,8 +46,8 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
     execute """
     CREATE MATERIALIZED VIEW IF NOT EXISTS qusto_funnel_conversions_daily_mv #{on_cluster}
     ENGINE = SummingMergeTree()
-    PARTITION BY toYYYYMM(toDate(timestamp))
-    ORDER BY (site_id, funnel_id, toDate(timestamp))
+    PARTITION BY toYYYYMM(date)
+    ORDER BY (site_id, funnel_id, date)
     AS SELECT
         site_id,
         funnel_id,
@@ -70,7 +70,7 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
         sumIf(revenue_source_amount, funnel_step = 1) as step_1_revenue,
         sumIf(revenue_source_amount, funnel_step >= 5) as final_step_revenue
 
-    FROM events_v2
+    FROM qusto_events_ce.events_v2
     WHERE funnel_id > 0
     GROUP BY site_id, funnel_id, toDate(timestamp)
     """
@@ -79,8 +79,8 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
     execute """
     CREATE MATERIALIZED VIEW IF NOT EXISTS qusto_ecommerce_funnel_mv #{on_cluster}
     ENGINE = SummingMergeTree()
-    PARTITION BY toYYYYMM(toDate(timestamp))
-    ORDER BY (site_id, toDate(timestamp), product_category)
+    PARTITION BY toYYYYMM(date)
+    ORDER BY (site_id, date, product_category)
     AS SELECT
         site_id,
         toDate(timestamp) as date,
@@ -99,7 +99,7 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
         uniqIf(user_id, name = 'Product View') as unique_viewers,
         uniqIf(user_id, name = 'Purchase') as unique_purchasers
 
-    FROM events_v2
+    FROM qusto_events_ce.events_v2
     WHERE name IN ('Product View', 'Add to Cart', 'Begin Checkout', 'Purchase')
     GROUP BY site_id, toDate(timestamp), product_category
     """
@@ -108,8 +108,8 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
     execute """
     CREATE MATERIALIZED VIEW IF NOT EXISTS qusto_attribution_daily_mv #{on_cluster}
     ENGINE = SummingMergeTree()
-    PARTITION BY toYYYYMM(toDate(timestamp))
-    ORDER BY (site_id, toDate(timestamp), first_touch_source, last_touch_source)
+    PARTITION BY toYYYYMM(date)
+    ORDER BY (site_id, date, first_touch_source, last_touch_source)
     AS SELECT
         site_id,
         toDate(timestamp) as date,
@@ -123,7 +123,7 @@ defmodule Plausible.IngestRepo.Migrations.CreateQustoMaterializedViews do
         avg(days_to_conversion) as avg_days_to_conversion,
         avg(touchpoint_count) as avg_touchpoints
 
-    FROM qusto_conversions
+    FROM qusto_events_ce.qusto_conversions
     GROUP BY site_id, toDate(timestamp), first_touch_source, first_touch_medium, last_touch_source, last_touch_medium
     """
   end

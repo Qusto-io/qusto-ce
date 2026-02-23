@@ -8,3 +8,8 @@ config/.env.test:.*SECRET_KEY_BASE=
 
 # Test database URLs
 config/.env.test:.*DATABASE_URL=
+
+# Template/example files — placeholder values, not real secrets
+.env.example:.*SECRET_KEY_BASE=
+DEPLOYMENT.md:.*SECRET_KEY_BASE=
+docker-compose.deploy.yml:.*SECRET_KEY_BASE=

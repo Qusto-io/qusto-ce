@@ -1,3 +1,0 @@
-[submodule "modules/qusto-ecommerce"]
-	path = modules/qusto-ecommerce
-	url = git@github.com:Qusto-io/qusto-ecommerce.git

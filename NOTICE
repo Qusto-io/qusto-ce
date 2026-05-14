@@ -1,0 +1,27 @@
+NOTICE — Qusto Community Edition
+
+Qusto Community Edition ("Qusto CE") is a derivative work of Plausible Analytics.
+
+---
+
+Plausible Analytics
+Website:   https://plausible.io
+Copyright: Copyright (c) 2019-2026 Plausible Insights OÜ
+License:   GNU Affero General Public License v3.0 (AGPL-3.0)
+Source:    https://github.com/plausible/analytics
+
+Qusto CE is built upon and derived from Plausible Analytics.
+Modifications made by Qusto, Inc.:
+  - ClickHouse database renamed from plausible_events_db to qusto
+  - JavaScript tracker global aliased: window.qusto (primary), window.plausible (compat shim)
+  - Custom event extensions for e-commerce: product_view, add_to_cart, purchase
+  - AI referrer detection for ChatGPT, Perplexity, Claude, Gemini acquisition channels
+  - CE-EE internal API bridge endpoints
+
+All modifications are licensed under AGPL-3.0 in accordance with the upstream license.
+
+The original Plausible Analytics source code is available at:
+https://github.com/plausible/analytics
+
+Qusto CE source code is available at:
+https://github.com/Qusto-io/qusto-ce

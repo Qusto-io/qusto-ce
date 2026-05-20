@@ -1,4 +1,12 @@
-# Plausible Analytics
+# Qusto Community Edition
+
+> **Fork notice:** Qusto CE is a fork of [Plausible Analytics](https://github.com/plausible/analytics),
+> licensed under AGPL-3.0. See [NOTICE](NOTICE) for attribution.
+> Branch `qusto/v2.1` tracks upstream Plausible `master` (v3.2.x) with Qusto branding applied incrementally.
+
+---
+
+# Plausible Analytics (upstream)
 
 <p align="center">
   <a href="https://plausible.io/">

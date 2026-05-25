@@ -2,14 +2,46 @@
 
 ## Supported Versions
 
-We only add security updates to the latest MAJOR.MINOR version of the project. No security updates are backported to previous versions. If you
-want be up to date on security patches, make sure your Plausible image is up to date with `plausible/analytics:latest`
+Qusto Community Edition (CE) is a fork of [Plausible Analytics](https://github.com/plausible/analytics). We release security updates on the active `qusto/v2.x` branch. Self-hosters should pull the latest CE image or rebuild from the current branch tag.
+
+| Version   | Supported          |
+| --------- | ------------------ |
+| qusto/v2.x | :white_check_mark: |
+| older     | :x:                |
 
 ## Reporting a Vulnerability
 
-Our software is updated several times per week and we also have a way for you to [report any security vulnerabilities](https://plausible.io/vulnerability-disclosure-program). A more detailed overview about our security practices can be found on [plausible.io/security](https://plausible.io/security).
+**Please do not report security vulnerabilities through public GitHub issues.**
 
-If you've found a security vulnerability with the Plausible codebase, you can disclose it responsibly by sending a summary to security@plausible.io.
-We will review the potential threat and fix it as fast as we can.
+Report vulnerabilities by email to:
 
-While we do not have a bounty program in place yet, we are incredibly thankful for people who take the time to share their findings with us. Whether it's a tiny bug that you've found or a security vulnerability, all reports help us to continuously improve Plausible for everyone. Thank you!
+**security@qusto.io**
+
+You should receive a response within 48 hours. If you do not, follow up to confirm we received your message.
+
+### What to Include
+
+- Type of vulnerability (e.g., XSS, SQL injection, authentication bypass)
+- Full paths of affected source file(s)
+- Location of the affected code (tag/branch/commit or direct URL)
+- Step-by-step instructions to reproduce
+- Proof-of-concept or exploit code (if possible)
+- Impact assessment and suggested fix (if you have one)
+
+### What to Expect
+
+- **Initial response:** within 48 hours acknowledging receipt
+- **Status update:** within 7 days with our assessment and planned fix timeline
+- **Fix timeline:** critical issues within 7 days; high severity within 30 days
+- **Disclosure:** we coordinate public disclosure with reporters
+
+## Upstream Plausible
+
+Qusto CE inherits code from Plausible Analytics (AGPL-3.0). Vulnerabilities in upstream Plausible may also affect Qusto CE. You may report upstream issues to [Plausible's disclosure program](https://plausible.io/vulnerability-disclosure-program); we monitor upstream advisories and backport fixes to Qusto CE as needed.
+
+## Security Contact
+
+- **Email:** security@qusto.io
+- **Product:** [Qusto Community Edition](https://github.com/Qusto-io/qusto-ce)
+
+Thank you for helping keep Qusto and our users safe.

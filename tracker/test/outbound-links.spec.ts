@@ -363,10 +363,9 @@ test.describe('outbound links feature when using legacy .compat extension', () =
 
       const { url } = await initializePageDynamically(page, {
         testId,
-        scriptConfig:
-          compatLocalScript(
-            '/tracker/js/plausible.compat.local.manual.outbound-links.js'
-          ),
+        scriptConfig: compatLocalScript(
+          '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+        ),
         bodyContent: /* HTML */ `<a ${linkAttributes} href="${outboundUrl}"
           ><h1>➡️</h1></a
         >`
@@ -411,10 +410,9 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        compatLocalScript(
-          '/tracker/js/plausible.compat.local.manual.outbound-links.js'
-        ),
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+      ),
       bodyContent: /* HTML */ `<a href="${outboundUrl}">📥</a>`
     })
     await page.goto(url)
@@ -465,10 +463,9 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        compatLocalScript(
-          '/tracker/js/plausible.compat.local.manual.outbound-links.js'
-        ),
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+      ),
       bodyContent: /* HTML */ `<a href="${outboundUrl}">➡️</a>`
     })
     await page.goto(url)
@@ -508,10 +505,9 @@ test.describe('outbound links feature when using legacy .compat extension', () =
 
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        compatLocalScript(
-          '/tracker/js/plausible.compat.local.manual.outbound-links.js'
-        ),
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+      ),
       bodyContent: /* HTML */ `
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <a href="${outboundUrl}">

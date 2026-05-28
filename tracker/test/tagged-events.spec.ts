@@ -610,10 +610,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
 
       const { url } = await initializePageDynamically(page, {
         testId,
-        scriptConfig:
-          compatLocalScript(
-            '/tracker/js/plausible.compat.local.manual.tagged-events.js'
-          ),
+        scriptConfig: compatLocalScript(
+          '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+        ),
         bodyContent: /* HTML */ `<a
           class="plausible-event-name=outbound"
           ${linkAttributes}
@@ -653,10 +652,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        compatLocalScript(
-          '/tracker/js/plausible.compat.local.manual.tagged-events.js'
-        ),
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+      ),
       bodyContent: /* HTML */ `<a
         class="plausible-event-name=Subscribe"
         href="${targetPage.url}"
@@ -703,10 +701,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        compatLocalScript(
-          '/tracker/js/plausible.compat.local.manual.tagged-events.js'
-        ),
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+      ),
       bodyContent: /* HTML */ `<a
         class="plausible-event-name=Subscribe"
         href="${targetPage.url}"
@@ -733,10 +730,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        compatLocalScript(
-          '/tracker/js/plausible.compat.local.manual.tagged-events.js'
-        ),
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+      ),
       bodyContent: /* HTML */ `<a
         class="plausible-event-key=value"
         href="${targetPage.url}"
@@ -764,10 +760,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        compatLocalScript(
-          '/tracker/js/plausible.compat.local.manual.tagged-events.js'
-        ),
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+      ),
       bodyContent: /* HTML */ `
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <a class="plausible-event-name=link+click" href="${targetPage.url}">

@@ -215,7 +215,7 @@ defmodule PlausibleWeb.Live.VerificationTest do
            "Please make sure you've copied the snippet to the head of your site, or verify your installation manually.",
            nil},
           {"npm",
-           "Please make sure you've initialized Plausible on your site, or verify your installation manually.",
+           "Please make sure you've initialized Qusto on your site, or verify your installation manually.",
            nil},
           {"gtm",
            "Please make sure you've configured the GTM template correctly, or verify your installation manually.",
@@ -229,7 +229,7 @@ defmodule PlausibleWeb.Live.VerificationTest do
            "npm"},
           # falls back to saved installation type if no param
           {"",
-           "Please make sure you've initialized Plausible on your site, or verify your installation manually.",
+           "Please make sure you've initialized Qusto on your site, or verify your installation manually.",
            "npm"},
           # falls back to manual if no param and no saved installation type
           {"",
@@ -271,7 +271,7 @@ defmodule PlausibleWeb.Live.VerificationTest do
 
                    {
                      text_of_element(html, @heading) =~
-                       "We couldn't detect Plausible on your site",
+                       "We couldn't detect Qusto on your site",
                      html
                    }
                  end)

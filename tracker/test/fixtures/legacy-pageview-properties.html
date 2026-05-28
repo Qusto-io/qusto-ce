@@ -7,6 +7,9 @@
     <title>Qusto Playwright tests</title>
     <script>window.__qusto = true; window.__plausible = true;</script>
     <script
+      id="qusto"
+      data-domain="example.com"
+      data-api="http://localhost:3000/api/event"
       async
       event-author="John"
       event-foo="bar"
@@ -17,7 +20,7 @@
   <body>
     <button
       id="custom-event-button"
-      onclick="plausible('Custom event', { props: { author: 'Karl' } })"
+      onclick="qusto('Custom event', { props: { author: 'Karl' } })"
     >
       Custom event
     </button>

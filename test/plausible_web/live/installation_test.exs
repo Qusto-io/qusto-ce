@@ -164,7 +164,7 @@ defmodule PlausibleWeb.Live.InstallationTest do
 
       html = render(lv)
       config = Plausible.Repo.get_by!(TrackerScriptConfiguration, site_id: site.id)
-      assert html =~ "Privacy-friendly analytics by Plausible"
+      assert html =~ "Privacy-friendly analytics by Qusto"
       assert html =~ "/js/#{config.id}.js"
       assert html =~ "async"
     end

@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Plausible Playwright tests</title>
-    <script async src="/tracker/js/plausible.local.manual.js"></script>
+    <title>Qusto Playwright tests</title>
+    <script>window.__qusto = true; window.__plausible = true;</script>
+    <script id="qusto" data-domain="example.com" data-api="http://localhost:3000/api/event" async src="/tracker/js/plausible.local.manual.js"></script>
     <script>
-      window.plausible =
-        window.plausible ||
+      window.qusto =
+        window.qusto ||
         function () {
-          ;(window.plausible.q = window.plausible.q || []).push(arguments)
+          ;(window.qusto.q = window.qusto.q || []).push(arguments)
         }
     </script>
   </head>
@@ -28,11 +29,11 @@
     <script>
       document.addEventListener('click', (e) => {
         if (e.target.id === 'pageview-trigger-custom-url') {
-          window.plausible('pageview', {
+          window.qusto('pageview', {
             u: 'https://example.com/custom/location'
           })
         } else if (e.target.id === 'pageview-trigger-custom-props') {
-          window.plausible('pageview', { props: { author: 'John' } })
+          window.qusto('pageview', { props: { author: 'John' } })
         }
       })
     </script>

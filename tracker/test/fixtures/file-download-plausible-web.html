@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>plausible-web.js tests</title>
+    <script>window.__qusto = true; window.__plausible = true;</script>
   </head>
 
   <body>
@@ -16,13 +17,13 @@
     >
 
     <script>
-      window.plausible =
-        window.plausible ||
+      window.qusto =
+        window.qusto ||
         function () {
-          ;(window.plausible.q = window.plausible.q || []).push(arguments)
+          ;(window.qusto.q = window.qusto.q || []).push(arguments)
         }
-      window.plausible.init = function (overrides) {
-        window.plausible.o = overrides || {}
+      window.qusto.init = function (overrides) {
+        window.qusto.o = overrides || {}
       }
 
       var config = { domain: 'example.com' }

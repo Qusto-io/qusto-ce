@@ -309,6 +309,7 @@ async function testQustoFunction({ timeoutMs, debug }) {
 }
 
 function forceIgnoreWebdriverCondition() {
+  window.__qusto = true
   window.__plausible = true
 }
 

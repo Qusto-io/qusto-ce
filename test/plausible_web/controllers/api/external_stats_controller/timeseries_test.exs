@@ -78,7 +78,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.TimeseriesTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "Error parsing `period` parameter: invalid period `aosuhsacp`. Please find accepted values in our docs: https://plausible.io/docs/stats-api#time-periods"
+                 "Error parsing `period` parameter: invalid period `aosuhsacp`. Please find accepted values in our docs: https://docs.qusto.io/stats-api#time-periods"
              }
     end
 
@@ -519,7 +519,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.TimeseriesTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "Invalid filter property 'badproperty'. Please provide a valid filter property: https://plausible.io/docs/stats-api#properties"
+                 "Invalid filter property 'badproperty'. Please provide a valid filter property: https://docs.qusto.io/stats-api#properties"
              }
     end
 

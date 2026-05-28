@@ -19,6 +19,7 @@ test.describe('scroll depth (engagement events)', () => {
 
     await page.evaluate(() => window.scrollBy(0, 300))
     await page.evaluate(() => window.scrollBy(0, 0))
+    await page.waitForTimeout(process.env.CI ? 500 : 200)
 
     await expectQustoInAction(page, {
       action: () => page.click('#navigate-away'),

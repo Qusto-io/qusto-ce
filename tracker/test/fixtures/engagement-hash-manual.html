@@ -37,7 +37,9 @@
         }
       }
 
-      window.qusto('pageview', { u: 'http://localhost:3000/#home' })
+      window.addEventListener('DOMContentLoaded', () => {
+        window.qusto('pageview', { u: 'http://localhost:3000/#home' })
+      })
       window.addEventListener('hashchange', updateContent)
     </script>
   </body>

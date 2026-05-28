@@ -91,7 +91,7 @@ test.describe('engagement events', () => {
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig: compatLocalScript(
-        '/tracker/js/plausible.hash.local.manual.js'
+        '/tracker/js/plausible.compat.hash.local.manual.js'
       ),
       bodyContent: /* HTML */ `
         <script>

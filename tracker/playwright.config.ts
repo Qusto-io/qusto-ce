@@ -46,7 +46,8 @@ export default defineConfig({
       testIgnore: [
         'installation_support/**',
         'callbacks.spec.ts',
-        'custom-properties.spec.ts'
+        'custom-properties.spec.ts',
+        'features-hierarchy-on-overlap.spec.ts'
       ]
     }
   ],

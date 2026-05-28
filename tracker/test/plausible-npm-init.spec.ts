@@ -42,7 +42,7 @@ test('if `init` is called without domain, it throws', async ({ page }, {
   const config = { ...DEFAULT_CONFIG, domain: undefined }
   await expect(
     page.evaluate((config) => window.init(config), { config })
-  ).rejects.toThrow('plausible.init(): domain argument is required')
+  ).rejects.toThrow('qusto.init(): domain argument is required')
 })
 
 test('if `init` is called with no configuration, it throws', async ({ page }, {
@@ -59,7 +59,7 @@ test('if `init` is called with no configuration, it throws', async ({ page }, {
   })
   await page.goto(url)
   await expect(page.evaluate(() => window.init())).rejects.toThrow(
-    'plausible.init(): domain argument is required'
+    'qusto.init(): domain argument is required'
   )
 })
 
@@ -77,7 +77,7 @@ test('if `track` is called before `init`, it throws', async ({ page }, {
   })
   await page.goto(url)
   await expect(page.evaluate(() => window.track('purchase'))).rejects.toThrow(
-    'plausible.track() can only be called after plausible.init()'
+    'qusto.track() can only be called after qusto.init()'
   )
 })
 
@@ -105,7 +105,7 @@ test('if `init` is called twice, it throws, but tracking still works', async ({
 
   await expect(
     page.evaluate((config) => window.init(config), config)
-  ).rejects.toThrow('plausible.init() can only be called once')
+  ).rejects.toThrow('qusto.init() can only be called once')
 
   await expectQustoInAction(page, {
     action: async () => {
@@ -115,7 +115,7 @@ test('if `init` is called twice, it throws, but tracking still works', async ({
   })
 })
 
-test('`bindToWindow` is true by default, and plausible is attached to window', async ({
+test('`bindToWindow` is true by default, and qusto is attached to window', async ({
   page
 }, { testId }) => {
   const config = { ...DEFAULT_CONFIG }
@@ -135,15 +135,15 @@ test('`bindToWindow` is true by default, and plausible is attached to window', a
     expectedRequests: [{ n: 'pageview' }]
   })
   await expect(
-    page.waitForFunction(() => window.plausible?.l !== undefined)
+    page.waitForFunction(() => window.qusto?.l !== undefined)
   ).resolves.toBeTruthy()
   await expect(
     page.evaluate(() => {
-      if (window.plausible?.l) {
+      if (window.qusto?.l) {
         return {
-          l: window.plausible.l,
-          v: window.plausible.v,
-          s: window.plausible.s
+          l: window.qusto.l,
+          v: window.qusto.v,
+          s: window.qusto.s
         }
       }
       return false
@@ -151,7 +151,7 @@ test('`bindToWindow` is true by default, and plausible is attached to window', a
   ).resolves.toEqual({ l: true, v: tracker_script_version, s: 'npm' })
 })
 
-test('if `bindToWindow` is false, plausible is not attached to window', async ({
+test('if `bindToWindow` is false, qusto is not attached to window', async ({
   page
 }, { testId }) => {
   const config = { ...DEFAULT_CONFIG, bindToWindow: false }
@@ -173,7 +173,7 @@ test('if `bindToWindow` is false, plausible is not attached to window', async ({
   })
 
   await expect(
-    page.waitForFunction(() => window.plausible !== undefined, undefined, {
+    page.waitForFunction(() => window.qusto !== undefined, undefined, {
       timeout: 1000
     })
   ).rejects.toThrow('page.waitForFunction: Timeout 1000ms exceeded.')

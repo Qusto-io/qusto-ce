@@ -50,8 +50,8 @@ const RESPONSE_BODY_TEMPLATE = `
 const PLAUSIBLE_WEB_SNIPPET = `
 <script async src="<%= plausible_script_url %>"></script>
 <script>
-  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-  plausible.init()
+  window.qusto=window.qusto||function(){(qusto.q=qusto.q||[]).push(arguments)},qusto.init=qusto.init||function(i){qusto.o=i||{}};
+  qusto.init()
 </script>
 `
 
@@ -113,10 +113,7 @@ export function getConfiguredQustoWebSnippet({
   ) {
     const serializedOptions = serializeWithFunctions(initOverrideOptions)
 
-    return snippet.replace(
-      'plausible.init()',
-      `plausible.init(${serializedOptions})`
-    )
+    return snippet.replace('qusto.init()', `qusto.init(${serializedOptions})`)
   }
   return snippet
 }

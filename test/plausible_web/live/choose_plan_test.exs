@@ -642,7 +642,7 @@ defmodule PlausibleWeb.Live.ChoosePlanTest do
         class = class_of_element(doc, @growth_plan_box)
 
         assert class =~ "ring-2"
-        assert class =~ "ring-indigo-600"
+        assert class =~ "ring-[var(--qusto-primary)]"
         assert text_of_element(doc, @growth_highlight_pill) == "Current"
       end
 
@@ -725,7 +725,7 @@ defmodule PlausibleWeb.Live.ChoosePlanTest do
         class = class_of_element(doc, @business_plan_box)
 
         assert class =~ "ring-2"
-        assert class =~ "ring-indigo-600"
+        assert class =~ "ring-[var(--qusto-primary)]"
         assert text_of_element(doc, @business_highlight_pill) == "Current"
 
         refute element_exists?(doc, @starter_highlight_pill)

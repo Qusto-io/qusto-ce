@@ -10,6 +10,7 @@ on:
 jobs:
   tracker-script-update:
     runs-on: ubuntu-latest
+    continue-on-error: true  # Requires PLAUSIBLE_BOT_GITHUB_TOKEN — not configured in Qusto fork
     permissions:
       pull-requests: write
       contents: read

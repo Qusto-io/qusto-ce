@@ -47,7 +47,7 @@ jobs:
           fetch-depth: 0
 
       - name: Read .tool-versions
-        uses: marocchino/tool-versions-action@v1
+        uses: marocchino/tool-versions-action@v2
         id: versions
 
       - name: Set up Elixir
@@ -194,7 +194,7 @@ jobs:
           fetch-depth: 0
 
       - name: Read .tool-versions
-        uses: marocchino/tool-versions-action@v1
+        uses: marocchino/tool-versions-action@v2
         id: versions
 
       - name: Set up Elixir

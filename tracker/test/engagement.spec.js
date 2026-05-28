@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import {
+  ensureQustoInitialized,
   expectQustoInAction,
   hideAndShowCurrentTab,
   focus,
@@ -92,13 +93,15 @@ test.describe('engagement events', () => {
     })
 
     await page.waitForTimeout(1000)
+    await ensureQustoInitialized(page)
 
     const [request] = await expectQustoInAction(page, {
       action: () => page.click('#about-us-hash-link'),
       expectedRequests: [
         { n: 'engagement', u: `${LOCAL_SERVER_ADDR}/#home` },
         { n: 'pageview', u: `${LOCAL_SERVER_ADDR}/#about-us` }
-      ]
+      ],
+      mockRequestTimeout: process.env.CI ? 5000 : 3000
     })
 
     expect(request.e).toBeGreaterThan(1000)

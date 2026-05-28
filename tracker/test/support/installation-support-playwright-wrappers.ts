@@ -39,9 +39,12 @@ export async function executeVerifier(
     for (let attempts = 1; attempts <= maxAttempts; attempts++) {
       try {
         const output = await verify()
+        const data = output.data as Record<string, unknown>
         return {
           data: {
-            ...output.data,
+            ...data,
+            plausibleIsOnWindow: data.qustoIsOnWindow,
+            plausibleIsInitialized: data.qustoIsInitialized,
             attempts
           }
         }

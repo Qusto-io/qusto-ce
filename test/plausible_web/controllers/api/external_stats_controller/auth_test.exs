@@ -13,7 +13,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.AuthTest do
     })
     |> assert_error(
       401,
-      "Missing API key. Please use a valid Plausible API key as a Bearer Token."
+      "Missing API key. Please use a valid Qusto API key as a Bearer Token."
     )
   end
 

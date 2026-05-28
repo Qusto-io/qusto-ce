@@ -50,8 +50,8 @@ defmodule PlausibleWeb.TrackerPlugTest do
       refute String.contains?(response, "fileDownloads:!0")
     end
 
-    # window.plausible is a substring checked for by the wordpress plugin to avoid 'optimization' by other wordpress plugins
-    test "script contains window.plausible", %{conn: conn} do
+    # window.qusto is a substring checked for by the wordpress plugin to avoid 'optimization' by other wordpress plugins
+    test "script contains window.qusto", %{conn: conn} do
       site = new_site()
 
       tracker_script_configuration =
@@ -63,7 +63,7 @@ defmodule PlausibleWeb.TrackerPlugTest do
 
       response = get(conn, "/js/#{tracker_script_configuration.id}.js") |> response(200)
 
-      assert String.contains?(response, "window.plausible")
+      assert String.contains?(response, "window.qusto")
     end
 
     test "returns 404 for unknown site", %{conn: conn} do
@@ -88,7 +88,7 @@ defmodule PlausibleWeb.TrackerPlugTest do
     test "returns the right script extensions no matter the order" do
       response = get_script("plausible.compat.file-downloads.hash.outbound-links.js")
 
-      assert String.contains?(response, "getElementById(\"plausible\")")
+      assert String.contains?(response, "getElementById(\"qusto\")")
       assert String.contains?(response, "file-types")
       assert String.contains?(response, "hashchange")
       assert String.contains?(response, "Outbound Link: Click")
@@ -122,7 +122,7 @@ defmodule PlausibleWeb.TrackerPlugTest do
         assert String.starts_with?(script, "!function(){var")
         assert String.length(script) > 200
 
-        assert String.contains?(script, "window.plausible")
+        assert String.contains?(script, "window.qusto")
       end
     end
   end

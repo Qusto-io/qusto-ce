@@ -139,7 +139,7 @@ defmodule Plausible.MixProject do
       {:prima, "~> 0.2.1"},
       {:plug_cowboy, "~> 2.3"},
       {:polymorphic_embed, "~> 5.0"},
-      {:postgrex, "~> 0.21.1"},
+      {:postgrex, ">= 0.22.2"},
       {:prom_ex, "~> 1.8"},
       {:peep, "~> 3.0"},
       {:public_suffix, git: "https://github.com/axelson/publicsuffix-elixir"},

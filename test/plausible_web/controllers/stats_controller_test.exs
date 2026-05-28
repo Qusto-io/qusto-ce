@@ -90,7 +90,7 @@ defmodule PlausibleWeb.StatsControllerTest do
       assert text_of_element(resp, "title") == "Qusto Analytics: Live Demo"
       assert resp =~ "Login"
       assert resp =~ "Want these stats for your website?"
-      assert resp =~ "Getting started"
+      assert resp =~ "Get started"
     end
 
     test "public site - redirect to /login when no stats because verification requires it", %{
@@ -221,7 +221,7 @@ defmodule PlausibleWeb.StatsControllerTest do
       resp = html_response(conn, 200)
       assert resp =~ user.name
       assert text_of_attr(resp, @react_container, "data-logged-in") == "true"
-      refute resp =~ "Getting started"
+      refute resp =~ "User Guide"
     end
 
     @tag :ce_build_only
@@ -1385,7 +1385,7 @@ defmodule PlausibleWeb.StatsControllerTest do
       assert text_of_attr(resp, @react_container, "data-current-user-id") == "null"
       assert text_of_attr(resp, @react_container, "data-current-user-role") == "public"
       assert resp =~ "Login"
-      assert resp =~ "Getting started"
+      assert resp =~ "User Guide"
     end
 
     test "returns page with X-Frame-Options disabled so it can be embedded in an iframe", %{
@@ -1423,7 +1423,7 @@ defmodule PlausibleWeb.StatsControllerTest do
       resp = html_response(conn, 200)
       assert text_of_attr(resp, @react_container, "data-embedded") == "true"
       refute resp =~ "Login"
-      refute resp =~ "Getting started"
+      refute resp =~ "User Guide"
     end
 
     test "shows locked page if page is locked", %{conn: conn} do

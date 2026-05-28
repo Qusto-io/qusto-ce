@@ -677,7 +677,7 @@ defmodule PlausibleWeb.SiteControllerTest do
       conn = get(conn, "/#{site.domain}/settings/general")
       resp = html_response(conn, 200)
       assert resp =~ user.name
-      assert resp =~ "Getting started"
+      assert resp =~ "User Guide"
     end
   end
 

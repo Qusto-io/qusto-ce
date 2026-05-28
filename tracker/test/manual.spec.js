@@ -60,7 +60,7 @@ test.describe('manual extension', () => {
     await expectQustoInAction(page, {
       action: () =>
         page.evaluate(() =>
-          window.plausible('Non-Interactive Custom Event', {
+          window.qusto('Non-Interactive Custom Event', {
             interactive: false
           })
         ),

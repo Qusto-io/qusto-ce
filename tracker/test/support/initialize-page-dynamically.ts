@@ -56,8 +56,12 @@ const PLAUSIBLE_WEB_SNIPPET = `
 `
 
 /** Legacy .compat scripts need data-domain/data-api on the script tag to reach the test server. */
-export function compatLocalScript(src: string, domain = 'example.com'): string {
-  return `<script id="qusto" data-domain="${domain}" data-api="${LOCAL_SERVER_ADDR}/api/event" async src="${src}"></script>`
+export function compatLocalScript(
+  src: string,
+  domain = 'example.com',
+  endpoint = `${LOCAL_SERVER_ADDR}/api/event`
+): string {
+  return `<script id="qusto" data-domain="${domain}" data-api="${endpoint}" async src="${src}"></script>`
 }
 
 export function serializeWithFunctions(obj: Record<string, unknown>): string {

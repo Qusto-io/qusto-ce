@@ -1,4 +1,7 @@
-import { initializePageDynamically } from './support/initialize-page-dynamically'
+import {
+  compatLocalScript,
+  initializePageDynamically
+} from './support/initialize-page-dynamically'
 import {
   expectQustoInAction,
   hideAndShowCurrentTab,
@@ -124,7 +127,10 @@ for (const mode of ['legacy', 'web', 'esm']) {
             esm: `<script type="module">import { init, track } from '/tracker/js/npm_package/plausible.js'; init(${JSON.stringify(
               DEFAULT_CONFIG
             )})</script>`,
-            legacy: `<script data-domain="${DEFAULT_CONFIG.domain}" async src="/tracker/js/plausible.local.js"></script>`
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.js',
+              DEFAULT_CONFIG.domain
+            )
           },
           mode
         ),

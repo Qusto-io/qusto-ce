@@ -170,8 +170,9 @@ for (const mode of ['legacy', 'web'])
                 autoCapturePageviews: false,
                 outboundLinks: true
               },
-              legacy:
-                '<script async src="/tracker/js/plausible.local.manual.outbound-links.js"></script>'
+              legacy: compatLocalScript(
+                '/tracker/js/plausible.local.manual.outbound-links.js'
+              )
             },
             mode
           ),
@@ -220,8 +221,9 @@ for (const mode of ['legacy', 'web'])
               outboundLinks: true,
               autoCapturePageviews: false
             },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.manual.outbound-links.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.manual.outbound-links.js'
+            )
           },
           mode
         ),
@@ -269,8 +271,9 @@ for (const mode of ['legacy', 'web'])
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG, outboundLinks: true },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.outbound-links.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.outbound-links.js'
+            )
           },
           mode
         ),

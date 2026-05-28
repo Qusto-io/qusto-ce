@@ -176,7 +176,7 @@ for (const mode of ['web', 'esm'] as const) {
             <script type="module">
               import { init, track } from '/tracker/js/npm_package/plausible.js';
               init(${JSON.stringify(config)})
-              window.plausible = { l: true }
+              window.qusto = { l: true }
             </script>
           `
           },
@@ -224,7 +224,7 @@ for (const mode of ['web', 'esm'] as const) {
             <script type="module">
               import { init, track } from '/tracker/js/npm_package/plausible.js';
               init(${JSON.stringify(config)})
-              window.plausible = { l: true }
+              window.qusto = { l: true }
             </script>
           `
           },

@@ -3,7 +3,7 @@
 # Shortcuts for common development tasks
 # ===========================================
 
-.PHONY: help setup start stop reset status logs migrate seed test
+.PHONY: help setup start stop reset status logs migrate seed test minio
 
 # Default target
 help:
@@ -69,6 +69,22 @@ server:
 # Open console
 console:
 	@iex -S mix
+
+# Start MinIO for S3/import tests (matches config/.env.test port 10000)
+minio:
+	docker run -d \
+		--name plausible-minio \
+		-p 10000:9000 \
+		-e MINIO_ROOT_USER=minioadmin \
+		-e MINIO_ROOT_PASSWORD=minioadmin \
+		minio/minio:latest server /data --no-console 2>/dev/null || true
+	sleep 2
+	docker run --rm --network host \
+		minio/mc:latest alias set local http://localhost:10000 minioadmin minioadmin 2>/dev/null || true
+	docker run --rm --network host \
+		minio/mc:latest mb --ignore-existing local/test-exports 2>/dev/null || true
+	docker run --rm --network host \
+		minio/mc:latest mb --ignore-existing local/test-imports 2>/dev/null || true
 
 # Full setup + migrate + seed
 bootstrap: setup

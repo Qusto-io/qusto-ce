@@ -13,6 +13,7 @@
         function () {
           ;(window.qusto.q = window.qusto.q || []).push(arguments)
         }
+      window.qusto('pageview', { u: 'http://localhost:3000/#home' })
     </script>
   </head>
 
@@ -37,9 +38,6 @@
         }
       }
 
-      window.addEventListener('DOMContentLoaded', () => {
-        window.qusto('pageview', { u: 'http://localhost:3000/#home' })
-      })
       window.addEventListener('hashchange', updateContent)
     </script>
   </body>

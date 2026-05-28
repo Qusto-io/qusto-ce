@@ -15,10 +15,6 @@ const DOMAIN = 'example.com'
 
 for (const mode of ['web', 'esm', 'legacy']) {
   test.describe(`callback results (${mode})`, () => {
-    test.skip(
-      ({ browserName }) => browserName === 'webkit',
-      'WebKit callback tests are flaky in CI (browser launch instability)'
-    )
     for (const {
       name,
       captureOnLocalhost,

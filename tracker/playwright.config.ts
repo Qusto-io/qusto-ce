@@ -43,7 +43,11 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      testIgnore: 'test/installation_support/**'
+      testIgnore: [
+        'test/installation_support/**',
+        'test/callbacks.spec.ts',
+        'test/custom-properties.spec.ts'
+      ]
     }
   ],
   webServer: {

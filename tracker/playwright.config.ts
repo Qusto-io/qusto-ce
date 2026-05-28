@@ -37,16 +37,16 @@ export default defineConfig({
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      testIgnore: 'test/installation_support/**'
+      testIgnore: 'installation_support/**'
     },
 
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
       testIgnore: [
-        'test/installation_support/**',
-        'test/callbacks.spec.ts',
-        'test/custom-properties.spec.ts'
+        'installation_support/**',
+        'callbacks.spec.ts',
+        'custom-properties.spec.ts'
       ]
     }
   ],

@@ -23,7 +23,7 @@ defmodule PlausibleWeb.Live.ChoosePlanTest do
 
     @monthly_interval_button ~s/label[phx-click="set_interval"][phx-value-interval="monthly"]/
     @yearly_interval_button ~s/label[phx-click="set_interval"][phx-value-interval="yearly"]/
-    @interval_button_active_class "bg-indigo-600 text-white"
+    @interval_button_active_class "bg-[var(--qusto-primary)]"
     @slider_input ~s/input[name="slider"]/
     @slider_value "#slider-value"
 

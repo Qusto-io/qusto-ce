@@ -89,7 +89,10 @@ export default tseslint.config([
       'playwright/expect-expect': [
         'error',
         {
-          assertFunctionNames: ['expectPlausibleInAction', 'expectQustoInAction']
+          assertFunctionNames: [
+            'expectPlausibleInAction',
+            'expectQustoInAction'
+          ]
         }
       ],
       'playwright/no-wait-for-timeout': 'off', // justification: it's necessary for engagement and scroll depth tests

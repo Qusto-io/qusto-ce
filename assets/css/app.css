@@ -105,22 +105,22 @@
   --default-ring-color: var(--qusto-primary);
 
   /* === QUSTO WARM DARK MODE - Backgrounds === */
-  --color-dark-bg-base: #1a1612;           /* Warm charcoal base */
-  --color-dark-bg-elevated: #252118;       /* Elevated surfaces */
-  --color-dark-bg-card: #2d2820;          /* Cards, panels */
-  --color-dark-bg-overlay: #363027;        /* Modals, dropdowns */
-  --color-dark-bg-hover: #443c33;          /* Hover states */
+  --color-dark-bg-base: #1a1612; /* Warm charcoal base */
+  --color-dark-bg-elevated: #252118; /* Elevated surfaces */
+  --color-dark-bg-card: #2d2820; /* Cards, panels */
+  --color-dark-bg-overlay: #363027; /* Modals, dropdowns */
+  --color-dark-bg-hover: #443c33; /* Hover states */
 
   /* === QUSTO WARM DARK MODE - Text === */
-  --color-dark-text-primary: #f5f1e8;      /* 17.2:1 contrast */
-  --color-dark-text-secondary: #d4cfc0;    /* 11.8:1 contrast */
-  --color-dark-text-tertiary: #a8a196;     /* 7.1:1 contrast */
-  --color-dark-text-disabled: #7a736a;     /* 4.2:1 contrast */
+  --color-dark-text-primary: #f5f1e8; /* 17.2:1 contrast */
+  --color-dark-text-secondary: #d4cfc0; /* 11.8:1 contrast */
+  --color-dark-text-tertiary: #a8a196; /* 7.1:1 contrast */
+  --color-dark-text-disabled: #7a736a; /* 4.2:1 contrast */
 
   /* === QUSTO WARM DARK MODE - Brand Colors (Brightened) === */
-  --color-dark-primary: #4a9eff;           /* Brighter blue */
+  --color-dark-primary: #4a9eff; /* Brighter blue */
   --color-dark-primary-hover: #6bb0ff;
-  --color-dark-accent: #e97a52;            /* Brighter orange */
+  --color-dark-accent: #e97a52; /* Brighter orange */
   --color-dark-accent-hover: #ff8f66;
 
   /* === QUSTO WARM DARK MODE - Borders (Orange-tinted) === */
@@ -129,8 +129,8 @@
   --color-dark-divider: rgb(197 81 48 / 8%);
 
   /* === QUSTO WARM DARK MODE - Headers INVERTED: light orange for headers, darker for subheaders === */
-  --color-dark-heading: #f0a068;      /* Light orange - was subheader, now primary headers */
-  --color-dark-heading-sub: #e97a52;  /* Darker orange - was header, now subheaders/cards */
+  --color-dark-heading: #f0a068; /* Light orange - was subheader, now primary headers */
+  --color-dark-heading-sub: #e97a52; /* Darker orange - was header, now subheaders/cards */
 
   /* === QUSTO WARM DARK MODE - Header border (blue trace for brand) === */
   --color-dark-header-border: rgb(74 158 255 / 20%);
@@ -382,14 +382,13 @@
 }
 
 /* === ENHANCED FORM INPUTS === */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
 select,
 textarea {
-  @apply
-    bg-white dark:bg-[var(--color-dark-bg-elevated)]
+  @apply bg-white dark:bg-[var(--color-dark-bg-elevated)]
     text-gray-900 dark:text-[var(--color-dark-text-primary)]
     border border-gray-300 dark:border-[var(--color-dark-border)]
     rounded-lg px-4 py-2
@@ -406,8 +405,7 @@ textarea:disabled {
 input:focus,
 select:focus,
 textarea:focus {
-  @apply
-    border-blue-500 dark:border-[var(--color-dark-primary)]
+  @apply border-blue-500 dark:border-[var(--color-dark-primary)]
     ring-4 ring-blue-100 dark:ring-[rgba(74,158,255,0.2)]
     outline-none
     scale-[1.01];
@@ -815,7 +813,14 @@ iframe[hidden] {
   --header-border: var(--border);
 
   /* CTA section: subtle blue gradient (light mode), typography charcoal */
-  --cta-section-bg: linear-gradient(135deg, #f8fafc 0%, #f2f6fb 25%, #eef4fc 50%, #e8f0ff 75%, #e0ebff 100%);
+  --cta-section-bg: linear-gradient(
+    135deg,
+    #f8fafc 0%,
+    #f2f6fb 25%,
+    #eef4fc 50%,
+    #e8f0ff 75%,
+    #e0ebff 100%
+  );
   --cta-section-text: #36454f;
   --cta-section-btn: #c55130;
   --cta-section-btn-text: white;
@@ -867,7 +872,13 @@ iframe[hidden] {
   --bg-overlay: #363027;
   --bg-hover: #443c33;
   --bg-subtle: #3d352d;
-  --cta-section-bg: linear-gradient(90deg, #fff5f2 0%, #ffe6df 30%, #ffc7b8 60%, #ffa891 100%);
+  --cta-section-bg: linear-gradient(
+    90deg,
+    #fff5f2 0%,
+    #ffe6df 30%,
+    #ffc7b8 60%,
+    #ffa891 100%
+  );
   --cta-section-text: #36454f;
   --cta-section-btn: white;
   --cta-section-btn-text: #c55130;

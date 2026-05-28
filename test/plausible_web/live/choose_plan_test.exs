@@ -23,7 +23,7 @@ defmodule PlausibleWeb.Live.ChoosePlanTest do
 
     @monthly_interval_button ~s/label[phx-click="set_interval"][phx-value-interval="monthly"]/
     @yearly_interval_button ~s/label[phx-click="set_interval"][phx-value-interval="yearly"]/
-    @interval_button_active_class "bg-indigo-600 text-white"
+    @interval_button_active_class "bg-[var(--qusto-primary)]"
     @slider_input ~s/input[name="slider"]/
     @slider_value "#slider-value"
 
@@ -642,7 +642,7 @@ defmodule PlausibleWeb.Live.ChoosePlanTest do
         class = class_of_element(doc, @growth_plan_box)
 
         assert class =~ "ring-2"
-        assert class =~ "ring-indigo-600"
+        assert class =~ "ring-[var(--qusto-primary)]"
         assert text_of_element(doc, @growth_highlight_pill) == "Current"
       end
 
@@ -725,7 +725,7 @@ defmodule PlausibleWeb.Live.ChoosePlanTest do
         class = class_of_element(doc, @business_plan_box)
 
         assert class =~ "ring-2"
-        assert class =~ "ring-indigo-600"
+        assert class =~ "ring-[var(--qusto-primary)]"
         assert text_of_element(doc, @business_highlight_pill) == "Current"
 
         refute element_exists?(doc, @starter_highlight_pill)

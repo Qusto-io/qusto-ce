@@ -72,7 +72,7 @@ defmodule PlausibleWeb.Live.FunnelSettings.List do
       </h3>
       <p class="text-center text-sm mt-1 text-gray-500 dark:text-gray-400 leading-5 text-pretty">
         Compose goals into funnels to track user flows and conversion rates.
-        <.styled_link href="https://plausible.io/docs/funnel-analysis" target="_blank">
+        <.styled_link href="https://docs.qusto.io/funnel-analysis" target="_blank">
           Learn more
         </.styled_link>
       </p>

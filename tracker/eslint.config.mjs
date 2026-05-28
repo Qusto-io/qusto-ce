@@ -53,7 +53,8 @@ export default tseslint.config([
       globals: {
         ...globals.browser,
         ...DEFAULT_BOOLEAN_SETTINGS,
-        plausible: 'writeable'
+        plausible: 'writeable',
+        qusto: 'writeable'
       },
       sourceType: 'commonjs'
     }
@@ -88,7 +89,10 @@ export default tseslint.config([
       'playwright/expect-expect': [
         'error',
         {
-          assertFunctionNames: ['expectPlausibleInAction']
+          assertFunctionNames: [
+            'expectPlausibleInAction',
+            'expectQustoInAction'
+          ]
         }
       ],
       'playwright/no-wait-for-timeout': 'off', // justification: it's necessary for engagement and scroll depth tests

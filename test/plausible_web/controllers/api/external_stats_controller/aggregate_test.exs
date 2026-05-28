@@ -77,7 +77,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.AggregateTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "Error parsing `period` parameter: invalid period `aosuhsacp`. Please find accepted values in our docs: https://plausible.io/docs/stats-api#time-periods"
+                 "Error parsing `period` parameter: invalid period `aosuhsacp`. Please find accepted values in our docs: https://docs.qusto.io/stats-api#time-periods"
              }
     end
 
@@ -91,7 +91,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.AggregateTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "The `date` parameter is required when using a custom period. See https://plausible.io/docs/stats-api#time-periods"
+                 "The `date` parameter is required when using a custom period. See https://docs.qusto.io/stats-api#time-periods"
              }
     end
 
@@ -106,7 +106,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.AggregateTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "Invalid format for `date` parameter. When using a custom period, please include two ISO-8601 formatted dates joined by a comma. See https://plausible.io/docs/stats-api#time-periods"
+                 "Invalid format for `date` parameter. When using a custom period, please include two ISO-8601 formatted dates joined by a comma. See https://docs.qusto.io/stats-api#time-periods"
              }
     end
 
@@ -120,7 +120,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.AggregateTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "The metric `led_zeppelin` is not recognized. Find valid metrics from the documentation: https://plausible.io/docs/stats-api#metrics"
+                 "The metric `led_zeppelin` is not recognized. Find valid metrics from the documentation: https://docs.qusto.io/stats-api#metrics"
              }
     end
 
@@ -134,7 +134,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.AggregateTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "The metric `scroll_depth` is not recognized. Find valid metrics from the documentation: https://plausible.io/docs/stats-api#metrics"
+                 "The metric `scroll_depth` is not recognized. Find valid metrics from the documentation: https://docs.qusto.io/stats-api#metrics"
              }
     end
 
@@ -792,7 +792,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.AggregateTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "Invalid filter property 'badproperty'. Please provide a valid filter property: https://plausible.io/docs/stats-api#properties"
+                 "Invalid filter property 'badproperty'. Please provide a valid filter property: https://docs.qusto.io/stats-api#properties"
              }
     end
 

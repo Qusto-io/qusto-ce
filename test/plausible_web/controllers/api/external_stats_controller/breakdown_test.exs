@@ -134,7 +134,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.BreakdownTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "Invalid property 'badproperty'. Please provide a valid property for the breakdown endpoint: https://plausible.io/docs/stats-api#properties"
+                 "Invalid property 'badproperty'. Please provide a valid property for the breakdown endpoint: https://docs.qusto.io/stats-api#properties"
              }
     end
 
@@ -147,7 +147,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.BreakdownTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "Invalid property 'event:props:'. Please provide a valid property for the breakdown endpoint: https://plausible.io/docs/stats-api#properties"
+                 "Invalid property 'event:props:'. Please provide a valid property for the breakdown endpoint: https://docs.qusto.io/stats-api#properties"
              }
     end
 
@@ -160,7 +160,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.BreakdownTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "Error parsing `period` parameter: invalid period `bad_period`. Please find accepted values in our docs: https://plausible.io/docs/stats-api#time-periods"
+                 "Error parsing `period` parameter: invalid period `bad_period`. Please find accepted values in our docs: https://docs.qusto.io/stats-api#time-periods"
              }
     end
 
@@ -174,7 +174,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.BreakdownTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "The metric `baa` is not recognized. Find valid metrics from the documentation: https://plausible.io/docs/stats-api#metrics"
+                 "The metric `baa` is not recognized. Find valid metrics from the documentation: https://docs.qusto.io/stats-api#metrics"
              }
     end
 
@@ -1717,7 +1717,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.BreakdownTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "Invalid filter property 'badproperty'. Please provide a valid filter property: https://plausible.io/docs/stats-api#properties"
+                 "Invalid filter property 'badproperty'. Please provide a valid filter property: https://docs.qusto.io/stats-api#properties"
              }
     end
 

@@ -98,6 +98,11 @@ jobs:
           DEPLOY_KEY: ${{ secrets.STAGING_DEPLOY_SSH_KEY }}
           SKIP_MIGRATIONS: ${{ github.event.inputs.skip_migrations || 'false' }}
         run: |
+          if [ -z "$DEPLOY_HOST" ]; then
+            echo "⚠️  STAGING_DEPLOY_HOST not configured — staging SSH deploy skipped"
+            exit 0
+          fi
+
           echo "🚀 Deploying to staging server..."
           echo "Note: SSH deployment requires server setup"
           echo "Host: $DEPLOY_HOST"

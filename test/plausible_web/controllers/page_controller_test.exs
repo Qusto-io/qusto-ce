@@ -8,7 +8,7 @@ defmodule PlausibleWeb.PageControllerTest do
 
     test "shows landing page when user not authenticated" do
       assert build_conn() |> get("/") |> html_response(200) =~
-               "Privacy-First Analytics for E-commerce Businesses"
+               "Privacy-First Web Analytics"
     end
 
     test "redirects to /sites if user is authenticated", %{conn: conn} do

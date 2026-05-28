@@ -105,11 +105,11 @@ defmodule PlausibleWeb.Live.Components.VerificationTest do
     test "renders contact link on >3 attempts" do
       html = render_component(@component, domain: "example.com", attempts: 2, finished?: true)
       refute html =~ "Need further help with your installation?"
-      refute element_exists?(html, ~s|a[href="https://plausible.io/contact"]|)
+      refute element_exists?(html, ~s|a[href="https://qusto.io/contact"]|)
 
       html = render_component(@component, domain: "example.com", attempts: 3, finished?: true)
       assert html =~ "Need further help with your installation?"
-      assert element_exists?(html, ~s|a[href="https://plausible.io/contact"]|)
+      assert element_exists?(html, ~s|a[href="https://qusto.io/contact"]|)
     end
 
     test "renders link to verify installation at a different URL" do

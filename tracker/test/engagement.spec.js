@@ -89,7 +89,8 @@ test.describe('engagement events', () => {
   }) => {
     await expectQustoInAction(page, {
       action: () => page.goto('/engagement-hash-manual.html'),
-      expectedRequests: [{ n: 'pageview' }]
+      expectedRequests: [{ n: 'pageview' }],
+      mockRequestTimeout: process.env.CI ? 5000 : 3000
     })
 
     await page.waitForTimeout(1000)

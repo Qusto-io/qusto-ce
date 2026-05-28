@@ -72,19 +72,14 @@ console:
 
 # Start MinIO for S3/import tests (matches config/.env.test port 10000)
 minio:
-	docker run -d \
+	docker run -d --rm -p 10000:10000 -p 10001:10001 \
 		--name plausible-minio \
-		-p 10000:9000 \
 		-e MINIO_ROOT_USER=minioadmin \
 		-e MINIO_ROOT_PASSWORD=minioadmin \
-		minio/minio:latest server /data --no-console 2>/dev/null || true
-	sleep 2
-	docker run --rm --network host \
-		minio/mc:latest alias set local http://localhost:10000 minioadmin minioadmin 2>/dev/null || true
-	docker run --rm --network host \
-		minio/mc:latest mb --ignore-existing local/test-exports 2>/dev/null || true
-	docker run --rm --network host \
-		minio/mc:latest mb --ignore-existing local/test-imports 2>/dev/null || true
+		minio/minio server /data --address ":10000" --console-address ":10001"
+	while ! docker exec plausible-minio mc alias set local http://localhost:10000 minioadmin minioadmin; do sleep 1; done
+	docker exec plausible-minio mc mb --ignore-existing local/test-exports
+	docker exec plausible-minio mc mb --ignore-existing local/test-imports
 
 # Full setup + migrate + seed
 bootstrap: setup

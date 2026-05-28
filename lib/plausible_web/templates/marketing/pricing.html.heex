@@ -19,7 +19,8 @@
       <div class={[
         "bg-white dark:bg-[var(--color-dark-bg-card)] rounded-xl p-8 shadow-lg dark:shadow-warm-lg",
         if(plan.featured,
-          do: "border-4 border-[#c55130] dark:border-[#e97a52] transform scale-105 dark:shadow-warm-2xl",
+          do:
+            "border-4 border-[#c55130] dark:border-[#e97a52] transform scale-105 dark:shadow-warm-2xl",
           else: "border border-gray-200 dark:border-[rgba(197,81,48,0.15)]"
         )
       ]}>
@@ -34,15 +35,21 @@
         </h3>
 
         <div class="mb-6">
-          <span class="text-5xl font-bold text-gray-900 dark:text-[var(--color-dark-text-primary)]">{plan.price}</span>
-          <span class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">/{plan.period}</span>
+          <span class="text-5xl font-bold text-gray-900 dark:text-[var(--color-dark-text-primary)]">
+            {plan.price}
+          </span>
+          <span class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
+            /{plan.period}
+          </span>
         </div>
 
         <ul class="space-y-3 mb-8">
           <%= for feature <- plan.features do %>
             <li class="flex items-start">
               <span class="text-[#10b981] dark:text-[#34d399] mr-2 text-lg">✓</span>
-              <span class="text-gray-700 dark:text-[var(--color-dark-text-secondary)]">{feature}</span>
+              <span class="text-gray-700 dark:text-[var(--color-dark-text-secondary)]">
+                {feature}
+              </span>
             </li>
           <% end %>
         </ul>
@@ -56,7 +63,8 @@
                 if(plan.featured,
                   do:
                     "bg-gradient-to-r from-[#c55130] to-[#a33f22] text-white shadow-lg dark:shadow-revenue hover:shadow-xl dark:hover:shadow-revenue dark:hover:scale-[1.02]",
-                  else: "bg-white dark:bg-transparent text-[#1661be] dark:text-[#4a9eff] border-2 border-[#1661be] dark:border-[#4a9eff] hover:bg-[#e6f0ff] dark:hover:bg-[var(--color-dark-bg-hover)]"
+                  else:
+                    "bg-white dark:bg-transparent text-[#1661be] dark:text-[#4a9eff] border-2 border-[#1661be] dark:border-[#4a9eff] hover:bg-[#e6f0ff] dark:hover:bg-[var(--color-dark-bg-hover)]"
                 )
               ],
               " "
@@ -80,15 +88,21 @@
     <div class="grid md:grid-cols-3 gap-6 mb-6">
       <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-4 shadow dark:shadow-warm">
         <div class="text-3xl mb-2">∞</div>
-        <div class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)]">Unlimited Traffic</div>
+        <div class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)]">
+          Unlimited Traffic
+        </div>
       </div>
       <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-4 shadow dark:shadow-warm">
         <div class="text-3xl mb-2">🔧</div>
-        <div class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)]">Custom Features</div>
+        <div class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)]">
+          Custom Features
+        </div>
       </div>
       <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-4 shadow dark:shadow-warm">
         <div class="text-3xl mb-2">📞</div>
-        <div class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)]">Dedicated Support</div>
+        <div class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)]">
+          Dedicated Support
+        </div>
       </div>
     </div>
     <.styled_link
@@ -106,7 +120,9 @@
     </h2>
     <div class="space-y-4">
       <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
-        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">What counts as a "visitor"?</h3>
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">
+          What counts as a "visitor"?
+        </h3>
         <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           A visitor is a unique user who visits your website. We count unique visitors per month,
           not pageviews. If someone visits 10 pages, that's 1 visitor.
@@ -114,7 +130,9 @@
       </div>
 
       <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
-        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">Can I change plans anytime?</h3>
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">
+          Can I change plans anytime?
+        </h3>
         <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           Yes! Upgrade or downgrade at any time. Changes take effect immediately,
           and we'll prorate the difference.
@@ -122,7 +140,9 @@
       </div>
 
       <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
-        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">What payment methods do you accept?</h3>
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">
+          What payment methods do you accept?
+        </h3>
         <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           We accept all major credit cards (Visa, Mastercard, American Express) and SEPA direct debit
           for European businesses.
@@ -130,14 +150,18 @@
       </div>
 
       <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
-        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">Is there a setup fee?</h3>
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">
+          Is there a setup fee?
+        </h3>
         <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           No setup fees, no hidden charges. The price you see is the price you pay.
         </p>
       </div>
 
       <div class="bg-white dark:bg-[var(--color-dark-bg-card)] rounded-lg p-6 border-l-4 border-[#1661be] dark:border-[#4a9eff] shadow dark:shadow-warm">
-        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">What happens after the trial?</h3>
+        <h3 class="font-semibold text-gray-900 dark:text-[var(--color-dark-text-primary)] mb-2">
+          What happens after the trial?
+        </h3>
         <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)]">
           After your 14-day trial, you can choose a plan and add your payment details.
           If you don't choose a plan, your account will be downgraded to view-only mode

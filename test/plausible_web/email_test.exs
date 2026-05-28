@@ -369,7 +369,7 @@ defmodule PlausibleWeb.EmailTest do
         refute email.html_body =~ "Plausible CE"
       end
 
-      assert Enum.any?(emails, fn email -> email.html_body =~ "Plausible Analytics" end)
+      assert Enum.any?(emails, fn email -> email.html_body =~ "Qusto Analytics" end)
     end
 
     @tag :ce_build_only

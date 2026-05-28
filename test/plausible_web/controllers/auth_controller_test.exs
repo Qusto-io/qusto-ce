@@ -44,7 +44,7 @@ defmodule PlausibleWeb.AuthControllerTest do
 
       assert_delivered_email_matches(%{to: [{_, user_email}], subject: subject})
       assert user_email == "user@example.com"
-      assert subject =~ "is your Plausible email verification code"
+      assert subject =~ "is your Qusto email verification code"
     end
 
     test "user is redirected to activate page after registration", %{conn: conn} do
@@ -141,7 +141,7 @@ defmodule PlausibleWeb.AuthControllerTest do
 
       assert_delivered_email_matches(%{to: [{_, user_email}], subject: subject})
       assert user_email == "user@example.com"
-      assert subject =~ "is your Plausible email verification code"
+      assert subject =~ "is your Qusto email verification code"
     end
 
     test "user is redirected to activate page after registration", %{conn: conn} do
@@ -356,7 +356,7 @@ defmodule PlausibleWeb.AuthControllerTest do
 
       assert_delivered_email_matches(%{to: [{_, user_email}], subject: subject})
       assert user_email == user.email
-      assert subject =~ "is your Plausible email verification code"
+      assert subject =~ "is your Qusto email verification code"
     end
 
     test "redirects user to /activate", %{conn: conn} do

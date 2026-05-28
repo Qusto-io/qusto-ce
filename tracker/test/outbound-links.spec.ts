@@ -1,9 +1,13 @@
-import { initializePageDynamically } from './support/initialize-page-dynamically'
+import {
+  compatLocalScript,
+  initializePageDynamically
+} from './support/initialize-page-dynamically'
 import {
   mockManyRequests,
   resolveWithTimestamps
 } from './support/mock-many-requests'
 import {
+  ensureQustoInitialized,
   expectQustoInAction,
   isEngagementEvent,
   isPageviewEvent,
@@ -360,12 +364,15 @@ test.describe('outbound links feature when using legacy .compat extension', () =
       const { url } = await initializePageDynamically(page, {
         testId,
         scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+          compatLocalScript(
+            '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+          ),
         bodyContent: /* HTML */ `<a ${linkAttributes} href="${outboundUrl}"
           ><h1>➡️</h1></a
         >`
       })
       await page.goto(url)
+      await ensureQustoInitialized(page)
 
       await expectQustoInAction(page, {
         action: () => page.click(click.element, { modifiers: click.modifiers }),
@@ -405,7 +412,9 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+        compatLocalScript(
+          '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+        ),
       bodyContent: /* HTML */ `<a href="${outboundUrl}">📥</a>`
     })
     await page.goto(url)
@@ -457,7 +466,9 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+        compatLocalScript(
+          '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+        ),
       bodyContent: /* HTML */ `<a href="${outboundUrl}">➡️</a>`
     })
     await page.goto(url)
@@ -498,7 +509,9 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+        compatLocalScript(
+          '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+        ),
       bodyContent: /* HTML */ `
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <a href="${outboundUrl}">

@@ -1,4 +1,5 @@
 import {
+  ensureQustoInitialized,
   expectQustoInAction,
   isPageviewEvent,
   isEngagementEvent,
@@ -8,7 +9,10 @@ import {
 } from './support/test-utils'
 import { expect, test } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
-import { initializePageDynamically } from './support/initialize-page-dynamically'
+import {
+  compatLocalScript,
+  initializePageDynamically
+} from './support/initialize-page-dynamically'
 import { ScriptConfig } from './support/types'
 import {
   mockManyRequests,
@@ -612,7 +616,9 @@ test.describe('file downloads feature when using legacy .compat extension', () =
       const { url } = await initializePageDynamically(page, {
         testId,
         scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
+          compatLocalScript(
+            '/tracker/js/plausible.compat.file-downloads.local.manual.js'
+          ),
         bodyContent: /* HTML */ `<a ${linkAttributes} href="${filePath}"
           ><h1>📥</h1></a
         >`
@@ -679,10 +685,13 @@ test.describe('file downloads feature when using legacy .compat extension', () =
       const { url } = await initializePageDynamically(page, {
         testId,
         scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
+          compatLocalScript(
+            '/tracker/js/plausible.compat.file-downloads.local.manual.js'
+          ),
         bodyContent: /* HTML */ `<a href="${filePath}">📥</a>`
       })
       await page.goto(url)
+      await ensureQustoInitialized(page)
 
       const navigationPromise = page.waitForRequest(filePath, {
         timeout: navigationRaceTimeoutMs
@@ -732,7 +741,9 @@ test.describe('file downloads feature when using legacy .compat extension', () =
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
+        compatLocalScript(
+          '/tracker/js/plausible.compat.file-downloads.local.manual.js'
+        ),
       bodyContent: /* HTML */ `<a href="${filePath}">📥</a>`
     })
     await page.goto(url)

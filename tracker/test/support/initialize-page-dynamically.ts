@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test'
+import { LOCAL_SERVER_ADDR } from './server.js'
 import { ScriptConfig } from './types'
 
 interface SharedOptions {
@@ -53,6 +54,14 @@ const PLAUSIBLE_WEB_SNIPPET = `
   plausible.init()
 </script>
 `
+
+/** Legacy .compat scripts need data-domain/data-api on the script tag to reach the test server. */
+export function compatLocalScript(
+  src: string,
+  domain = 'example.com'
+): string {
+  return `<script id="plausible" data-domain="${domain}" data-api="${LOCAL_SERVER_ADDR}/api/event" async src="${src}"></script>`
+}
 
 export function serializeWithFunctions(obj: Record<string, unknown>): string {
   const functions: Record<string, string> = {}

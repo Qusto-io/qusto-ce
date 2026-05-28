@@ -397,24 +397,24 @@ defmodule PlausibleWeb.EmailTest do
       assert email.text_body == """
              Hey John,
 
-             We are building Plausible to provide a simple and ethical approach to tracking website visitors. We're super excited to have you on board!
+             We are building Qusto to provide a simple and ethical approach to tracking website visitors. We're super excited to have you on board!
 
-             Here's how to get the most out of your Plausible experience:
+             Here's how to get the most out of your Qusto experience:
 
-             * Enable email reports (https://plausible.io/docs/email-reports) and notifications for traffic spikes (https://plausible.io/docs/traffic-spikes)
-             * Integrate with Search Console (https://plausible.io/docs/google-search-console-integration) to get keyword phrases people find your site with
-             * Invite team members and other collaborators (https://plausible.io/docs/users-roles)
-             * Set up easy goals including form submissions (https://plausible.io/docs/form-submissions-tracking), 404 error pages (https://plausible.io/docs/error-pages-tracking-404), file downloads (https://plausible.io/docs/file-downloads-tracking) and outbound link clicks (https://plausible.io/docs/outbound-link-click-tracking)
-             * Opt out from counting your own visits (https://plausible.io/docs/excluding)
-             * If you're concerned about adblockers, set up a proxy to bypass them (https://plausible.io/docs/proxy/introduction)
+             * Enable email reports (https://docs.qusto.io/email-reports) and notifications for traffic spikes (https://docs.qusto.io/traffic-spikes)
+             * Integrate with Search Console (https://docs.qusto.io/google-search-console-integration) to get keyword phrases people find your site with
+             * Invite team members and other collaborators (https://docs.qusto.io/users-roles)
+             * Set up easy goals including form submissions (https://docs.qusto.io/form-submissions-tracking), 404 error pages (https://docs.qusto.io/error-pages-tracking-404), file downloads (https://docs.qusto.io/file-downloads-tracking) and outbound link clicks (https://docs.qusto.io/outbound-link-click-tracking)
+             * Opt out from counting your own visits (https://docs.qusto.io/excluding)
+             * If you're concerned about adblockers, set up a proxy to bypass them (https://docs.qusto.io/proxy/introduction)
 
 
-             Then you're ready to start exploring your fast loading, ethical and actionable Plausible dashboard (https://plausible.io/sites).
+             Then you're ready to start exploring your fast loading, ethical and actionable dashboard (https://qusto.io/sites).
 
              Have a question, feedback or need some guidance? Do reply back to this email.
 
              Regards,
-             The Plausible Team 💌
+             The Qusto Team 💌
 
              --
 

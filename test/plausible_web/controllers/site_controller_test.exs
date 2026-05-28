@@ -1270,7 +1270,7 @@ defmodule PlausibleWeb.SiteControllerTest do
       resp = html_response(conn, 200)
 
       assert resp =~
-               "https://plausible.io/docs/google-search-console-integration#i-get-the-invalid-grant-error"
+               "https://docs.qusto.io/google-search-console-integration#i-get-the-invalid-grant-error"
     end
 
     test "displays generic error in case of random error code returned by google", %{

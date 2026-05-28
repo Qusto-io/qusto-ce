@@ -2,6 +2,8 @@ import {
   expectQustoInAction,
   isPageviewEvent,
   isEngagementEvent,
+  navigationMockRequestTimeoutMs,
+  navigationRaceTimeoutMs,
   switchByMode
 } from './support/test-utils'
 import { expect, test } from '@playwright/test'
@@ -408,7 +410,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
       const navigationPromise = page.waitForRequest(targetPage.url, {
-        timeout: 2000
+        timeout: navigationRaceTimeoutMs
       })
       await page.click('a')
       const [[trackingRequestList, trackingResponseTime], [, navigationTime]] =
@@ -591,7 +593,7 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
             </html>`
         },
         awaitedRequestCount: 2,
-        mockRequestTimeout: 2000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       }
 
       const outboundMockForOtherPages = await mockManyRequests({
@@ -656,10 +658,10 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     await page.goto(url)
     const navigationPromise = page.waitForRequest(targetPage.url, {
-      timeout: 2000
+      timeout: navigationRaceTimeoutMs
     })
     const trackingPromise = page.waitForResponse('**/api/event', {
-      timeout: 2000
+      timeout: navigationRaceTimeoutMs
     })
     await page.click('a')
     const [[, trackingResponseTime], [, navigationTime]] =

@@ -26,6 +26,11 @@ interface DynamicPageInfo {
   url: string
 }
 
+const AUTOMATION_BYPASS_SCRIPT =
+  '<script>window.__qusto = true; window.__plausible = true;</script>'
+
+const TRACKER_SCRIPT_SLOT = '<!-- tracker-script -->'
+
 const RESPONSE_BODY_TEMPLATE = `
 <!doctype html>
 <html lang="en">
@@ -34,7 +39,8 @@ const RESPONSE_BODY_TEMPLATE = `
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Qusto Playwright tests</title>
-    <script>window.__qusto = true; window.__plausible = true;</script>
+    ${AUTOMATION_BYPASS_SCRIPT}
+    ${TRACKER_SCRIPT_SLOT}
   </head>
   <body></body>
 </html>
@@ -120,11 +126,14 @@ export async function initializePageDynamically(
     if ('response' in options) {
       responseBody = options.response
     } else {
-      responseBody = RESPONSE_BODY_TEMPLATE.replace(
-        '<script>// Qusto script</script>',
+      const trackerScript =
         typeof options.scriptConfig === 'string'
           ? options.scriptConfig
           : getConfiguredQustoWebSnippet(options.scriptConfig)
+
+      responseBody = RESPONSE_BODY_TEMPLATE.replace(
+        TRACKER_SCRIPT_SLOT,
+        trackerScript
       ).replace('<body></body>', `<body>${options.bodyContent}</body>`)
     }
 

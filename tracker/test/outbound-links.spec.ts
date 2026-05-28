@@ -7,6 +7,8 @@ import {
   expectQustoInAction,
   isEngagementEvent,
   isPageviewEvent,
+  navigationMockRequestTimeoutMs,
+  navigationRaceTimeoutMs,
   switchByMode
 } from './support/test-utils'
 import { expect, test } from '@playwright/test'
@@ -343,7 +345,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
           body: OTHER_PAGE_BODY
         },
         awaitedRequestCount: 2,
-        mockRequestTimeout: 2000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       }
 
       const outboundMockForOtherPages = await mockManyRequests({
@@ -409,10 +411,10 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     await page.goto(url)
 
     const navigationPromise = page.waitForRequest(outboundUrl, {
-      timeout: 2000
+      timeout: navigationRaceTimeoutMs
     })
     const trackingPromise = page.waitForResponse('**/api/event', {
-      timeout: 2000
+      timeout: navigationRaceTimeoutMs
     })
 
     await page.click('a')
@@ -481,7 +483,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
         body: OTHER_PAGE_BODY
       },
       awaitedRequestCount: 2,
-      mockRequestTimeout: 2000
+      mockRequestTimeout: navigationMockRequestTimeoutMs
     }
 
     const outboundMockForOtherPages = await mockManyRequests({

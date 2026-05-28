@@ -2,6 +2,8 @@ import {
   expectQustoInAction,
   isPageviewEvent,
   isEngagementEvent,
+  navigationMockRequestTimeoutMs,
+  navigationRaceTimeoutMs,
   switchByMode
 } from './support/test-utils'
 import { expect, test } from '@playwright/test'
@@ -585,7 +587,7 @@ test.describe('file downloads feature when using legacy .compat extension', () =
         page,
         path: '**/api/event',
         awaitedRequestCount: 2,
-        mockRequestTimeout: 2000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       })
       const filePath = '/file.csv'
       const downloadMockOptions = {
@@ -595,7 +597,7 @@ test.describe('file downloads feature when using legacy .compat extension', () =
           contentType: 'text/csv'
         },
         awaitedRequestCount: 2,
-        mockRequestTimeout: 2000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       }
 
       const downloadMockForOtherPages = await mockManyRequests({
@@ -672,7 +674,7 @@ test.describe('file downloads feature when using legacy .compat extension', () =
           contentType: 'text/csv'
         },
         awaitedRequestCount: 1,
-        mockRequestTimeout: 1000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       })
       const { url } = await initializePageDynamically(page, {
         testId,
@@ -683,10 +685,10 @@ test.describe('file downloads feature when using legacy .compat extension', () =
       await page.goto(url)
 
       const navigationPromise = page.waitForRequest(filePath, {
-        timeout: 2000
+        timeout: navigationRaceTimeoutMs
       })
       const trackingPromise = page.waitForResponse('**/api/event', {
-        timeout: 2000
+        timeout: navigationRaceTimeoutMs
       })
 
       await page.click('a')
@@ -725,7 +727,7 @@ test.describe('file downloads feature when using legacy .compat extension', () =
         contentType: 'text/csv'
       },
       awaitedRequestCount: 1,
-      mockRequestTimeout: 1000
+      mockRequestTimeout: navigationMockRequestTimeoutMs
     })
     const { url } = await initializePageDynamically(page, {
       testId,

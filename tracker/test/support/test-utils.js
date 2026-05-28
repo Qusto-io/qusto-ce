@@ -4,6 +4,10 @@ import { mockManyRequests } from './mock-many-requests'
 
 export const tracker_script_version = packageJson.tracker_script_version
 
+/** Playwright navigation/response races need longer budgets on CI (especially Firefox). */
+export const navigationRaceTimeoutMs = process.env.CI ? 5000 : 2000
+export const navigationMockRequestTimeoutMs = process.env.CI ? 3000 : 2000
+
 /**
  * A powerful utility function that makes it easy to assert on the event
  * requests that should or should not have been made after doing a page

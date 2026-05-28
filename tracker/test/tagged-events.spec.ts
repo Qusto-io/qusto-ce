@@ -94,8 +94,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -139,8 +140,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -177,8 +179,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -229,8 +232,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -272,8 +276,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -310,8 +315,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -343,8 +349,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -400,8 +407,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG, autoCapturePageviews: false },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.manual.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.manual.tagged-events.js'
+            )
           },
           mode
         ),
@@ -447,8 +455,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -493,8 +502,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -517,8 +527,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),

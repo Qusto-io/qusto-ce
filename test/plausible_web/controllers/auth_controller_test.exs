@@ -858,7 +858,7 @@ defmodule PlausibleWeb.AuthControllerTest do
 
       {:ok, %{conn: conn}} = PlausibleWeb.FirstLaunchPlug.Test.skip(%{conn: recycle(conn)})
       conn = get(conn, location)
-      assert html_response(conn, 200) =~ "Welcome to Qusto!"
+      assert html_response(conn, 200) =~ "Privacy-First Web Analytics"
     end
 
     test "redirects user to `redirect` param when provided", %{conn: conn} do

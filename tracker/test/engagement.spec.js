@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import {
+  ensureQustoInitialized,
   expectQustoInAction,
   hideAndShowCurrentTab,
   focus,
@@ -87,8 +88,12 @@ test.describe('engagement events', () => {
     page
   }) => {
     await expectQustoInAction(page, {
-      action: () => page.goto('/engagement-hash-manual.html'),
-      expectedRequests: [{ n: 'pageview' }]
+      action: async () => {
+        await page.goto('/engagement-hash-manual.html')
+        await ensureQustoInitialized(page)
+      },
+      expectedRequests: [{ n: 'pageview' }],
+      mockRequestTimeout: process.env.CI ? 8000 : 3000
     })
 
     await page.waitForTimeout(1000)
@@ -107,6 +112,7 @@ test.describe('engagement events', () => {
 
   test('sends an event with the manually overridden URL', async ({ page }) => {
     await page.goto('/engagement-manual.html')
+    await ensureQustoInitialized(page)
 
     await expectQustoInAction(page, {
       action: () => page.click('#pageview-trigger-custom-url'),
@@ -127,6 +133,7 @@ test.describe('engagement events', () => {
     page
   }) => {
     await page.goto('/engagement-manual.html')
+    await ensureQustoInitialized(page)
 
     await expectQustoInAction(page, {
       action: () => page.click('#navigate-away'),
@@ -174,6 +181,7 @@ test.describe('engagement events', () => {
     page
   }) => {
     await page.goto('/engagement-manual.html')
+    await ensureQustoInitialized(page)
 
     await expectQustoInAction(page, {
       action: () => page.click('#pageview-trigger-custom-props'),

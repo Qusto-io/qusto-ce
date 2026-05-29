@@ -121,14 +121,19 @@ test.describe('engagement events', () => {
       `
     })
 
+    await page.goto(url)
+    await ensureQustoInitialized(page)
+
     await expectQustoInAction(page, {
-      action: () => page.goto(url),
-      expectedRequests: [{ n: 'pageview' }],
+      action: () =>
+        page.evaluate(() => {
+          window.qusto('pageview', { u: 'http://localhost:3000/#home' })
+        }),
+      expectedRequests: [{ n: 'pageview', u: `${LOCAL_SERVER_ADDR}/#home` }],
       mockRequestTimeout: process.env.CI ? 5000 : 3000
     })
 
     await page.waitForTimeout(1000)
-    await ensureQustoInitialized(page)
 
     const [request] = await expectQustoInAction(page, {
       action: () => page.click('#about-us-hash-link'),

@@ -5,11 +5,6 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './test',
-  use: {
-    launchOptions: {
-      args: ['--disable-blink-features=AutomationControlled']
-    }
-  },
   /* Can be overridden in specific tests with test('a longer running test', async () => { test.setTimeout(<longer timeout>); // test content... }) */
   timeout: 10 * 1000,
   fullyParallel: true,
@@ -31,7 +26,12 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: {
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: ['--disable-blink-features=AutomationControlled']
+        }
+      }
     },
 
     {

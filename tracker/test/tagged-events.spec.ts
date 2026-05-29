@@ -2,11 +2,16 @@ import {
   expectQustoInAction,
   isPageviewEvent,
   isEngagementEvent,
+  navigationMockRequestTimeoutMs,
+  navigationRaceTimeoutMs,
   switchByMode
 } from './support/test-utils'
 import { expect, test } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
-import { initializePageDynamically } from './support/initialize-page-dynamically'
+import {
+  compatLocalScript,
+  initializePageDynamically
+} from './support/initialize-page-dynamically'
 import { ScriptConfig } from './support/types'
 import {
   mockManyRequests,
@@ -89,8 +94,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -134,8 +140,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -172,8 +179,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -224,8 +232,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -267,8 +276,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -305,8 +315,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -338,8 +349,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -351,7 +363,7 @@ for (const mode of ['legacy', 'web']) {
         return new Promise((resolve) => {
           let taggedElement
           while (!taggedElement) {
-            if (window.plausible?.l !== true) {
+            if (window.qusto?.l !== true) {
               continue
             } else {
               taggedElement = document.createElement('button')
@@ -395,8 +407,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG, autoCapturePageviews: false },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.manual.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.manual.tagged-events.js'
+            )
           },
           mode
         ),
@@ -408,7 +421,7 @@ for (const mode of ['legacy', 'web']) {
       })
       await page.goto(url)
       const navigationPromise = page.waitForRequest(targetPage.url, {
-        timeout: 2000
+        timeout: navigationRaceTimeoutMs
       })
       await page.click('a')
       const [[trackingRequestList, trackingResponseTime], [, navigationTime]] =
@@ -442,8 +455,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -488,8 +502,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -512,8 +527,9 @@ for (const mode of ['legacy', 'web']) {
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.tagged-events.js'
+            )
           },
           mode
         ),
@@ -591,7 +607,7 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
             </html>`
         },
         awaitedRequestCount: 2,
-        mockRequestTimeout: 2000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       }
 
       const outboundMockForOtherPages = await mockManyRequests({
@@ -605,8 +621,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
 
       const { url } = await initializePageDynamically(page, {
         testId,
-        scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+        scriptConfig: compatLocalScript(
+          '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+        ),
         bodyContent: /* HTML */ `<a
           class="plausible-event-name=outbound"
           ${linkAttributes}
@@ -646,8 +663,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+      ),
       bodyContent: /* HTML */ `<a
         class="plausible-event-name=Subscribe"
         href="${targetPage.url}"
@@ -656,10 +674,10 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     await page.goto(url)
     const navigationPromise = page.waitForRequest(targetPage.url, {
-      timeout: 2000
+      timeout: navigationRaceTimeoutMs
     })
     const trackingPromise = page.waitForResponse('**/api/event', {
-      timeout: 2000
+      timeout: navigationRaceTimeoutMs
     })
     await page.click('a')
     const [[, trackingResponseTime], [, navigationTime]] =
@@ -694,8 +712,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+      ),
       bodyContent: /* HTML */ `<a
         class="plausible-event-name=Subscribe"
         href="${targetPage.url}"
@@ -722,8 +741,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+      ),
       bodyContent: /* HTML */ `<a
         class="plausible-event-key=value"
         href="${targetPage.url}"
@@ -751,8 +771,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.tagged-events.js'
+      ),
       bodyContent: /* HTML */ `
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <a class="plausible-event-name=link+click" href="${targetPage.url}">

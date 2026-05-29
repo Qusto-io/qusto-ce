@@ -4,8 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Plausible Playwright tests</title>
-    <script async src="/tracker/js/plausible.local.manual.js"></script>
+    <title>Qusto Playwright tests</title>
+    <script>
+      window.__qusto = true
+      window.__plausible = true
+    </script>
+    <script
+      id="qusto"
+      data-domain="example.com"
+      data-api="http://localhost:3000/api/event"
+      async
+      src="/tracker/js/plausible.local.manual.js"
+    ></script>
   </head>
 
   <body>
@@ -25,18 +35,18 @@
     <script>
       document.addEventListener('click', (e) => {
         if (e.target.id === 'pageview-trigger') {
-          window.plausible('pageview')
+          window.qusto('pageview')
         }
         if (e.target.id === 'pageview-trigger-custom-url') {
-          window.plausible('pageview', {
+          window.qusto('pageview', {
             u: 'https://example.com/custom/location'
           })
         }
         if (e.target.id === 'custom-event-trigger') {
-          window.plausible('CustomEvent')
+          window.qusto('CustomEvent')
         }
         if (e.target.id === 'custom-event-trigger-custom-url') {
-          window.plausible('CustomEvent', {
+          window.qusto('CustomEvent', {
             u: 'https://example.com/custom/location'
           })
         }

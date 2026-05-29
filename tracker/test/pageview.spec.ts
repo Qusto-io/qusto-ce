@@ -1,6 +1,8 @@
-import { initializePageDynamically } from './support/initialize-page-dynamically'
 import {
-  e,
+  compatLocalScript,
+  initializePageDynamically
+} from './support/initialize-page-dynamically'
+import {
   expectQustoInAction,
   hideAndShowCurrentTab,
   isEngagementEvent,
@@ -47,15 +49,13 @@ for (const mode of ['web', 'esm']) {
             n: 'pageview',
             d: config.domain,
             u: `${LOCAL_SERVER_ADDR}${url}`,
-            v: tracker_script_version,
-            p: e.toBeUndefined()
+            v: tracker_script_version
           },
           {
             n: 'engagement',
             d: config.domain,
             u: `${LOCAL_SERVER_ADDR}${url}`,
-            v: tracker_script_version,
-            p: e.toBeUndefined()
+            v: tracker_script_version
           }
         ]
       })
@@ -79,13 +79,13 @@ for (const mode of ['web', 'esm']) {
         bodyContent: /* HTML */ `
           <a
             id="alfa"
-            onclick="window.plausible('pageview', { u: '/:masked/alfa' })"
+            onclick="window.qusto('pageview', { u: '/:masked/alfa' })"
             href="#"
             >A</a
           >
           <a
             id="beta"
-            onclick="window.plausible('pageview', { url: '/:masked/beta' })"
+            onclick="window.qusto('pageview', { url: '/:masked/beta' })"
             href="#"
             >B</a
           >
@@ -127,7 +127,10 @@ for (const mode of ['legacy', 'web', 'esm']) {
             esm: `<script type="module">import { init, track } from '/tracker/js/npm_package/plausible.js'; init(${JSON.stringify(
               DEFAULT_CONFIG
             )})</script>`,
-            legacy: `<script data-domain="${DEFAULT_CONFIG.domain}" async src="/tracker/js/plausible.local.js"></script>`
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.js',
+              DEFAULT_CONFIG.domain
+            )
           },
           mode
         ),
@@ -141,8 +144,7 @@ for (const mode of ['legacy', 'web', 'esm']) {
             n: 'pageview',
             d: DEFAULT_CONFIG.domain,
             u: `${LOCAL_SERVER_ADDR}${url}`,
-            v: tracker_script_version,
-            h: e.toBeUndefined()
+            v: tracker_script_version
           }
         ],
         shouldIgnoreRequest: [isEngagementEvent]

@@ -18,7 +18,8 @@ window.scanPageBeforeQustoInstallation = async function ({
     log('Waiting for Qusto function...')
     const plausibleFound = await waitForQustoFunction(timeoutMs)
     log(`plausibleFound: ${plausibleFound}`)
-    v1Detected = plausibleFound && typeof window.plausible.s === 'undefined'
+    const trackerWindow = window.qusto || window.plausible
+    v1Detected = plausibleFound && typeof trackerWindow?.s === 'undefined'
     log(`v1Detected: ${v1Detected}`)
   }
 

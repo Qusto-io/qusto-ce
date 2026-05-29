@@ -1,5 +1,6 @@
 if (COMPILE_COMPAT) {
-  var scriptEl = document.getElementById('qusto')
+  var scriptEl =
+    document.getElementById('qusto') || document.getElementById('plausible')
 } else if (COMPILE_PLAUSIBLE_LEGACY_VARIANT) {
   // eslint-disable-next-line no-redeclare
   var scriptEl = document.currentScript

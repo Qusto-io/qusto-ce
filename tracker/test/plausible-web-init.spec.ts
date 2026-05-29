@@ -19,7 +19,7 @@ const DEFAULT_CONFIG = {
   captureOnLocalhost: true
 }
 
-test('with queue code from the web snippet, tracks `plausible` calls made before the script is loaded', async ({
+test('with queue code from the web snippet, tracks `qusto` calls made before the script is loaded', async ({
   page
 }, { testId }) => {
   const config = { ...DEFAULT_CONFIG }
@@ -27,14 +27,14 @@ test('with queue code from the web snippet, tracks `plausible` calls made before
     testId,
     scriptConfig: config,
     bodyContent:
-      '<script>window.plausible("loaded", { props: { plausibleLoadedAtEventTime: window.plausible.l ? true : false }, interactive: false })</script>'
+      '<script>window.qusto("loaded", { props: { qustoLoadedAtEventTime: window.qusto.l ? true : false }, interactive: false })</script>'
   })
   await expectQustoInAction(page, {
     action: () => page.goto(url),
     expectedRequests: [
       {
         n: 'loaded',
-        p: { plausibleLoadedAtEventTime: false },
+        p: { qustoLoadedAtEventTime: false },
         i: false,
         d: config.domain,
         u: `${LOCAL_SERVER_ADDR}${url}`
@@ -51,7 +51,7 @@ test('handles double-initialization of the script with a console.warn', async ({
   const { url } = await initializePageDynamically(page, {
     testId,
     scriptConfig: config,
-    bodyContent: /* HTML */ `<button onclick="window.plausible('Purchase')">
+    bodyContent: /* HTML */ `<button onclick="window.qusto('Purchase')">
       Purchase
     </button>`
   })
@@ -68,8 +68,8 @@ test('handles double-initialization of the script with a console.warn', async ({
 
   await expect(
     page.evaluate(() =>
-      // @ts-expect-error - window.plausible is defined
-      window.plausible.init({
+      // @ts-expect-error - window.qusto is defined
+      window.qusto.init({
         captureOnLocalhost: true,
         customProperties: { init: 2 }
       })
@@ -95,13 +95,13 @@ test('if there are two snippets on the page, one wins, no warning is emitted', a
     customProperties: { alfa: true }
   })
   const initCallAlfa =
-    'plausible.init({"captureOnLocalhost":true,"customProperties":{"alfa":true}})'
+    'qusto.init({"captureOnLocalhost":true,"customProperties":{"alfa":true}})'
   expect(snippetAlfa).toEqual(expect.stringContaining(initCallAlfa))
   const snippetBeta = getConfiguredQustoWebSnippet({
     ...config,
     customProperties: { beta: true }
   })
-  const initCallBeta = `plausible.init({"captureOnLocalhost":true,"customProperties":{"beta":true}})`
+  const initCallBeta = `qusto.init({"captureOnLocalhost":true,"customProperties":{"beta":true}})`
   expect(snippetBeta).toEqual(expect.stringContaining(initCallBeta))
 
   const messages: [string, string][] = []
@@ -134,10 +134,10 @@ test('if domain is provided in `init`, it is ignored', async ({ page }, {
 }) => {
   const config = { ...DEFAULT_CONFIG }
   const scriptConfig = getConfiguredQustoWebSnippet(config)
-  const originalInitCall = 'plausible.init({"captureOnLocalhost":true})'
+  const originalInitCall = 'qusto.init({"captureOnLocalhost":true})'
   // verify that the original snippet is what we expect it to be
   expect(scriptConfig).toEqual(expect.stringContaining(originalInitCall))
-  const initCallWithDomainOverride = `plausible.init({"captureOnLocalhost":true,"domain":"sub.${config.domain}"})`
+  const initCallWithDomainOverride = `qusto.init({"captureOnLocalhost":true,"domain":"sub.${config.domain}"})`
   const updatedScriptConfig = scriptConfig.replace(
     originalInitCall,
     initCallWithDomainOverride

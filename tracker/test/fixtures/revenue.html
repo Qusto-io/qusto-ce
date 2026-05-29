@@ -4,9 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Plausible Playwright tests</title>
-
+    <title>Qusto Playwright tests</title>
+    <script>
+      window.__qusto = true
+      window.__plausible = true
+    </script>
     <script
+      id="qusto"
+      data-domain="example.com"
+      data-api="http://localhost:3000/api/event"
       async
       src="/tracker/js/plausible.local.manual.revenue.tagged-events.js"
     ></script>
@@ -15,7 +21,7 @@
   <body>
     <button
       id="manual-purchase"
-      onclick="window.plausible('Purchase', {revenue: {amount: 15.99, currency: 'USD'}})"
+      onclick="window.qusto('Purchase', {revenue: {amount: 15.99, currency: 'USD'}})"
     >
       Click me
     </button>

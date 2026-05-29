@@ -31,7 +31,7 @@ export function track(eventName, options) {
         window.__nightmare ||
         window.navigator.webdriver ||
         window.Cypress) &&
-      !window.__qusto
+      !(window.__qusto || window.__plausible)
     ) {
       return onIgnoredEvent(eventName, options)
     }

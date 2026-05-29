@@ -4,6 +4,10 @@ import { mockManyRequests } from './mock-many-requests'
 
 export const tracker_script_version = packageJson.tracker_script_version
 
+/** Playwright navigation/response races need longer budgets on CI (especially Firefox). */
+export const navigationRaceTimeoutMs = process.env.CI ? 5000 : 2000
+export const navigationMockRequestTimeoutMs = process.env.CI ? 3000 : 2000
+
 /**
  * A powerful utility function that makes it easy to assert on the event
  * requests that should or should not have been made after doing a page
@@ -39,7 +43,7 @@ export const expectQustoInAction = async function (
     action,
     expectedRequests = [],
     refutedRequests = [],
-    pathToMock = '/api/event',
+    pathToMock = '**/api/event*',
     awaitedRequestCount,
     expectedRequestCount,
     responseDelay,
@@ -54,7 +58,7 @@ export const expectQustoInAction = async function (
     ? awaitedRequestCount
     : requestsToExpect + refutedRequests.length
 
-  const { getRequestList } = await mockManyRequests({
+  const { getRequestList, stopMocking } = await mockManyRequests({
     page,
     path: pathToMock,
     fulfill: { status: 202, contentType: 'text/plain', body: 'ok' },
@@ -63,8 +67,13 @@ export const expectQustoInAction = async function (
     awaitedRequestCount: requestsToAwait,
     mockRequestTimeout
   })
-  await action()
-  const requestBodies = await getRequestList()
+  let requestBodies = []
+  try {
+    await action()
+    requestBodies = await getRequestList()
+  } finally {
+    await stopMocking()
+  }
 
   const expectedButNotFoundBodySubsets = []
 
@@ -241,5 +250,7 @@ export function switchByMode(cases, mode) {
  * will not be tracked if the event happens before the tracker script has attached the event listener.
  */
 export function ensureQustoInitialized(page) {
-  return page.waitForFunction(() => window.plausible?.l === true)
+  return page.waitForFunction(
+    () => window.qusto?.l === true || window.plausible?.l === true
+  )
 }

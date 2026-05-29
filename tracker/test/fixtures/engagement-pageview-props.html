@@ -4,8 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Plausible Playwright tests</title>
+    <title>Qusto Playwright tests</title>
+    <script>
+      window.__qusto = true
+      window.__plausible = true
+    </script>
     <script
+      id="qusto"
+      data-domain="example.com"
+      data-api="http://localhost:3000/api/event"
       async
       event-author="John"
       src="/tracker/js/plausible.local.pageview-props.js"
@@ -16,7 +23,7 @@
     <a id="navigate-away" href="/manual.html">Navigate away</a>
     <button
       id="custom-event-button"
-      onclick="plausible('Custom event', { props: { author: 'Karl' } })"
+      onclick="qusto('Custom event', { props: { author: 'Karl' } })"
     >
       Custom event
     </button>
@@ -32,9 +39,7 @@
     var i = 0
 
     function increment() {
-      document
-        .getElementsByTagName('script')[0]
-        .setAttribute('event-index', i++)
+      document.getElementById('qusto').setAttribute('event-index', i++)
     }
 
     increment()

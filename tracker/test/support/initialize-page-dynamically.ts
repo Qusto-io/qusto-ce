@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test'
+import { LOCAL_SERVER_ADDR } from './server.js'
 import { ScriptConfig } from './types'
 
 interface SharedOptions {
@@ -26,6 +27,11 @@ interface DynamicPageInfo {
   url: string
 }
 
+const AUTOMATION_BYPASS_SCRIPT =
+  '<script>window.__qusto = true; window.__plausible = true;</script>'
+
+const TRACKER_SCRIPT_SLOT = '<!-- tracker-script -->'
+
 const RESPONSE_BODY_TEMPLATE = `
 <!doctype html>
 <html lang="en">
@@ -34,7 +40,8 @@ const RESPONSE_BODY_TEMPLATE = `
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Qusto Playwright tests</title>
-    <script>// Qusto script</script>
+    ${AUTOMATION_BYPASS_SCRIPT}
+    ${TRACKER_SCRIPT_SLOT}
   </head>
   <body></body>
 </html>
@@ -43,10 +50,19 @@ const RESPONSE_BODY_TEMPLATE = `
 const PLAUSIBLE_WEB_SNIPPET = `
 <script async src="<%= plausible_script_url %>"></script>
 <script>
-  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-  plausible.init()
+  window.qusto=window.qusto||function(){(qusto.q=qusto.q||[]).push(arguments)},qusto.init=qusto.init||function(i){qusto.o=i||{}};
+  qusto.init()
 </script>
 `
+
+/** Legacy .compat scripts need data-domain/data-api on the script tag to reach the test server. */
+export function compatLocalScript(
+  src: string,
+  domain = 'example.com',
+  endpoint = `${LOCAL_SERVER_ADDR}/api/event`
+): string {
+  return `<script id="qusto" data-domain="${domain}" data-api="${endpoint}" async src="${src}"></script>`
+}
 
 export function serializeWithFunctions(obj: Record<string, unknown>): string {
   const functions: Record<string, string> = {}
@@ -101,10 +117,7 @@ export function getConfiguredQustoWebSnippet({
   ) {
     const serializedOptions = serializeWithFunctions(initOverrideOptions)
 
-    return snippet.replace(
-      'plausible.init()',
-      `plausible.init(${serializedOptions})`
-    )
+    return snippet.replace('qusto.init()', `qusto.init(${serializedOptions})`)
   }
   return snippet
 }
@@ -120,11 +133,14 @@ export async function initializePageDynamically(
     if ('response' in options) {
       responseBody = options.response
     } else {
-      responseBody = RESPONSE_BODY_TEMPLATE.replace(
-        '<script>// Qusto script</script>',
+      const trackerScript =
         typeof options.scriptConfig === 'string'
           ? options.scriptConfig
           : getConfiguredQustoWebSnippet(options.scriptConfig)
+
+      responseBody = RESPONSE_BODY_TEMPLATE.replace(
+        TRACKER_SCRIPT_SLOT,
+        trackerScript
       ).replace('<body></body>', `<body>${options.bodyContent}</body>`)
     }
 

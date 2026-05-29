@@ -1,12 +1,18 @@
 import {
+  ensureQustoInitialized,
   expectQustoInAction,
   isPageviewEvent,
   isEngagementEvent,
+  navigationMockRequestTimeoutMs,
+  navigationRaceTimeoutMs,
   switchByMode
 } from './support/test-utils'
 import { expect, test } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
-import { initializePageDynamically } from './support/initialize-page-dynamically'
+import {
+  compatLocalScript,
+  initializePageDynamically
+} from './support/initialize-page-dynamically'
 import { ScriptConfig } from './support/types'
 import {
   mockManyRequests,
@@ -585,7 +591,7 @@ test.describe('file downloads feature when using legacy .compat extension', () =
         page,
         path: '**/api/event',
         awaitedRequestCount: 2,
-        mockRequestTimeout: 2000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       })
       const filePath = '/file.csv'
       const downloadMockOptions = {
@@ -595,7 +601,7 @@ test.describe('file downloads feature when using legacy .compat extension', () =
           contentType: 'text/csv'
         },
         awaitedRequestCount: 2,
-        mockRequestTimeout: 2000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       }
 
       const downloadMockForOtherPages = await mockManyRequests({
@@ -609,8 +615,9 @@ test.describe('file downloads feature when using legacy .compat extension', () =
 
       const { url } = await initializePageDynamically(page, {
         testId,
-        scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
+        scriptConfig: compatLocalScript(
+          '/tracker/js/plausible.compat.file-downloads.local.manual.js'
+        ),
         bodyContent: /* HTML */ `<a ${linkAttributes} href="${filePath}"
           ><h1>📥</h1></a
         >`
@@ -672,21 +679,23 @@ test.describe('file downloads feature when using legacy .compat extension', () =
           contentType: 'text/csv'
         },
         awaitedRequestCount: 1,
-        mockRequestTimeout: 1000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       })
       const { url } = await initializePageDynamically(page, {
         testId,
-        scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
+        scriptConfig: compatLocalScript(
+          '/tracker/js/plausible.compat.file-downloads.local.manual.js'
+        ),
         bodyContent: /* HTML */ `<a href="${filePath}">📥</a>`
       })
       await page.goto(url)
+      await ensureQustoInitialized(page)
 
       const navigationPromise = page.waitForRequest(filePath, {
-        timeout: 2000
+        timeout: navigationRaceTimeoutMs
       })
       const trackingPromise = page.waitForResponse('**/api/event', {
-        timeout: 2000
+        timeout: navigationRaceTimeoutMs
       })
 
       await page.click('a')
@@ -725,12 +734,13 @@ test.describe('file downloads feature when using legacy .compat extension', () =
         contentType: 'text/csv'
       },
       awaitedRequestCount: 1,
-      mockRequestTimeout: 1000
+      mockRequestTimeout: navigationMockRequestTimeoutMs
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.file-downloads.local.manual.js'
+      ),
       bodyContent: /* HTML */ `<a href="${filePath}">📥</a>`
     })
     await page.goto(url)

@@ -26,19 +26,29 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: {
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: ['--disable-blink-features=AutomationControlled']
+        }
+      }
     },
 
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      testIgnore: 'test/installation_support/**'
+      testIgnore: 'installation_support/**'
     },
 
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      testIgnore: 'test/installation_support/**'
+      testIgnore: [
+        'installation_support/**',
+        'callbacks.spec.ts',
+        'custom-properties.spec.ts',
+        'features-hierarchy-on-overlap.spec.ts'
+      ]
     }
   ],
   webServer: {

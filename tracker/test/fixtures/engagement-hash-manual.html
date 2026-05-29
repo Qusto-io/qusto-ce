@@ -4,13 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Plausible Playwright tests</title>
-    <script async src="/tracker/js/plausible.hash.local.manual.js"></script>
+    <title>Qusto Playwright tests</title>
     <script>
-      window.plausible =
-        window.plausible ||
+      window.__qusto = true
+      window.__plausible = true
+    </script>
+    <script
+      id="qusto"
+      data-domain="example.com"
+      data-api="http://localhost:3000/api/event"
+      src="/tracker/js/plausible.hash.local.manual.js"
+    ></script>
+    <script>
+      window.qusto =
+        window.qusto ||
         function () {
-          ;(window.plausible.q = window.plausible.q || []).push(arguments)
+          ;(window.qusto.q = window.qusto.q || []).push(arguments)
         }
     </script>
   </head>
@@ -29,14 +38,13 @@
       function updateContent() {
         if (location.hash === '#about') {
           titleNode.innerHTML = 'About us'
-          window.plausible('pageview', { u: 'http://localhost:3000/#about-us' })
+          window.qusto('pageview', { u: 'http://localhost:3000/#about-us' })
         } else {
           titleNode.innerHTML = 'Home'
-          window.plausible('pageview', { u: 'http://localhost:3000/#home' })
+          window.qusto('pageview', { u: 'http://localhost:3000/#home' })
         }
       }
 
-      window.plausible('pageview', { u: 'http://localhost:3000/#home' })
       window.addEventListener('hashchange', updateContent)
     </script>
   </body>

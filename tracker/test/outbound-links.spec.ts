@@ -1,12 +1,18 @@
-import { initializePageDynamically } from './support/initialize-page-dynamically'
+import {
+  compatLocalScript,
+  initializePageDynamically
+} from './support/initialize-page-dynamically'
 import {
   mockManyRequests,
   resolveWithTimestamps
 } from './support/mock-many-requests'
 import {
+  ensureQustoInitialized,
   expectQustoInAction,
   isEngagementEvent,
   isPageviewEvent,
+  navigationMockRequestTimeoutMs,
+  navigationRaceTimeoutMs,
   switchByMode
 } from './support/test-utils'
 import { expect, test } from '@playwright/test'
@@ -164,8 +170,9 @@ for (const mode of ['legacy', 'web'])
                 autoCapturePageviews: false,
                 outboundLinks: true
               },
-              legacy:
-                '<script async src="/tracker/js/plausible.local.manual.outbound-links.js"></script>'
+              legacy: compatLocalScript(
+                '/tracker/js/plausible.local.manual.outbound-links.js'
+              )
             },
             mode
           ),
@@ -214,8 +221,9 @@ for (const mode of ['legacy', 'web'])
               outboundLinks: true,
               autoCapturePageviews: false
             },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.manual.outbound-links.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.manual.outbound-links.js'
+            )
           },
           mode
         ),
@@ -263,8 +271,9 @@ for (const mode of ['legacy', 'web'])
         scriptConfig: switchByMode(
           {
             web: { ...DEFAULT_CONFIG, outboundLinks: true },
-            legacy:
-              '<script async src="/tracker/js/plausible.local.outbound-links.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.local.outbound-links.js'
+            )
           },
           mode
         ),
@@ -343,7 +352,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
           body: OTHER_PAGE_BODY
         },
         awaitedRequestCount: 2,
-        mockRequestTimeout: 2000
+        mockRequestTimeout: navigationMockRequestTimeoutMs
       }
 
       const outboundMockForOtherPages = await mockManyRequests({
@@ -357,13 +366,15 @@ test.describe('outbound links feature when using legacy .compat extension', () =
 
       const { url } = await initializePageDynamically(page, {
         testId,
-        scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+        scriptConfig: compatLocalScript(
+          '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+        ),
         bodyContent: /* HTML */ `<a ${linkAttributes} href="${outboundUrl}"
           ><h1>➡️</h1></a
         >`
       })
       await page.goto(url)
+      await ensureQustoInitialized(page)
 
       await expectQustoInAction(page, {
         action: () => page.click(click.element, { modifiers: click.modifiers }),
@@ -402,17 +413,18 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+      ),
       bodyContent: /* HTML */ `<a href="${outboundUrl}">📥</a>`
     })
     await page.goto(url)
 
     const navigationPromise = page.waitForRequest(outboundUrl, {
-      timeout: 2000
+      timeout: navigationRaceTimeoutMs
     })
     const trackingPromise = page.waitForResponse('**/api/event', {
-      timeout: 2000
+      timeout: navigationRaceTimeoutMs
     })
 
     await page.click('a')
@@ -454,8 +466,9 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     })
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+      ),
       bodyContent: /* HTML */ `<a href="${outboundUrl}">➡️</a>`
     })
     await page.goto(url)
@@ -481,7 +494,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
         body: OTHER_PAGE_BODY
       },
       awaitedRequestCount: 2,
-      mockRequestTimeout: 2000
+      mockRequestTimeout: navigationMockRequestTimeoutMs
     }
 
     const outboundMockForOtherPages = await mockManyRequests({
@@ -495,8 +508,9 @@ test.describe('outbound links feature when using legacy .compat extension', () =
 
     const { url } = await initializePageDynamically(page, {
       testId,
-      scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+      scriptConfig: compatLocalScript(
+        '/tracker/js/plausible.compat.local.manual.outbound-links.js'
+      ),
       bodyContent: /* HTML */ `
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <a href="${outboundUrl}">

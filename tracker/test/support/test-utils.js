@@ -58,7 +58,7 @@ export const expectQustoInAction = async function (
     ? awaitedRequestCount
     : requestsToExpect + refutedRequests.length
 
-  const { getRequestList } = await mockManyRequests({
+  const { getRequestList, stopMocking } = await mockManyRequests({
     page,
     path: pathToMock,
     fulfill: { status: 202, contentType: 'text/plain', body: 'ok' },
@@ -67,8 +67,13 @@ export const expectQustoInAction = async function (
     awaitedRequestCount: requestsToAwait,
     mockRequestTimeout
   })
-  await action()
-  const requestBodies = await getRequestList()
+  let requestBodies = []
+  try {
+    await action()
+    requestBodies = await getRequestList()
+  } finally {
+    await stopMocking()
+  }
 
   const expectedButNotFoundBodySubsets = []
 

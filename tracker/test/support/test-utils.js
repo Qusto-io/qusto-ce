@@ -43,7 +43,7 @@ export const expectQustoInAction = async function (
     action,
     expectedRequests = [],
     refutedRequests = [],
-    pathToMock = '/api/event',
+    pathToMock = '**/api/event',
     awaitedRequestCount,
     expectedRequestCount,
     responseDelay,

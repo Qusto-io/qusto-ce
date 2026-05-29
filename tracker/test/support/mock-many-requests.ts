@@ -55,8 +55,8 @@ export async function mockManyRequests({
     if (responseDelay) {
       await delay(responseDelay)
     }
-    const postData = parseRequestBody(request)
-    if (postData && shouldAllow(postData, shouldIgnoreRequest)) {
+    const postData = request.postDataJSON()
+    if (shouldAllow(postData, shouldIgnoreRequest)) {
       requestList.push(postData)
     }
     await route.fulfill({
@@ -88,23 +88,6 @@ export async function mockManyRequests({
   }
 
   return { getRequestList, stopMocking }
-}
-
-function parseRequestBody(request: {
-  postDataJSON: () => unknown
-  postData: () => string | null
-}) {
-  try {
-    return request.postDataJSON() as RequestData
-  } catch {
-    const raw = request.postData()
-    if (!raw) return undefined
-    try {
-      return JSON.parse(raw) as RequestData
-    } catch {
-      return undefined
-    }
-  }
 }
 
 function shouldAllow(

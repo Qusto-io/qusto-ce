@@ -87,10 +87,16 @@ test.describe('engagement events', () => {
   test('sends engagements when pageviews are triggered manually on a SPA', async ({
     page
   }) => {
+    await page.goto('/engagement-hash-manual.html')
+    await ensureQustoInitialized(page)
+
     await expectQustoInAction(page, {
-      action: () => page.goto('/engagement-hash-manual.html'),
-      expectedRequests: [{ n: 'pageview' }],
-      mockRequestTimeout: process.env.CI ? 8000 : 3000
+      action: () =>
+        page.evaluate(() => {
+          window.qusto('pageview', { u: 'http://localhost:3000/#home' })
+        }),
+      expectedRequests: [{ n: 'pageview', u: `${LOCAL_SERVER_ADDR}/#home` }],
+      mockRequestTimeout: process.env.CI ? 5000 : 3000
     })
 
     await page.waitForTimeout(1000)

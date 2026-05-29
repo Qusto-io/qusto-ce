@@ -88,10 +88,7 @@ test.describe('engagement events', () => {
     page
   }) => {
     await expectQustoInAction(page, {
-      action: async () => {
-        await page.goto('/engagement-hash-manual.html')
-        await ensureQustoInitialized(page)
-      },
+      action: () => page.goto('/engagement-hash-manual.html'),
       expectedRequests: [{ n: 'pageview' }],
       mockRequestTimeout: process.env.CI ? 8000 : 3000
     })

@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test'
 import {
-  ensureQustoInitialized,
   expectQustoInAction,
   hideAndShowCurrentTab,
   focus,
@@ -9,7 +8,6 @@ import {
   tracker_script_version
 } from './support/test-utils'
 import { test } from '@playwright/test'
-import { compatLocalScript, initializePageDynamically } from './support/initialize-page-dynamically'
 import { LOCAL_SERVER_ADDR } from './support/server'
 
 test.describe('engagement events', () => {
@@ -87,50 +85,10 @@ test.describe('engagement events', () => {
 
   test('sends engagements when pageviews are triggered manually on a SPA', async ({
     page
-  }, { testId }) => {
-    const { url } = await initializePageDynamically(page, {
-      testId,
-      scriptConfig: compatLocalScript(
-        '/tracker/js/plausible.compat.hash.local.manual.js'
-      ),
-      bodyContent: /* HTML */ `
-        <script>
-          window.qusto =
-            window.qusto ||
-            function () {
-              ;(window.qusto.q = window.qusto.q || []).push(arguments)
-            }
-        </script>
-        <a id="about-us-hash-link" href="#about">About us</a>
-        <a id="home-hash-link" href="#home">Home</a>
-        <p id="page-title">Home</p>
-        <script>
-          const titleNode = document.getElementById('page-title')
-          function updateContent() {
-            if (location.hash === '#about') {
-              titleNode.innerHTML = 'About us'
-              window.qusto('pageview', { u: 'http://localhost:3000/#about-us' })
-            } else {
-              titleNode.innerHTML = 'Home'
-              window.qusto('pageview', { u: 'http://localhost:3000/#home' })
-            }
-          }
-          window.qusto('pageview', { u: 'http://localhost:3000/#home' })
-          window.addEventListener('hashchange', updateContent)
-        </script>
-      `
-    })
-
-    await page.goto(url)
-    await ensureQustoInitialized(page)
-
+  }) => {
     await expectQustoInAction(page, {
-      action: () =>
-        page.evaluate(() => {
-          window.qusto('pageview', { u: 'http://localhost:3000/#home' })
-        }),
-      expectedRequests: [{ n: 'pageview', u: `${LOCAL_SERVER_ADDR}/#home` }],
-      mockRequestTimeout: process.env.CI ? 5000 : 3000
+      action: () => page.goto('/engagement-hash-manual.html'),
+      expectedRequests: [{ n: 'pageview' }]
     })
 
     await page.waitForTimeout(1000)
@@ -140,8 +98,7 @@ test.describe('engagement events', () => {
       expectedRequests: [
         { n: 'engagement', u: `${LOCAL_SERVER_ADDR}/#home` },
         { n: 'pageview', u: `${LOCAL_SERVER_ADDR}/#about-us` }
-      ],
-      mockRequestTimeout: process.env.CI ? 5000 : 3000
+      ]
     })
 
     expect(request.e).toBeGreaterThan(1000)

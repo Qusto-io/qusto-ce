@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5.0.0
+        uses: docker/metadata-action@v6
         env:
           DOCKER_METADATA_PR_HEAD_SHA: true
         with:

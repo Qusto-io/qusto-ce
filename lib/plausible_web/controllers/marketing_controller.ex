@@ -69,31 +69,30 @@ defmodule PlausibleWeb.MarketingController do
 
   # Pricing
   def pricing(conn, _params) do
-    # TODO(QUS-REBRAND): confirm live prices — placeholders until billing sign-off
     plans = [
       %{
-        name: "Community Edition",
-        price: "Free",
-        period: "self-hosted",
+        name: "Core",
+        price: "€9",
+        period: "month",
         features: [
-          "Open-source core analytics",
-          "Privacy-first event tracking",
-          "Basic e-commerce events",
-          "Self-hosting — inspect the code",
-          "Community support"
+          "Managed cookieless analytics",
+          "Revenue overview & traffic",
+          "EU data residency",
+          "Open-source core — inspect the code",
+          "Email support"
         ],
-        cta: "View on GitHub",
+        cta: "Start Free Trial",
         featured: false
       },
       %{
         name: "Growth",
-        price: "{{PRICE_GROWTH}}",
+        price: "€49",
         period: "month",
         features: [
-          "Managed hosting in the EU",
+          "Everything in Core",
           "E-commerce funnels & revenue",
           "Traffic sources including AI",
-          "Automatic updates & backups",
+          "Cart abandonment recovery",
           "Standard support"
         ],
         cta: "Start Free Trial",
@@ -101,7 +100,7 @@ defmodule PlausibleWeb.MarketingController do
       },
       %{
         name: "Professional",
-        price: "{{PRICE_PRO}}",
+        price: "€119",
         period: "month",
         features: [
           "Everything in Growth",

@@ -48,7 +48,7 @@ defmodule PlausibleWeb.MarketingController do
 
   def ai_search(conn, _params) do
     render(conn, "ai_search.html",
-      page_title: "AI Search Tracking - Qusto",
+      page_title: "Traffic Sources & AI Referrals - Qusto",
       layout: {PlausibleWeb.LayoutView, "app.html"}
     )
   end
@@ -69,51 +69,46 @@ defmodule PlausibleWeb.MarketingController do
 
   # Pricing
   def pricing(conn, _params) do
+    # TODO(QUS-REBRAND): confirm live prices — placeholders until billing sign-off
     plans = [
       %{
-        name: "Starter",
-        price: "€19",
-        period: "month",
+        name: "Community Edition",
+        price: "Free",
+        period: "self-hosted",
         features: [
-          "Up to 10,000 monthly visitors",
-          "E-commerce funnels",
-          "AI search tracking",
-          "Cart abandonment detection",
-          "Product-level analytics",
-          "Email support",
-          "GDPR compliant"
+          "Open-source core analytics",
+          "Privacy-first event tracking",
+          "Basic e-commerce events",
+          "Self-hosting — inspect the code",
+          "Community support"
         ],
-        cta: "Start Free Trial",
+        cta: "View on GitHub",
         featured: false
       },
       %{
         name: "Growth",
-        price: "€49",
+        price: "{{PRICE_GROWTH}}",
         period: "month",
         features: [
-          "Up to 100,000 monthly visitors",
-          "Everything in Starter",
-          "Multi-touch attribution",
-          "Shopify/WooCommerce native apps",
-          "Revenue goal tracking",
-          "Priority support",
-          "Custom integrations"
+          "Managed hosting in the EU",
+          "E-commerce funnels & revenue",
+          "Traffic sources including AI",
+          "Automatic updates & backups",
+          "Standard support"
         ],
         cta: "Start Free Trial",
         featured: true
       },
       %{
         name: "Professional",
-        price: "€99",
+        price: "{{PRICE_PRO}}",
         period: "month",
         features: [
-          "Up to 500,000 monthly visitors",
           "Everything in Growth",
-          "White-label dashboard",
-          "API access",
-          "Custom data retention",
-          "Dedicated support",
-          "SLA guarantee"
+          "Deeper behavioural analysis",
+          "Multi-touch attribution",
+          "More team seats",
+          "Priority support"
         ],
         cta: "Contact Sales",
         featured: false

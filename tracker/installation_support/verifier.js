@@ -9,7 +9,8 @@ import { checkDisallowedByCSP } from './check-disallowed-by-csp'
  * @returns {Promise<VerifierResult>}
  */
 
-const DEFAULT_TRACKER_SCRIPT_SELECTOR = 'script[src^="https://analytics.qusto.io/js"]'
+const DEFAULT_TRACKER_SCRIPT_SELECTOR =
+  'script[src^="https://analytics.qusto.io/js"]'
 
 async function verifyQustoInstallation(options) {
   const {

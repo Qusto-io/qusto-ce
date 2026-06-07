@@ -8,9 +8,7 @@ import { config, scriptEl } from './config'
 
 export function track(eventName, options) {
   if (COMPILE_PLAUSIBLE_NPM && !config.isInitialized) {
-    throw new Error(
-      'qusto.track() can only be called after qusto.init()'
-    )
+    throw new Error('qusto.track() can only be called after qusto.init()')
   }
 
   var isPageview = eventName === 'pageview'

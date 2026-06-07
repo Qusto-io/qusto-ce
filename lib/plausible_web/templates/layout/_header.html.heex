@@ -1,195 +1,198 @@
 <header class="sticky top-0 z-20 border-b border-[var(--header-border)] bg-[var(--bg-elevated)] py-4 shadow-sm backdrop-blur-xl [background:var(--bg-elevated)] [-webkit-backdrop-filter:blur(12px)] [backdrop-filter:blur(12px)]">
   <nav class="relative">
-  <div class="container print:max-w-full">
-    <nav class="relative flex items-center justify-between sm:h-10 md:justify-center">
-      <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
-        <a href={home_dest(@conn)}>
-          <img
-            src={
-              PlausibleWeb.Router.Helpers.static_path(
-                @conn,
-                logo_path("logo_dark.svg")
-              )
-            }
-            class="w-44 hidden dark:inline"
-            alt="Qusto logo"
-            loading="lazy"
-          />
-          <img
-            src={
-              PlausibleWeb.Router.Helpers.static_path(
-                @conn,
-                logo_path("logo_light.svg")
-              )
-            }
-            class="w-44 inline dark:hidden"
-            alt="Qusto logo"
-            loading="lazy"
-          />
-        </a>
-      </div>
-      <div class="absolute inset-y-0 right-0 flex items-center justify-end">
-        <%= cond do %>
-          <% @conn.assigns[:current_user] -> %>
-            <ul class="flex items-center gap-2 w-full sm:w-auto">
-              <li :if={
-                ee?() && @conn.assigns[:site] &&
-                  Plausible.Auth.is_super_admin?(@conn.assigns[:current_user])
-              }>
-                <.styled_link
-                  class="text-sm mr-6"
-                  href={"/cs/sites/site/#{@conn.assigns.site.id}"}
-                  new_tab={true}
+    <div class="container print:max-w-full">
+      <nav class="relative flex items-center justify-between sm:h-10 md:justify-center">
+        <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
+          <a href={home_dest(@conn)}>
+            <img
+              src={
+                PlausibleWeb.Router.Helpers.static_path(
+                  @conn,
+                  logo_path("logo_dark.svg")
+                )
+              }
+              class="w-44 hidden dark:inline"
+              alt="Qusto logo"
+              loading="lazy"
+            />
+            <img
+              src={
+                PlausibleWeb.Router.Helpers.static_path(
+                  @conn,
+                  logo_path("logo_light.svg")
+                )
+              }
+              class="w-44 inline dark:hidden"
+              alt="Qusto logo"
+              loading="lazy"
+            />
+          </a>
+        </div>
+        <div class="absolute inset-y-0 right-0 flex items-center justify-end">
+          <%= cond do %>
+            <% @conn.assigns[:current_user] -> %>
+              <ul class="flex items-center gap-2 w-full sm:w-auto">
+                <li :if={
+                  ee?() && @conn.assigns[:site] &&
+                    Plausible.Auth.is_super_admin?(@conn.assigns[:current_user])
+                }>
+                  <.styled_link
+                    class="text-sm mr-6"
+                    href={"/cs/sites/site/#{@conn.assigns.site.id}"}
+                    new_tab={true}
+                  >
+                    CS
+                  </.styled_link>
+                </li>
+                <li
+                  :if={ee?() and Plausible.Teams.on_trial?(@conn.assigns[:current_team])}
+                  class="hidden sm:block"
                 >
-                  CS
-                </.styled_link>
-              </li>
-              <li
-                :if={ee?() and Plausible.Teams.on_trial?(@conn.assigns[:current_team])}
-                class="hidden sm:block"
-              >
-                <div class="flex items-center p-1 rounded-lg bg-yellow-100 dark:bg-yellow-600/35 overflow-hidden">
-                  <span class="px-3 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {trial_notification(@conn.assigns[:current_team])}
-                  </span>
-                  <.button_link
-                    href={Routes.settings_path(@conn, :subscription)}
-                    theme="yellow"
-                    mt?={false}
-                    class="!px-3 !py-2"
-                  >
-                    Upgrade
-                  </.button_link>
-                </div>
-              </li>
-              <li class="w-full sm:w-auto">
-                <.dropdown>
-                  <:button class="flex items-center gap-2 pl-3 pr-1.5 py-2 rounded-md transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <span class="hidden md:block text-sm font-medium truncate dark:text-gray-100">
-                      {@conn.assigns[:current_user].name}
+                  <div class="flex items-center p-1 rounded-lg bg-yellow-100 dark:bg-yellow-600/35 overflow-hidden">
+                    <span class="px-3 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {trial_notification(@conn.assigns[:current_team])}
                     </span>
-                    <img
-                      src={Plausible.Auth.User.profile_img_url(@conn.assigns[:current_user])}
-                      class="-my-0.5 w-7 rounded-full"
-                    />
-                  </:button>
-                  <:menu>
-                    <.dropdown_item>
-                      <div class="text-xs text-gray-500 dark:text-gray-400">Signed in as</div>
-                      <p class="truncate font-medium text-gray-900 dark:text-gray-100" role="none">
-                        {@conn.assigns[:current_user].email}
-                      </p>
-                    </.dropdown_item>
-                    <.team_switcher
-                      conn={@conn}
-                      teams={@teams}
-                      my_team={@my_team}
-                      current_team={@current_team}
-                      more_teams?={@more_teams?}
-                    />
-                    <.dropdown_divider />
-                    <.dropdown_item href={Routes.settings_path(@conn, :index)}>
-                      Account settings
-                    </.dropdown_item>
-
-                    <div :if={@my_team && @my_team.id == @current_team.id}>
-                      <.dropdown_item class="flex" href={Routes.team_setup_path(@conn, :setup)}>
-                        <span data-test="create-a-team-cta" class="flex-1">
-                          Create a team
-                        </span>
+                    <.button_link
+                      href={Routes.settings_path(@conn, :subscription)}
+                      theme="yellow"
+                      mt?={false}
+                      class="!px-3 !py-2"
+                    >
+                      Upgrade
+                    </.button_link>
+                  </div>
+                </li>
+                <li class="w-full sm:w-auto">
+                  <.dropdown>
+                    <:button class="flex items-center gap-2 pl-3 pr-1.5 py-2 rounded-md transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800">
+                      <span class="hidden md:block text-sm font-medium truncate dark:text-gray-100">
+                        {@conn.assigns[:current_user].name}
+                      </span>
+                      <img
+                        src={Plausible.Auth.User.profile_img_url(@conn.assigns[:current_user])}
+                        class="-my-0.5 w-7 rounded-full"
+                      />
+                    </:button>
+                    <:menu>
+                      <.dropdown_item>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Signed in as</div>
+                        <p
+                          class="truncate font-medium text-gray-900 dark:text-gray-100"
+                          role="none"
+                        >
+                          {@conn.assigns[:current_user].email}
+                        </p>
                       </.dropdown_item>
+                      <.team_switcher
+                        conn={@conn}
+                        teams={@teams}
+                        my_team={@my_team}
+                        current_team={@current_team}
+                        more_teams?={@more_teams?}
+                      />
                       <.dropdown_divider />
-                    </div>
+                      <.dropdown_item href={Routes.settings_path(@conn, :index)}>
+                        Account settings
+                      </.dropdown_item>
 
-                    <div :if={Plausible.Teams.setup?(@current_team)}>
+                      <div :if={@my_team && @my_team.id == @current_team.id}>
+                        <.dropdown_item class="flex" href={Routes.team_setup_path(@conn, :setup)}>
+                          <span data-test="create-a-team-cta" class="flex-1">
+                            Create a team
+                          </span>
+                        </.dropdown_item>
+                        <.dropdown_divider />
+                      </div>
+
+                      <div :if={Plausible.Teams.setup?(@current_team)}>
+                        <.dropdown_item
+                          class="flex"
+                          href={Routes.settings_path(@conn, :team_general)}
+                        >
+                          <span class="flex-1">
+                            Team settings
+                          </span>
+                        </.dropdown_item>
+                        <.dropdown_divider />
+                      </div>
                       <.dropdown_item
-                        class="flex"
-                        href={Routes.settings_path(@conn, :team_general)}
+                        class="!flex justify-between gap-x-12"
+                        new_tab
+                        href="https://docs.qusto.io"
                       >
-                        <span class="flex-1">
-                          Team settings
-                        </span>
+                        Help center
                       </.dropdown_item>
-                      <.dropdown_divider />
-                    </div>
-                    <.dropdown_item
-                      class="!flex justify-between gap-x-12"
-                      new_tab
-                      href="https://docs.qusto.io"
+                      <.dropdown_item
+                        :if={ee?()}
+                        class="!flex justify-between gap-x-12"
+                        new_tab
+                        href="https://qusto.io/contact"
+                      >
+                        Contact support
+                      </.dropdown_item>
+                      <.dropdown_item
+                        :if={ee?()}
+                        class="!flex justify-between gap-x-12"
+                        new_tab
+                        href={feedback_link(@conn.assigns[:current_user])}
+                      >
+                        Feature requests
+                      </.dropdown_item>
+                      <.dropdown_item
+                        :if={ce?()}
+                        class="!flex justify-between gap-x-12"
+                        new_tab
+                        href="https://github.com/qusto-io/qusto-analytics"
+                      >
+                        Github repo
+                      </.dropdown_item>
+                      <.dropdown_item href="/logout">Log out</.dropdown_item>
+                    </:menu>
+                  </.dropdown>
+                </li>
+                <%= if @conn.assigns[:current_user] && ee?() do %>
+                  <li id="changelog-notification" class="relative py-2"></li>
+                <% end %>
+              </ul>
+            <% Keyword.fetch!(Application.get_env(:plausible, :selfhost), :disable_registration) != false -> %>
+              <ul class="flex" x-show="!document.cookie.includes('logged_in=true')">
+                <li>
+                  <div class="inline-flex">
+                    <a
+                      href="/login"
+                      class="link-accent font-medium text-[var(--qusto-primary)] dark:text-gray-200 transition duration-150 ease-in-out"
                     >
-                      Help center
-                    </.dropdown_item>
-                    <.dropdown_item
-                      :if={ee?()}
-                      class="!flex justify-between gap-x-12"
-                      new_tab
-                      href="https://qusto.io/contact"
+                      Login
+                    </a>
+                  </div>
+                </li>
+              </ul>
+            <% true -> %>
+              <ul class="flex" x-show="!document.cookie.includes('logged_in=true')">
+                <li>
+                  <div class="inline-flex">
+                    <a
+                      href="/login"
+                      class="link-accent font-medium text-[var(--qusto-primary)] dark:text-gray-200 transition duration-150 ease-in-out"
                     >
-                      Contact support
-                    </.dropdown_item>
-                    <.dropdown_item
-                      :if={ee?()}
-                      class="!flex justify-between gap-x-12"
-                      new_tab
-                      href={feedback_link(@conn.assigns[:current_user])}
+                      Login
+                    </a>
+                  </div>
+                  <div class="inline-flex ml-6 rounded-sm shadow-sm">
+                    <.button_link
+                      href="/register"
+                      theme="cta"
+                      mt?={false}
+                      class="!px-5 !py-2 text-base"
                     >
-                      Feature requests
-                    </.dropdown_item>
-                    <.dropdown_item
-                      :if={ce?()}
-                      class="!flex justify-between gap-x-12"
-                      new_tab
-                      href="https://github.com/qusto-io/qusto-analytics"
-                    >
-                      Github repo
-                    </.dropdown_item>
-                    <.dropdown_item href="/logout">Log out</.dropdown_item>
-                  </:menu>
-                </.dropdown>
-              </li>
-              <%= if @conn.assigns[:current_user] && ee?() do %>
-                <li id="changelog-notification" class="relative py-2"></li>
-              <% end %>
-            </ul>
-          <% Keyword.fetch!(Application.get_env(:plausible, :selfhost), :disable_registration) != false -> %>
-            <ul class="flex" x-show="!document.cookie.includes('logged_in=true')">
-              <li>
-                <div class="inline-flex">
-                  <a
-                    href="/login"
-                    class="link-accent font-medium text-[var(--qusto-primary)] dark:text-gray-200 transition duration-150 ease-in-out"
-                  >
-                    Login
-                  </a>
-                </div>
-              </li>
-            </ul>
-          <% true -> %>
-            <ul class="flex" x-show="!document.cookie.includes('logged_in=true')">
-              <li>
-                <div class="inline-flex">
-                  <a
-                    href="/login"
-                    class="link-accent font-medium text-[var(--qusto-primary)] dark:text-gray-200 transition duration-150 ease-in-out"
-                  >
-                    Login
-                  </a>
-                </div>
-                <div class="inline-flex ml-6 rounded-sm shadow-sm">
-                  <.button_link
-                    href="/register"
-                    theme="cta"
-                    mt?={false}
-                    class="!px-5 !py-2 text-base"
-                  >
-                    Sign up
-                  </.button_link>
-                </div>
-              </li>
-            </ul>
-        <% end %>
-      </div>
-    </nav>
-  </div>
-</nav>
+                      Sign up
+                    </.button_link>
+                  </div>
+                </li>
+              </ul>
+          <% end %>
+        </div>
+      </nav>
+    </div>
+  </nav>
 </header>

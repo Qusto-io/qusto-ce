@@ -19,7 +19,7 @@ defmodule PlausibleWeb.Live.GoalSettingsTest do
       assert text_of_attr(resp, "#{@funnels_cta} a", "href") =~
                "/#{URI.encode_www_form(site.domain)}/settings/funnels"
 
-      assert element_exists?(resp, ~s|a[href="https://plausible.io/docs/goal-conversions"]|)
+      assert element_exists?(resp, ~s|a[href="https://docs.qusto.io/goal-conversions"]|)
 
       assert resp =~ to_string(g1)
       assert resp =~ "Pageview"
@@ -142,7 +142,7 @@ defmodule PlausibleWeb.Live.GoalSettingsTest do
         assert resp = html_response(conn, 200)
         assert resp =~ "Define actions that you want your users to take"
         assert resp =~ "Create your first goal"
-        assert element_exists?(resp, ~s|a[href="https://plausible.io/docs/goal-conversions"]|)
+        assert element_exists?(resp, ~s|a[href="https://docs.qusto.io/goal-conversions"]|)
       end
 
       test "lists goals", %{conn: conn, consolidated_view: consolidated_view} do
@@ -153,7 +153,7 @@ defmodule PlausibleWeb.Live.GoalSettingsTest do
 
         assert resp = html_response(conn, 200)
         assert resp =~ "Define actions that you want your users to take"
-        assert element_exists?(resp, ~s|a[href="https://plausible.io/docs/goal-conversions"]|)
+        assert element_exists?(resp, ~s|a[href="https://docs.qusto.io/goal-conversions"]|)
 
         assert resp =~ to_string(g1)
         assert resp =~ "Pageview"

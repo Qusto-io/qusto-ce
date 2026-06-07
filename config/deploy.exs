@@ -45,7 +45,8 @@ config :plausible, Plausible.IngestRepo,
 config :plausible,
   # Enable all enterprise features if e-commerce is available
   enable_revenue_goals: qusto_ecommerce_enabled,
-  enable_funnels: true,  # Basic funnels always available
+  # Basic funnels always available
+  enable_funnels: true,
   enable_props: true,
   enable_conversions: qusto_ecommerce_enabled
 

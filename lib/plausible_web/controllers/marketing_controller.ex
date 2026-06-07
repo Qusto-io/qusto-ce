@@ -48,7 +48,7 @@ defmodule PlausibleWeb.MarketingController do
 
   def ai_search(conn, _params) do
     render(conn, "ai_search.html",
-      page_title: "AI Search Tracking - Qusto",
+      page_title: "Traffic Sources & AI Referrals - Qusto",
       layout: {PlausibleWeb.LayoutView, "app.html"}
     )
   end
@@ -71,17 +71,15 @@ defmodule PlausibleWeb.MarketingController do
   def pricing(conn, _params) do
     plans = [
       %{
-        name: "Starter",
-        price: "€19",
+        name: "Core",
+        price: "€9",
         period: "month",
         features: [
-          "Up to 10,000 monthly visitors",
-          "E-commerce funnels",
-          "AI search tracking",
-          "Cart abandonment detection",
-          "Product-level analytics",
-          "Email support",
-          "GDPR compliant"
+          "Managed cookieless analytics",
+          "Revenue overview & traffic",
+          "EU data residency",
+          "Open-source core — inspect the code",
+          "Email support"
         ],
         cta: "Start Free Trial",
         featured: false
@@ -91,29 +89,25 @@ defmodule PlausibleWeb.MarketingController do
         price: "€49",
         period: "month",
         features: [
-          "Up to 100,000 monthly visitors",
-          "Everything in Starter",
-          "Multi-touch attribution",
-          "Shopify/WooCommerce native apps",
-          "Revenue goal tracking",
-          "Priority support",
-          "Custom integrations"
+          "Everything in Core",
+          "E-commerce funnels & revenue",
+          "Traffic sources including AI",
+          "Cart abandonment recovery",
+          "Standard support"
         ],
         cta: "Start Free Trial",
         featured: true
       },
       %{
         name: "Professional",
-        price: "€99",
+        price: "€119",
         period: "month",
         features: [
-          "Up to 500,000 monthly visitors",
           "Everything in Growth",
-          "White-label dashboard",
-          "API access",
-          "Custom data retention",
-          "Dedicated support",
-          "SLA guarantee"
+          "Deeper behavioural analysis",
+          "Multi-touch attribution",
+          "More team seats",
+          "Priority support"
         ],
         cta: "Contact Sales",
         featured: false

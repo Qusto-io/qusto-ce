@@ -1,7 +1,7 @@
 # Qusto Analytics - Core Engine
 
-> **🔓 Open Source Core** | **💎 Premium Features Available**
-> This is the open-source core analytics engine. Premium features (e-commerce funnels, AI search tracking, advanced attribution) are available in [Qusto Cloud](https://qusto.io).
+> **🔓 Open Source Core** | **💎 Managed for operators who'd rather not run it**
+> This is the open-source Community Edition — genuinely useful, not stripped down. Managed Growth and Professional tiers add e-commerce depth, EU hosting, and support via [Qusto Cloud](https://qusto.io).
 
 <p align="center">
   <a href="https://qusto.io/">
@@ -51,10 +51,10 @@ Qusto uses an **open-core model** that balances open-source values with sustaina
 
 ### What's Proprietary (Qusto Cloud Only)
 
-- 💎 **E-commerce Funnels**: Multi-step conversion tracking, abandoned cart analysis
-- 💎 **AI Search Tracking**: Detect and analyze visits from ChatGPT, Perplexity, Claude, and other AI assistants
-- 💎 **Advanced Attribution**: Cookieless attribution with 94% accuracy
-- 💎 **Priority Support**: Dedicated support from our team
+- 💎 **E-commerce Funnels**: Product → cart → checkout → revenue, built in
+- 💎 **Channel attribution**: See which sources — including AI assistants — lead to orders
+- 💎 **Advanced Attribution**: Cookieless multi-touch attribution for growing teams
+- 💎 **Managed operations**: EU hosting, updates, backups, compliance docs, priority support
 
 ### Why This Model?
 
@@ -76,8 +76,8 @@ We believe in **sustainable open source**. The open-core model allows us to:
 | API Access | ✅ | ✅ |
 | Goal Tracking | ✅ | ✅ |
 | Data Export | ✅ | ✅ |
-| E-commerce Funnels | ❌ | ✅ |
-| AI Search Tracking | ❌ | ✅ |
+| E-commerce funnels & revenue | Basic (self-host) | ✅ Full |
+| Channel + AI source attribution | ❌ | ✅ |
 | Advanced Attribution | ❌ | ✅ |
 | Support | Community | Priority |
 | Hosting | Your servers | EU-hosted (Hetzner Germany) |

@@ -167,7 +167,10 @@ defmodule PlausibleWeb.Components.Generic do
 
   def upgrade(assigns) do
     ~H"""
-    <div class={["rounded-md p-5 bg-gray-100 dark:bg-[var(--color-dark-bg-elevated)]", @class]} {@rest}>
+    <div
+      class={["rounded-md p-5 bg-gray-100 dark:bg-[var(--color-dark-bg-elevated)]", @class]}
+      {@rest}
+    >
       <div class="flex flex-col gap-y-4">
         <div class="flex-shrink-0 bg-white dark:bg-gray-700 max-w-max rounded-md p-2 border border-gray-200 dark:border-gray-600 text-blue-600 dark:text-[var(--color-dark-primary)]">
           {render_slot(@icon)}
@@ -555,7 +558,10 @@ defmodule PlausibleWeb.Components.Generic do
 
   def tile(assigns) do
     ~H"""
-    <div data-test-id="settings-tile" class="shadow-sm bg-white dark:bg-[var(--color-dark-bg-card)] rounded-md mb-6">
+    <div
+      data-test-id="settings-tile"
+      class="shadow-sm bg-white dark:bg-[var(--color-dark-bg-card)] rounded-md mb-6"
+    >
       <header class="relative py-4 px-6">
         <.title>
           {render_slot(@title)}
@@ -756,7 +762,10 @@ defmodule PlausibleWeb.Components.Generic do
   def focus_list(assigns) do
     ~H"""
     <ol class="list-disc space-y-1 ml-4 text-sm">
-      <li :for={item <- @item} class="marker:text-blue-700 dark:marker:text-[var(--color-dark-primary)]">
+      <li
+        :for={item <- @item}
+        class="marker:text-blue-700 dark:marker:text-[var(--color-dark-primary)]"
+      >
         {render_slot(item)}
       </li>
     </ol>
@@ -910,7 +919,10 @@ defmodule PlausibleWeb.Components.Generic do
         type="submit"
         class={[
           "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full transition-colors ease-in-out duration-200",
-          if(@set_to, do: "bg-blue-600 dark:bg-[var(--color-dark-primary)]", else: "bg-gray-200 dark:bg-gray-600"),
+          if(@set_to,
+            do: "bg-blue-600 dark:bg-[var(--color-dark-primary)]",
+            else: "bg-gray-200 dark:bg-gray-600"
+          ),
           if(@disabled?, do: "cursor-not-allowed")
         ]}
         disabled={@disabled?}

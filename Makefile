@@ -3,7 +3,7 @@
 # Shortcuts for common development tasks
 # ===========================================
 
-.PHONY: help setup start stop reset status logs migrate seed test
+.PHONY: help setup start stop reset status logs migrate seed test minio
 
 # Default target
 help:
@@ -69,6 +69,17 @@ server:
 # Open console
 console:
 	@iex -S mix
+
+# Start MinIO for S3/import tests (matches config/.env.test port 10000)
+minio:
+	docker run -d --rm -p 10000:10000 -p 10001:10001 \
+		--name plausible-minio \
+		-e MINIO_ROOT_USER=minioadmin \
+		-e MINIO_ROOT_PASSWORD=minioadmin \
+		minio/minio server /data --address ":10000" --console-address ":10001"
+	while ! docker exec plausible-minio mc alias set local http://localhost:10000 minioadmin minioadmin; do sleep 1; done
+	docker exec plausible-minio mc mb --ignore-existing local/test-exports
+	docker exec plausible-minio mc mb --ignore-existing local/test-imports
 
 # Full setup + migrate + seed
 bootstrap: setup

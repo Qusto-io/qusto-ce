@@ -65,7 +65,8 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
       class={[
         "rounded-xl px-6 sm:px-4 py-4 sm:py-3 bg-gray-900 shadow-xl dark:bg-gray-850",
         !@recommended && "dark:ring-gray-600",
-        @recommended && "ring-4 ring-[var(--qusto-primary)] dark:ring-2 dark:ring-[var(--color-dark-primary)]"
+        @recommended &&
+          "ring-4 ring-[var(--qusto-primary)] dark:ring-2 dark:ring-[var(--color-dark-primary)]"
       ]}
     >
       <div class="flex items-center justify-between gap-x-4">
@@ -98,10 +99,7 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
   defp highlight_pill(assigns) do
     ~H"""
     <div class="flex items-center justify-between gap-x-4">
-      <p
-        id="highlight-pill"
-        class=" " theme="cta"
-      >
+      <p id="highlight-pill" class=" " theme="cta">
         {@text}
       </p>
     </div>
@@ -398,7 +396,8 @@ defmodule PlausibleWeb.Components.Billing.PlanBox do
       onclick={"if (#{@confirmed}) {window.location = '#{Routes.billing_path(PlausibleWeb.Endpoint, :change_plan_preview, @paddle_product_id)}'}"}
       class={[
         "w-full mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 text-white",
-        !@checkout_disabled && "bg-[var(--qusto-primary)] hover:bg-[var(--qusto-brand-blue)] dark:bg-[var(--color-dark-primary)] dark:hover:bg-[var(--color-dark-primary-hover)]",
+        !@checkout_disabled &&
+          "bg-[var(--qusto-primary)] hover:bg-[var(--qusto-brand-blue)] dark:bg-[var(--color-dark-primary)] dark:hover:bg-[var(--color-dark-primary-hover)]",
         @checkout_disabled && "pointer-events-none bg-gray-400 dark:bg-gray-600"
       ]}
     >

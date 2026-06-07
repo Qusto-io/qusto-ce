@@ -5,10 +5,7 @@ Unlike in production, we're manually interpolating the script config in this fil
 better test the script in isolation of the plausible codebase.
 */
 
-import {
-  expectQustoInAction,
-  isEngagementEvent
-} from './support/test-utils'
+import { expectQustoInAction, isEngagementEvent } from './support/test-utils'
 import { test, expect } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
 import {
@@ -80,10 +77,7 @@ test('handles double-initialization of the script with a console.warn', async ({
   ).resolves.toBeUndefined()
 
   expect(messages).toEqual([
-    [
-      'warning',
-      'Qusto analytics script was already initialized, skipping init'
-    ]
+    ['warning', 'Qusto analytics script was already initialized, skipping init']
   ])
 
   await expectQustoInAction(page, {

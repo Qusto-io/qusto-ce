@@ -30,10 +30,7 @@ defmodule PlausibleWeb.Components.FlowProgress do
             >
               <Heroicons.check class="size-4" />
             </div>
-            <div
-              :if={idx == @current_step_idx}
-              class="size-6 " theme="cta"
-            >
+            <div :if={idx == @current_step_idx} class="size-6 " theme="cta">
               {idx + 1}
             </div>
             <div
@@ -55,7 +52,10 @@ defmodule PlausibleWeb.Components.FlowProgress do
               {step}
             </span>
           </div>
-          <div :if={idx + 1 != length(@steps)} class="flex-1 h-px bg-gray-300 mx-4 dark:bg-[var(--color-dark-bg-elevated)] ">
+          <div
+            :if={idx + 1 != length(@steps)}
+            class="flex-1 h-px bg-gray-300 mx-4 dark:bg-[var(--color-dark-bg-elevated)] "
+          >
           </div>
         <% end %>
       </div>

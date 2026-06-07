@@ -24,7 +24,9 @@
             <span>✍️ {post.author}</span>
           </div>
         </div>
-        <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)] mb-4">{post.description}</p>
+        <p class="text-gray-600 dark:text-[var(--color-dark-text-secondary)] mb-4">
+          {post.description}
+        </p>
         <div class="flex items-center justify-between">
           <.styled_link
             href={"/blog/#{post.id}"}

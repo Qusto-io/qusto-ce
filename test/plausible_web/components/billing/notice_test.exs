@@ -84,7 +84,7 @@ defmodule PlausibleWeb.Components.Billing.NoticeTest do
 
     assert rendered =~ "This account is limited to 10 users."
 
-    assert rendered =~ "hello@plausible.io"
+    assert rendered =~ "hello@qusto.io"
     assert rendered =~ "upgrade your subscription"
   end
 
@@ -103,7 +103,7 @@ defmodule PlausibleWeb.Components.Billing.NoticeTest do
 
     assert rendered =~ "This account is limited to 10 users."
 
-    assert rendered =~ "hello@plausible.io"
+    assert rendered =~ "hello@qusto.io"
     assert rendered =~ "upgrade your subscription"
   end
 end

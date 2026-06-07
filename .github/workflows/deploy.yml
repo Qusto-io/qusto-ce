@@ -98,8 +98,8 @@ jobs:
           DEPLOY_KEY: ${{ secrets.STAGING_DEPLOY_SSH_KEY }}
           SKIP_MIGRATIONS: ${{ github.event.inputs.skip_migrations || 'false' }}
         run: |
-          if [ -z "$DEPLOY_HOST" ]; then
-            echo "⚠️  STAGING_DEPLOY_HOST not configured — staging SSH deploy skipped"
+          if [ -z "$DEPLOY_HOST" ] || [ -z "$DEPLOY_USER" ] || [ -z "$DEPLOY_KEY" ]; then
+            echo "::warning::STAGING_DEPLOY_HOST/USER/SSH_KEY not configured — staging SSH deploy skipped"
             exit 0
           fi
 
@@ -114,7 +114,7 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
 
           # Add server to known hosts
-          ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
           # Create deployment script
           cat > deploy.sh << 'EOF'
@@ -185,135 +185,73 @@ jobs:
     if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
     environment:
       name: production
-      url: https://qusto.io
+      url: https://beta1.qusto.io
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Read .tool-versions
-        uses: marocchino/tool-versions-action@v1
-        id: versions
-
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ steps.versions.outputs.elixir }}
-          otp-version: ${{ steps.versions.outputs.erlang }}
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ steps.versions.outputs.nodejs }}
-
-      - name: Cache dependencies
-        uses: actions/cache@v5
-        with:
-          path: |
-            deps
-            _build
-            tracker/node_modules
-            priv/tracker/js
-          key: deploy-prod-${{ env.CACHE_VERSION }}-${{ hashFiles('**/mix.lock') }}
-          restore-keys: |
-            deploy-prod-${{ env.CACHE_VERSION }}-
-
-      - name: Install dependencies
+      - name: Validate deploy secrets
         run: |
-          mix deps.get --only $MIX_ENV
-          npm install --prefix ./tracker
-          npm install --prefix ./assets
-
-      - name: Build tracker
-        run: npm run deploy --prefix ./tracker
-
-      - name: Compile application
-        run: mix compile --warnings-as-errors
-
-      - name: Build assets
-        run: mix assets.deploy
-
-      - name: Create release
-        run: mix release --overwrite
-
-      - name: Deploy to production server
-        env:
-          DEPLOY_HOST: ${{ secrets.PRODUCTION_DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.PRODUCTION_DEPLOY_USER }}
-          DEPLOY_KEY: ${{ secrets.PRODUCTION_DEPLOY_SSH_KEY }}
-          SKIP_MIGRATIONS: ${{ github.event.inputs.skip_migrations || 'false' }}
-        run: |
-          echo "🚀 Deploying to production server..."
-          echo "Note: SSH deployment requires server setup"
-          echo "Host: $DEPLOY_HOST"
-          echo "Skip migrations: $SKIP_MIGRATIONS"
-
-          # Save SSH key
-          mkdir -p ~/.ssh
-          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-
-          # Add server to known hosts
-          ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
-
-          # Create deployment script (same as staging with different paths)
-          cat > deploy.sh << 'EOF'
-          #!/bin/bash
-          set -e
-
-          RELEASE_PATH="/var/www/qusto/production"
-          BACKUP_PATH="/var/www/qusto/backups/production"
-          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-
-          echo "📦 Creating backup of current release..."
-          mkdir -p $BACKUP_PATH
-          if [ -d "$RELEASE_PATH/current" ]; then
-            cp -r $RELEASE_PATH/current $BACKUP_PATH/release_$TIMESTAMP
-          fi
-
-          echo "📤 Uploading new release..."
-          mkdir -p $RELEASE_PATH/releases/$TIMESTAMP
-          tar -czf - _build/prod/rel/plausible | ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "cd $RELEASE_PATH/releases/$TIMESTAMP && tar -xzf -"
-
-          echo "🔄 Stopping current service..."
-          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl stop qusto || true"
-
-          if [ "$SKIP_MIGRATIONS" != "true" ]; then
-            echo "🗄️  Running database migrations..."
-            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "cd $RELEASE_PATH/releases/$TIMESTAMP/_build/prod/rel/plausible && bin/plausible eval 'Plausible.Release.migrate()'"
-          fi
-
-          echo "🔗 Updating symlink..."
-          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "ln -sfn $RELEASE_PATH/releases/$TIMESTAMP/_build/prod/rel/plausible $RELEASE_PATH/current"
-
-          echo "▶️  Starting service..."
-          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl start qusto"
-
-          echo "⏳ Waiting for service to be ready..."
-          sleep 10
-
-          echo "🏥 Running health check..."
-          if ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "curl -f http://localhost:8000/api/health"; then
-            echo "✅ Deployment successful!"
-          else
-            echo "❌ Health check failed! Rolling back..."
-            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl stop qusto"
-            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "ln -sfn $BACKUP_PATH/release_$TIMESTAMP $RELEASE_PATH/current"
-            ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl start qusto"
+          if [ -z "${{ secrets.DEPLOY_HOST }}" ] && [ -z "${{ secrets.PRODUCTION_DEPLOY_HOST }}" ]; then
+            echo "::error::Missing deploy host. Add DEPLOY_HOST (recommended, same as qusto-ee) or PRODUCTION_DEPLOY_HOST to the production environment: https://github.com/Qusto-io/qusto-ce/settings/environments"
             exit 1
           fi
-          EOF
+          if [ -z "${{ secrets.DEPLOY_USER }}" ] && [ -z "${{ secrets.PRODUCTION_DEPLOY_USER }}" ]; then
+            echo "::error::Missing deploy user. Add DEPLOY_USER or PRODUCTION_DEPLOY_USER to the production environment."
+            exit 1
+          fi
+          if [ -z "${{ secrets.DEPLOY_SSH_KEY }}" ] && [ -z "${{ secrets.PRODUCTION_DEPLOY_SSH_KEY }}" ]; then
+            echo "::error::Missing deploy SSH key. Add DEPLOY_SSH_KEY or PRODUCTION_DEPLOY_SSH_KEY to the production environment."
+            exit 1
+          fi
+          echo "Deploy secrets present."
 
-          chmod +x deploy.sh
-          ./deploy.sh
+      - name: Deploy CE analytics to beta1 (Docker)
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          CE_GIT_REF: ${{ github.ref_name }}
+          CE_VERSION: v${{ github.run_number }}-ce
+        with:
+          host: ${{ secrets.DEPLOY_HOST || secrets.PRODUCTION_DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER || secrets.PRODUCTION_DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY || secrets.PRODUCTION_DEPLOY_SSH_KEY }}
+          script_stop: true
+          envs: CE_GIT_REF,CE_VERSION
+          script: |
+            set -euo pipefail
+            BUILD_DIR="/home/deploy/qusto-ce-build"
+            EE_DIR="/home/deploy/qusto-ee"
+            IMAGE="ghcr.io/qusto-io/qusto-ce:${CE_VERSION}"
+
+            echo "==> Deploy CE analytics: ref=${CE_GIT_REF} version=${CE_VERSION}"
+            rm -rf "${BUILD_DIR}"
+            git clone --depth 1 --branch "${CE_GIT_REF}" \
+              https://github.com/Qusto-io/qusto-ce.git "${BUILD_DIR}"
+            cd "${BUILD_DIR}"
+            docker build -t "${IMAGE}" -t "qusto/qusto-ce:${CE_VERSION}" .
+            cd "${EE_DIR}"
+            if grep -q '^CE_VERSION=' .env; then
+              sed -i "s/^CE_VERSION=.*/CE_VERSION=${CE_VERSION}/" .env
+            else
+              echo "CE_VERSION=${CE_VERSION}" >> .env
+            fi
+            docker compose up -d analytics
+            for i in $(seq 1 12); do
+              if curl -sf http://127.0.0.1:8000/api/health >/dev/null; then
+                curl -sf http://127.0.0.1:8000/api/health
+                echo ""
+                echo "==> CE analytics healthy (${IMAGE})"
+                exit 0
+              fi
+              sleep 5
+            done
+            echo "ERROR: health check failed" >&2
+            docker compose logs analytics --tail 40
+            exit 1
 
       - name: Notify deployment status
         if: always()
         run: |
           if [ "${{ job.status }}" == "success" ]; then
-            echo "✅ Production deployment successful"
+            echo "✅ Production deployment successful (beta1 analytics container)"
           else
             echo "❌ Production deployment failed"
           fi

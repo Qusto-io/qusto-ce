@@ -6,7 +6,7 @@ defmodule PlausibleWeb.Live.InstallationTest do
 
   alias Plausible.Site.TrackerScriptConfiguration
 
-  @migration_guide_link "https://plausible.io/docs/script-update-guide"
+  @migration_guide_link "https://docs.qusto.io/script-update-guide"
 
   setup [:create_user, :log_in, :create_site]
 
@@ -164,7 +164,7 @@ defmodule PlausibleWeb.Live.InstallationTest do
 
       html = render(lv)
       config = Plausible.Repo.get_by!(TrackerScriptConfiguration, site_id: site.id)
-      assert html =~ "Privacy-friendly analytics by Plausible"
+      assert html =~ "Privacy-friendly analytics by Qusto"
       assert html =~ "/js/#{config.id}.js"
       assert html =~ "async"
     end

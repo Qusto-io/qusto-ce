@@ -59,7 +59,8 @@ defmodule PlausibleWeb.Components.Billing.PageviewSlider do
           />
           <output
             id="slider-bubble"
-            class="absolute bottom-[35px] py-[4px] px-[12px] -translate-x-1/2 rounded-md  " theme="cta"
+            class="absolute bottom-[35px] py-[4px] px-[12px] -translate-x-1/2 rounded-md  "
+            theme="cta"
             phx-update="ignore"
           />
         </div>

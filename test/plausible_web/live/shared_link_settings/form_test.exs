@@ -31,7 +31,7 @@ defmodule PlausibleWeb.Live.SharedLinkSettings.FormTest do
 
       assert element_exists?(
                html,
-               ~s|a[href="https://plausible.io/docs/filters-segments#how-to-save-a-segment"]|
+               ~s|a[href="https://docs.qusto.io/filters-segments#how-to-save-a-segment"]|
              )
     end
 
@@ -138,7 +138,7 @@ defmodule PlausibleWeb.Live.SharedLinkSettings.FormTest do
 
       assert element_exists?(
                html,
-               ~s|a[href="https://plausible.io/docs/filters-segments#how-to-save-a-segment"]|
+               ~s|a[href="https://docs.qusto.io/filters-segments#how-to-save-a-segment"]|
              )
     end
 

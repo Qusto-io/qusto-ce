@@ -98,7 +98,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
             {"gtm",
              "Please check that you've entered the ID in the GTM template correctly, or verify your installation manually"},
             {"npm",
-             "Please check that you've initialized Plausible with the correct domain, or verify your installation manually"},
+             "Please check that you've initialized Qusto with the correct domain, or verify your installation manually"},
             {"manual",
              "Please check that the snippet on your site matches the installation instructions exactly, or verify your installation manually"}
           ] do
@@ -119,7 +119,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
           assert_matches %Result{
                            ok?: false,
-                           errors: ["Plausible test event is not for this site"],
+                           errors: ["Qusto test event is not for this site"],
                            recommendations: [
                              %{
                                text: unquote(expected_recommendation),
@@ -209,7 +209,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
         assert_matches %Result{
                          ok?: false,
-                         errors: ["We couldn't detect Plausible on your site"],
+                         errors: ["We couldn't detect Qusto on your site"],
                          recommendations: [
                            %{
                              text:
@@ -313,11 +313,11 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
             {"gtm",
              "Please make sure you've configured the GTM template correctly, or verify your installation manually"},
             {"npm",
-             "Please make sure you've initialized Plausible on your site, or verify your installation manually"},
+             "Please make sure you've initialized Qusto on your site, or verify your installation manually"},
             {"manual",
              "Please make sure you've copied the snippet to the head of your site, or verify your installation manually"}
           ] do
-        test "returns error \"We couldn't detect Plausible on your site\" when plausible_is_on_window is false (with best guess recommendation for installation type: #{installation_type})" do
+        test "returns error \"We couldn't detect Qusto on your site\" when plausible_is_on_window is false (with best guess recommendation for installation type: #{installation_type})" do
           verification_stub =
             json_response_verification_stub(%{
               "completed" => true,
@@ -330,7 +330,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
           assert_matches %Result{
                            ok?: false,
-                           errors: ["We couldn't detect Plausible on your site"],
+                           errors: ["We couldn't detect Qusto on your site"],
                            recommendations: [
                              %{
                                text: unquote(expected_recommendation),
@@ -346,7 +346,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
                            |> Checks.interpret_diagnostics()
         end
 
-        test "falls back to error \"We couldn't detect Plausible on your site\" when no other case matches (with best guess recommendation for installation type: #{installation_type}), sends diagnostics to Sentry" do
+        test "falls back to error \"We couldn't detect Qusto on your site\" when no other case matches (with best guess recommendation for installation type: #{installation_type}), sends diagnostics to Sentry" do
           verification_stub =
             json_response_verification_stub(%{
               "completed" => true,
@@ -359,7 +359,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
           assert_matches %Result{
                            ok?: false,
-                           errors: ["We couldn't detect Plausible on your site"],
+                           errors: ["We couldn't detect Qusto on your site"],
                            recommendations: [
                              %{
                                text: unquote(expected_recommendation),

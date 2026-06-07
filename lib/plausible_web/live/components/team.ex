@@ -33,10 +33,7 @@ defmodule PlausibleWeb.Live.Components.Team do
         <div class="flex flex-col">
           <span class="text-sm font-medium">
             {@user.name}
-            <span
-              :if={@label}
-              class="ml-1 dark:" theme="cta"
-            >
+            <span :if={@label} class="ml-1 dark:" theme="cta">
               {@label}
             </span>
           </span>

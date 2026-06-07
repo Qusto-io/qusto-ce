@@ -48,7 +48,7 @@ defmodule PlausibleWeb.Live.PropsSettingsTest do
 
       assert element_exists?(
                resp,
-               ~s|a[href="https://plausible.io/docs/custom-props/introduction"]|
+               ~s|a[href="https://docs.qusto.io/custom-props/introduction"]|
              )
 
       assert resp =~ "amount"
@@ -126,7 +126,7 @@ defmodule PlausibleWeb.Live.PropsSettingsTest do
 
         assert element_exists?(
                  resp,
-                 ~s|a[href="https://plausible.io/docs/custom-props/introduction"]|
+                 ~s|a[href="https://docs.qusto.io/custom-props/introduction"]|
                )
 
         assert resp =~ "amount"

@@ -266,7 +266,7 @@ defmodule PlausibleWeb.BillingControllerTest do
       assert doc =~ "You're currently on a custom plan."
 
       assert LazyHTML.text(LazyHTML.from_document(doc)) =~
-               "please contact us at hello@plausible.io"
+               "please contact us at hello@qusto.io"
     end
   end
 

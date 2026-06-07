@@ -31,7 +31,7 @@ defmodule PlausibleWeb.Live.FunnelSettingsTest do
         assert resp =~ "From signup to blog"
         refute resp =~ "Your account does not have access"
         refute resp =~ "upgrade your subscription"
-        assert element_exists?(resp, "a[href=\"https://plausible.io/docs/funnel-analysis\"]")
+        assert element_exists?(resp, "a[href=\"https://docs.qusto.io/funnel-analysis\"]")
       end
 
       test "search funnels input is rendered", %{conn: conn, site: site} do

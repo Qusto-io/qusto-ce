@@ -37,7 +37,7 @@
     "react-popper": "^2.3.0",
     "react-router-dom": "^6.25.1",
     "react-transition-group": "^4.4.2",
-    "topbar": "^3.0.0",
+    "topbar": "^3.0.1",
     "topojson-client": "^3.1.0",
     "url-search-params-polyfill": "^8.2.5",
     "visionscarto-world-atlas": "^1.0.0"

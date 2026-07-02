@@ -25,7 +25,7 @@
     "alpinejs": "^3.13.1",
     "chart.js": "^3.3.2",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "classnames": "^2.3.1",
+    "classnames": "^2.5.1",
     "d3": "^7.9.0",
     "dayjs": "^1.11.7",
     "iframe-resizer": "^4.3.2",

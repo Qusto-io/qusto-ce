@@ -114,7 +114,7 @@ defmodule Plausible.MixProject do
       {:location, git: "https://github.com/plausible/location.git"},
       {:mox, "~> 1.0", only: [:test, :ce_test]},
       {:nanoid, "~> 2.1.0"},
-      {:nimble_publisher, "~> 1.1"},
+      {:nimble_publisher, "~> 2.0"},
       {:nimble_totp, "~> 1.0"},
       {:oban, "~> 2.20.1"},
       {:observer_cli, "~> 1.7"},

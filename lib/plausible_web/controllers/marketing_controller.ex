@@ -69,16 +69,19 @@ defmodule PlausibleWeb.MarketingController do
 
   # Pricing
   def pricing(conn, _params) do
+    # Canonical commercial tiers (Qusto Cloud): Core €9 / Growth €39 / Professional €119.
+    # Source of truth: Offer Card Store Clarity + Stripe draft + OUTBOUND_TIER_STRATEGY
+    # (marketing system v5, 2026-07-19). Do not reintroduce €49 Growth.
     plans = [
       %{
         name: "Core",
         price: "€9",
         period: "month",
         features: [
-          "Managed cookieless analytics",
-          "Revenue overview & traffic",
-          "EU data residency",
+          "Cookieless traffic, revenue & store journey",
+          "EU data residency — no consent banner",
           "Open-source core — inspect the code",
+          "Managed hosting & updates",
           "Email support"
         ],
         cta: "Start Free Trial",
@@ -86,14 +89,14 @@ defmodule PlausibleWeb.MarketingController do
       },
       %{
         name: "Growth",
-        price: "€49",
+        price: "€39",
         period: "month",
         features: [
           "Everything in Core",
-          "E-commerce funnels & revenue",
-          "Traffic sources including AI",
-          "Cart abandonment recovery",
-          "Standard support"
+          "Cart abandonment recovery value",
+          "Customer LTV by acquisition channel",
+          "AI & channel → revenue attribution",
+          "Scheduled reports · standard support"
         ],
         cta: "Start Free Trial",
         featured: true
@@ -104,8 +107,8 @@ defmodule PlausibleWeb.MarketingController do
         period: "month",
         features: [
           "Everything in Growth",
-          "Deeper behavioural analysis",
-          "Multi-touch attribution",
+          "Multi-touch attribution models",
+          "API access for BI integrations",
           "More team seats",
           "Priority support"
         ],

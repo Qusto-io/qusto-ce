@@ -59,13 +59,13 @@ Perfect for:
 
 ## Pricing That Makes Sense
 
-We believe in transparent, predictable pricing:
+We believe in transparent, predictable pricing (Qusto Cloud):
 
-- **Starter** (€19/month): Up to 10K visitors
-- **Growth** (€49/month): Up to 100K visitors
-- **Professional** (€99/month): Up to 500K visitors
+- **Core** (€9/month): Cookieless traffic, revenue & store journey — EU-hosted
+- **Growth** (€39/month): Cart recovery, LTV, AI & channel → revenue
+- **Professional** (€119/month): Multi-touch attribution, API, priority support
 
-All plans include e-commerce funnels, AI search tracking, and GDPR compliance. 14-day free trial, no credit card required.
+30-day free trial → Core. Annual = 2 months free. GDPR-native, no consent banner.
 
 ## Built on Open Source
 
@@ -84,7 +84,7 @@ We're just getting started. On our roadmap:
 
 Ready to get privacy-first analytics that actually understands e-commerce?
 
-[Start your 14-day free trial →](/register)
+[Start your 30-day free trial →](/register)
 
 No credit card required. Cancel anytime.
 

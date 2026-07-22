@@ -13,7 +13,7 @@
     <a href="https://qusto.io/lightweight-web-analytics">Lightweight Script</a> |
     <a href="https://qusto.io/privacy-focused-web-analytics">Privacy Focused</a> |
     <a href="https://qusto.io/open-source-website-analytics">Open Source</a> |
-    <a href="https://docs.qusto.io">Docs</a> |
+    <a href="https://qusto.io/docs/">Docs</a> |
     <a href="https://github.com/qusto-io/qusto-ce/blob/main/CONTRIBUTING.md">Contributing</a>
     <br /><br />
 </p>
@@ -159,7 +159,7 @@ cp .env.example .env
 docker-compose up -d
 ```
 
-**Detailed Instructions:** See our [Self-Hosting Guide](https://docs.qusto.io/self-hosting).
+**Detailed Instructions:** See our [documentation](https://qusto.io/docs/).
 
 **Community Support:** Self-hosted installations are community supported. Ask questions in our [Discussions](https://github.com/qusto-io/qusto-ce/discussions/categories/self-hosted-support).
 

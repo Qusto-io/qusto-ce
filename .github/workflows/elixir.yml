@@ -190,8 +190,13 @@ jobs:
       - run: mix compile --warnings-as-errors --all-warnings
       - name: Check for dependency vulnerabilities
         run: |
+          # mint (GHSA-2pg6/g586/mjqx): fixed by bumping mint 1.7.1 -> 1.9.3 in mix.lock,
+          #   so these are NOT ignored — they are resolved.
           # GHSA-rhv4: decimal DoS (fix requires decimal 3.0.0 major — deferred)
           # GHSA-g2wm: cowlib cookie injection (no upstream patch exists)
-          mix deps.audit --ignore-advisory-ids GHSA-rhv4-8758-jx7v,GHSA-g2wm-735q-3f56
+          # GHSA-52mm: earmark XSS — transitive via phoenix_storybook/nimble_publisher; 1.4.49 retired on hex
+          # GHSA-55hg/833p/mrhx: phoenix_storybook dev-only; playground not exposed in prod
+          # GHSA-gp9c/j9wq/mp55/pj7v: hackney 4.x fixes require major bump (~> 1.8 pinned)
+          mix deps.audit --ignore-advisory-ids GHSA-rhv4-8758-jx7v,GHSA-g2wm-735q-3f56,GHSA-52mm-h59v-f3c7,GHSA-55hg-8qxv-qj4p,GHSA-833p-95jq-929q,GHSA-mrhx-6pw9-q5fh,GHSA-gp9c-pm5m-5cxr,GHSA-j9wq-vxxc-94wf,GHSA-mp55-p8c9-rfw2,GHSA-pj7v-xfvx-wmjq
       - name: Run Sobelow security scan
         run: mix sobelow --config

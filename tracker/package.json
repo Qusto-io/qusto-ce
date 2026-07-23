@@ -37,6 +37,6 @@
     "markdown-table": "^3.0.4",
     "prettier": "^3.9.4",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.41.0"
+    "typescript-eslint": "^8.65.0"
   }
 }

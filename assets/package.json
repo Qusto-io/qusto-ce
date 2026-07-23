@@ -31,7 +31,7 @@
     "iframe-resizer": "^4.3.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-flatpickr": "3.10.5",
+    "react-flatpickr": "4.0.11",
     "react-flip-move": "^3.0.4",
     "react-intersection-observer": "^9.5.2",
     "react-popper": "^2.3.0",

@@ -3,13 +3,14 @@ name: Build Public Images GHCR
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
-  GHCR_REPO: ghcr.io/qusto-io/qusto-ce-ce
+  GHCR_REPO: ghcr.io/qusto-io/qusto-ce
 
 jobs:
   build:

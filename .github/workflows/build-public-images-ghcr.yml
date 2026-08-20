@@ -14,6 +14,9 @@ env:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -86,6 +89,9 @@ jobs:
           data: '{"content": "<a href=\"https://github.com/Qusto-io/qusto-ce/actions/workflows/build-public-images-ghcr.yml\">Build failed</a>"}'
 
   push:
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     needs:
       - build

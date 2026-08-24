@@ -109,7 +109,11 @@ defmodule Plausible.HTTPClientTest do
       Conn.resp(conn, 200, "ok")
     end)
 
-    assert {:error, %Mint.TransportError{reason: :timeout}} ==
+    # Finch 0.21+ wraps the underlying Mint error in its own Finch.TransportError
+    # rather than surfacing Mint's struct directly -- match on the reason we
+    # actually care about rather than pinning the exact wrapper shape, which
+    # depends on Finch's own version.
+    assert {:error, %Finch.TransportError{reason: :timeout}} =
              HTTPClient.post(bypass_url(bypass, path: "/timeout"), [], %{}, receive_timeout: 100)
 
     Bypass.pass(bypass)

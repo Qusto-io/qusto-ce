@@ -277,11 +277,9 @@ defmodule Plausible.TestUtils do
 
     case Finch.request(healthcheck_req, Plausible.Finch) do
       {:ok, %Finch.Response{}} -> true
-      # Any connection error means MinIO isn't reachable -- match broadly rather
-      # than on one specific error struct shape, which changed between Finch
-      # versions (used to surface a raw Mint.TransportError, newer Finch wraps
-      # it in its own error types).
-      {:error, _reason} -> false
+      # Finch 0.21+ wraps a refused connection in its own struct rather than
+      # surfacing Mint's directly, but preserves the underlying reason atom.
+      {:error, %Finch.TransportError{reason: :econnrefused}} -> false
     end
   end
 

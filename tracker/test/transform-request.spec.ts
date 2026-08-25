@@ -82,7 +82,7 @@ for (const mode of ['web', 'esm']) {
           },
           mode
         ),
-        bodyContent: /* HTML */ `<button onclick="window.plausible('Purchase')">
+        bodyContent: /* HTML */ `<button onclick="window.qusto('Purchase')">
           Purchase
         </button>`
       })
@@ -123,7 +123,7 @@ for (const mode of ['web', 'esm']) {
           },
           mode
         ),
-        bodyContent: /* HTML */ `<button onclick="window.plausible('Purchase')">
+        bodyContent: /* HTML */ `<button onclick="window.qusto('Purchase')">
           Purchase
         </button>`
       })
@@ -166,7 +166,7 @@ for (const mode of ['web', 'esm']) {
           },
           mode
         ),
-        bodyContent: /* HTML */ `<button onclick="window.plausible('Purchase')">
+        bodyContent: /* HTML */ `<button onclick="window.qusto('Purchase')">
           Purchase
         </button>`
       })
@@ -248,7 +248,7 @@ for (const mode of ['web', 'esm']) {
           mode
         ),
         bodyContent: /* HTML */ `<button
-          onclick="window.plausible('subscribed from blog', { props: { title: 'A blog post title' } })"
+          onclick="window.qusto('subscribed from blog', { props: { title: 'A blog post title' } })"
         >
           Subscribe
         </button>`
@@ -304,7 +304,7 @@ test.describe(`transformRequest examples from /docs work`, () => {
       testId,
       scriptConfig: config,
       bodyContent: /* HTML */ `<a
-        class="plausible-event-name=Purchase plausible-event-discounted=true"
+        class="qusto-event-name=Purchase qusto-event-discounted=true"
         href="https://example.com/target?user=sensitive"
         >Purchase</a
       >`

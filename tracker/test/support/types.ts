@@ -48,15 +48,15 @@ export type VerifierResult = {
     | {
         completed: true
         attempts: number
-        plausibleIsOnWindow: boolean
-        plausibleIsInitialized: boolean
+        qustoIsOnWindow: boolean
+        qustoIsInitialized: boolean
         plausibleVersion: number
         plausibleVariant?: string
         disallowedByCsp: boolean
         cookiesConsentResult: ConsentResult
         testEvent: {
           /**
-           * window.plausible (track) callback
+           * window.qusto (track) callback
            */
           callbackResult?: unknown
           /**

@@ -66,7 +66,8 @@ defmodule Plausible.Ingestion.Persistor.Remote do
           body: encode_payload(event, session_attrs),
           headers: headers,
           retry: &handle_transient_error/2,
-          max_retries: @max_transient_retries
+          max_retries: @max_transient_retries,
+          compressed: true
         )
       end
     )

@@ -277,7 +277,9 @@ defmodule Plausible.TestUtils do
 
     case Finch.request(healthcheck_req, Plausible.Finch) do
       {:ok, %Finch.Response{}} -> true
-      {:error, %Mint.TransportError{reason: :econnrefused}} -> false
+      # Finch 0.21+ wraps a refused connection in its own struct rather than
+      # surfacing Mint's directly, but preserves the underlying reason atom.
+      {:error, %Finch.TransportError{reason: :econnrefused}} -> false
     end
   end
 

@@ -241,5 +241,5 @@ export function switchByMode(cases, mode) {
  * will not be tracked if the event happens before the tracker script has attached the event listener.
  */
 export function ensureQustoInitialized(page) {
-  return page.waitForFunction(() => window.plausible?.l === true)
+  return page.waitForFunction(() => window.qusto?.l === true)
 }

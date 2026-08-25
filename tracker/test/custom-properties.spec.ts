@@ -164,7 +164,7 @@ for (const mode of ['web', 'esm']) {
           mode
         ),
         bodyContent: /* HTML */ `<button
-          onclick="window.plausible('subscribed from blog', { props: { title: 'A blog post title' } })"
+          onclick="window.qusto('subscribed from blog', { props: { title: 'A blog post title' } })"
         >
           Subscribe
         </button>`
@@ -215,7 +215,7 @@ for (const mode of ['web', 'esm']) {
           mode
         ),
         bodyContent: /* HTML */ `<button
-          onclick="window.plausible('subscribed from blog', { props: { title: 'A blog post title' } })"
+          onclick="window.qusto('subscribed from blog', { props: { title: 'A blog post title' } })"
         >
           Subscribe
         </button>`
@@ -262,7 +262,7 @@ for (const mode of ['web', 'esm']) {
           mode
         ),
         bodyContent: /* HTML */ `<button
-          onclick="window.plausible('subscribed from blog', { props: { title: 'A blog post title' } })"
+          onclick="window.qusto('subscribed from blog', { props: { title: 'A blog post title' } })"
         >
           Subscribe
         </button>`

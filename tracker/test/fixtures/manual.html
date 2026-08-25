@@ -25,18 +25,18 @@
     <script>
       document.addEventListener('click', (e) => {
         if (e.target.id === 'pageview-trigger') {
-          window.plausible('pageview')
+          window.qusto('pageview')
         }
         if (e.target.id === 'pageview-trigger-custom-url') {
-          window.plausible('pageview', {
+          window.qusto('pageview', {
             u: 'https://example.com/custom/location'
           })
         }
         if (e.target.id === 'custom-event-trigger') {
-          window.plausible('CustomEvent')
+          window.qusto('CustomEvent')
         }
         if (e.target.id === 'custom-event-trigger-custom-url') {
-          window.plausible('CustomEvent', {
+          window.qusto('CustomEvent', {
             u: 'https://example.com/custom/location'
           })
         }

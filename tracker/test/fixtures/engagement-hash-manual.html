@@ -7,10 +7,10 @@
     <title>Plausible Playwright tests</title>
     <script async src="/tracker/js/plausible.hash.local.manual.js"></script>
     <script>
-      window.plausible =
-        window.plausible ||
+      window.qusto =
+        window.qusto ||
         function () {
-          ;(window.plausible.q = window.plausible.q || []).push(arguments)
+          ;(window.qusto.q = window.qusto.q || []).push(arguments)
         }
     </script>
   </head>
@@ -29,14 +29,14 @@
       function updateContent() {
         if (location.hash === '#about') {
           titleNode.innerHTML = 'About us'
-          window.plausible('pageview', { u: 'http://localhost:3000/#about-us' })
+          window.qusto('pageview', { u: 'http://localhost:3000/#about-us' })
         } else {
           titleNode.innerHTML = 'Home'
-          window.plausible('pageview', { u: 'http://localhost:3000/#home' })
+          window.qusto('pageview', { u: 'http://localhost:3000/#home' })
         }
       }
 
-      window.plausible('pageview', { u: 'http://localhost:3000/#home' })
+      window.qusto('pageview', { u: 'http://localhost:3000/#home' })
       window.addEventListener('hashchange', updateContent)
     </script>
   </body>

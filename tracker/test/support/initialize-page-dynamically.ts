@@ -10,7 +10,7 @@ interface SharedOptions {
 }
 
 interface TemplatedResponse {
-  /** string like `<script async id="plausible" src="/plausible.compat.local.js"></script>` or ScriptConfig to be set to web snippet */
+  /** string like `<script async id="qusto" src="/plausible.compat.local.js"></script>` or ScriptConfig to be set to web snippet */
   scriptConfig: ScriptConfig | string
   /** vanilla HTML string, which can contain JS, will be set in the body of the page */
   bodyContent: string
@@ -43,8 +43,8 @@ const RESPONSE_BODY_TEMPLATE = `
 const PLAUSIBLE_WEB_SNIPPET = `
 <script async src="<%= plausible_script_url %>"></script>
 <script>
-  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-  plausible.init()
+  window.qusto=window.qusto||function(){(qusto.q=qusto.q||[]).push(arguments)},qusto.init=qusto.init||function(i){qusto.o=i||{}};
+  qusto.init()
 </script>
 `
 
@@ -101,10 +101,7 @@ export function getConfiguredQustoWebSnippet({
   ) {
     const serializedOptions = serializeWithFunctions(initOverrideOptions)
 
-    return snippet.replace(
-      'plausible.init()',
-      `plausible.init(${serializedOptions})`
-    )
+    return snippet.replace('qusto.init()', `qusto.init(${serializedOptions})`)
   }
   return snippet
 }

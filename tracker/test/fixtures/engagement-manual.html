@@ -7,10 +7,10 @@
     <title>Plausible Playwright tests</title>
     <script async src="/tracker/js/plausible.local.manual.js"></script>
     <script>
-      window.plausible =
-        window.plausible ||
+      window.qusto =
+        window.qusto ||
         function () {
-          ;(window.plausible.q = window.plausible.q || []).push(arguments)
+          ;(window.qusto.q = window.qusto.q || []).push(arguments)
         }
     </script>
   </head>
@@ -28,11 +28,11 @@
     <script>
       document.addEventListener('click', (e) => {
         if (e.target.id === 'pageview-trigger-custom-url') {
-          window.plausible('pageview', {
+          window.qusto('pageview', {
             u: 'https://example.com/custom/location'
           })
         } else if (e.target.id === 'pageview-trigger-custom-props') {
-          window.plausible('pageview', { props: { author: 'John' } })
+          window.qusto('pageview', { props: { author: 'John' } })
         }
       })
     </script>

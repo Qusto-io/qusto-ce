@@ -82,7 +82,7 @@ We believe in **sustainable open source**. The open-core model allows us to:
 | Support | Community | Priority |
 | Hosting | Your servers | EU-hosted (Hetzner Germany) |
 | Maintenance | You manage | We manage |
-| GDPR Compliance | Your responsibility | Guaranteed |
+| GDPR Compliance | Your responsibility | Built for GDPR by design |
 
 **[Start with Qusto Cloud →](https://qusto.io/pricing)** or **[Self-host →](#-getting-started)**
 

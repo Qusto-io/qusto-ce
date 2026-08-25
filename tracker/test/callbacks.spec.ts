@@ -54,7 +54,7 @@ for (const mode of ['web', 'esm', 'legacy']) {
           testId,
           scriptConfig: switchByMode(
             {
-              legacy: `<script data-api="${apiPath}" async id="plausible" data-domain="${DOMAIN}" src="${
+              legacy: `<script data-api="${apiPath}" async id="qusto" data-domain="${DOMAIN}" src="${
                 captureOnLocalhost
                   ? '/tracker/js/plausible.compat.local.manual.js'
                   : '/tracker/js/plausible.compat.manual.js'
@@ -77,12 +77,12 @@ for (const mode of ['web', 'esm', 'legacy']) {
           mockRequestTimeout: 2000
         })
         await page.goto(url)
-        await page.waitForFunction(() => window.plausible?.l)
+        await page.waitForFunction(() => window.qusto?.l)
         const callbackResult = await page.evaluate(
           () =>
             new Promise((resolve) =>
-              // @ts-expect-error - window.plausible is defined
-              window.plausible('Purchase', {
+              // @ts-expect-error - window.qusto is defined
+              window.qusto('Purchase', {
                 callback: (result) => resolve(result)
               })
             )

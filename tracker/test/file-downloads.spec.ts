@@ -610,7 +610,7 @@ test.describe('file downloads feature when using legacy .compat extension', () =
       const { url } = await initializePageDynamically(page, {
         testId,
         scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
+          '<script id="qusto" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
         bodyContent: /* HTML */ `<a ${linkAttributes} href="${filePath}"
           ><h1>📥</h1></a
         >`
@@ -677,7 +677,7 @@ test.describe('file downloads feature when using legacy .compat extension', () =
       const { url } = await initializePageDynamically(page, {
         testId,
         scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
+          '<script id="qusto" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
         bodyContent: /* HTML */ `<a href="${filePath}">📥</a>`
       })
       await page.goto(url)
@@ -730,7 +730,7 @@ test.describe('file downloads feature when using legacy .compat extension', () =
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
+        '<script id="qusto" async src="/tracker/js/plausible.compat.file-downloads.local.manual.js"></script>',
       bodyContent: /* HTML */ `<a href="${filePath}">📥</a>`
     })
     await page.goto(url)

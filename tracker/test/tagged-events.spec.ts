@@ -56,7 +56,7 @@ for (const mode of ['web', 'esm']) {
         mode
       ),
       bodyContent: /* HTML */ `<a
-        class="plausible-event-name=Purchase plausible-event-discounted=true plausible-revenue-currency=EUR plausible-revenue-amount=13.32"
+        class="qusto-event-name=Purchase qusto-event-discounted=true qusto-revenue-currency=EUR qusto-revenue-amount=13.32"
         href="https://example.com/target"
         >Purchase</a
       >`
@@ -81,7 +81,7 @@ for (const mode of ['web', 'esm']) {
 
 for (const mode of ['legacy', 'web']) {
   test.describe(`tagged events feature legacy/v2 parity (${mode})`, () => {
-    test('tracks link click and child of link click when link is tagged (using plausible-event-... double dash syntax)', async ({
+    test('tracks link click and child of link click when link is tagged (using qusto-event-... double dash syntax)', async ({
       page
     }, { testId }) => {
       const { url } = await initializePageDynamically(page, {
@@ -95,7 +95,7 @@ for (const mode of ['legacy', 'web']) {
           mode
         ),
         bodyContent: /* HTML */ ` <a
-          class="plausible-event-name--Payment+Complete should ignore-this plausible-event-amount--100 plausible-event-method--Credit+Card"
+          class="qusto-event-name--Payment+Complete should ignore-this qusto-event-amount--100 qusto-event-method--Credit+Card"
           href="https://example.com/payment?secret=foo"
         >
           <h1>✅</h1>
@@ -126,7 +126,7 @@ for (const mode of ['legacy', 'web']) {
       })
     })
 
-    test('tracks link press when its parent div is tagged (using plausible-event-... equals syntax)', async ({
+    test('tracks link press when its parent div is tagged (using qusto-event-... equals syntax)', async ({
       page
     }, { testId }) => {
       const { url } = await initializePageDynamically(page, {
@@ -140,7 +140,7 @@ for (const mode of ['legacy', 'web']) {
           mode
         ),
         bodyContent: /* HTML */ `<div
-          class="plausible-event-name=Reset+Password plausible-event-foo=bar"
+          class="qusto-event-name=Reset+Password qusto-event-foo=bar"
         >
           <a href="https://example.com/reset?verification=123"
             >Reset password</a
@@ -178,7 +178,7 @@ for (const mode of ['legacy', 'web']) {
           mode
         ),
         bodyContent: /* HTML */ ` <form
-          class="plausible-event-name=Signup plausible-event-type=Newsletter"
+          class="qusto-event-name=Signup qusto-event-type=Newsletter"
           action="https://example.com/register"
           method="post"
         >
@@ -229,7 +229,7 @@ for (const mode of ['legacy', 'web']) {
           },
           mode
         ),
-        bodyContent: /* HTML */ ` <div class="plausible-event-name=Form+Submit">
+        bodyContent: /* HTML */ ` <div class="qusto-event-name=Form+Submit">
           <form action="https://example.com/register" method="post">
             <input type="text" />
             <input type="submit" value="Submit" />
@@ -273,7 +273,7 @@ for (const mode of ['legacy', 'web']) {
           mode
         ),
         bodyContent: /* HTML */ `<span
-          class="plausible-event-name=Custom+Event plausible-event-foo=bar"
+          class="qusto-event-name=Custom+Event qusto-event-foo=bar"
           ><strong>any</strong>text</span
         >`
       })
@@ -311,7 +311,7 @@ for (const mode of ['legacy', 'web']) {
           mode
         ),
         bodyContent: /* HTML */ `<button
-          class="plausible-event-name=Custom+Event plausible-event-foo=bar"
+          class="qusto-event-name=Custom+Event qusto-event-foo=bar"
         >
           ✅
         </button>`
@@ -351,11 +351,11 @@ for (const mode of ['legacy', 'web']) {
         return new Promise((resolve) => {
           let taggedElement
           while (!taggedElement) {
-            if (window.plausible?.l !== true) {
+            if (window.qusto?.l !== true) {
               continue
             } else {
               taggedElement = document.createElement('button')
-              taggedElement.classList.add('plausible-event-name=Custom+Event')
+              taggedElement.classList.add('qusto-event-name=Custom+Event')
               taggedElement.innerHTML += 'Dynamic'
               document.body.appendChild(taggedElement)
             }
@@ -401,7 +401,7 @@ for (const mode of ['legacy', 'web']) {
           mode
         ),
         bodyContent: /* HTML */ `<a
-          class="plausible-event-name=Subscribe"
+          class="qusto-event-name=Subscribe"
           href="${targetPage.url}"
           >Click to subscribe</a
         >`
@@ -449,7 +449,7 @@ for (const mode of ['legacy', 'web']) {
         ),
         bodyContent: /* HTML */ `
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <a class="plausible-event-name=link+click" href="${targetPage.url}">
+            <a class="qusto-event-name=link+click" href="${targetPage.url}">
               <circle cx="50" cy="50" r="50" />
             </a>
           </svg>
@@ -480,7 +480,7 @@ for (const mode of ['legacy', 'web']) {
       await expect(page.getByText('Navigation successful')).toBeVisible()
     })
 
-    test('does not track button without plausible-event-name class', async ({
+    test('does not track button without qusto-event-name class', async ({
       page
     }, { testId }) => {
       const { url } = await initializePageDynamically(page, {
@@ -504,7 +504,7 @@ for (const mode of ['legacy', 'web']) {
       })
     })
 
-    test('does not track click on span with class="plausible-event-name="', async ({
+    test('does not track click on span with class="qusto-event-name="', async ({
       page
     }, { testId }) => {
       const { url } = await initializePageDynamically(page, {
@@ -517,7 +517,7 @@ for (const mode of ['legacy', 'web']) {
           },
           mode
         ),
-        bodyContent: /* HTML */ `<span class="plausible-event-name="
+        bodyContent: /* HTML */ `<span class="qusto-event-name="
           >anything</span
         >`
       })
@@ -606,9 +606,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
       const { url } = await initializePageDynamically(page, {
         testId,
         scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+          '<script id="qusto" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
         bodyContent: /* HTML */ `<a
-          class="plausible-event-name=outbound"
+          class="qusto-event-name=outbound"
           ${linkAttributes}
           href="${outboundUrl}"
           ><h1>➡️</h1></a
@@ -647,9 +647,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+        '<script id="qusto" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
       bodyContent: /* HTML */ `<a
-        class="plausible-event-name=Subscribe"
+        class="qusto-event-name=Subscribe"
         href="${targetPage.url}"
         >Click to subscribe</a
       >`
@@ -695,9 +695,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+        '<script id="qusto" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
       bodyContent: /* HTML */ `<a
-        class="plausible-event-name=Subscribe"
+        class="qusto-event-name=Subscribe"
         href="${targetPage.url}"
         >Click to subscribe</a
       >`
@@ -711,7 +711,7 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     await expect(page.getByText('Subscription successful')).toBeVisible()
   })
 
-  test('does not track link without plausible-event-name class, the link still navigates as it should', async ({
+  test('does not track link without qusto-event-name class, the link still navigates as it should', async ({
     page
   }, { testId }) => {
     const targetPage = await initializePageDynamically(page, {
@@ -723,9 +723,9 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+        '<script id="qusto" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
       bodyContent: /* HTML */ `<a
-        class="plausible-event-key=value"
+        class="qusto-event-key=value"
         href="${targetPage.url}"
         >Click to subscribe</a
       >`
@@ -752,10 +752,10 @@ test.describe('tagged events feature when using legacy .compat extension', () =>
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
+        '<script id="qusto" async src="/tracker/js/plausible.compat.local.manual.tagged-events.js"></script>',
       bodyContent: /* HTML */ `
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <a class="plausible-event-name=link+click" href="${targetPage.url}">
+          <a class="qusto-event-name=link+click" href="${targetPage.url}">
             <circle cx="50" cy="50" r="50" />
           </a>
         </svg>

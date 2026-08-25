@@ -358,7 +358,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
       const { url } = await initializePageDynamically(page, {
         testId,
         scriptConfig:
-          '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+          '<script id="qusto" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
         bodyContent: /* HTML */ `<a ${linkAttributes} href="${outboundUrl}"
           ><h1>➡️</h1></a
         >`
@@ -403,7 +403,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+        '<script id="qusto" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
       bodyContent: /* HTML */ `<a href="${outboundUrl}">📥</a>`
     })
     await page.goto(url)
@@ -455,7 +455,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+        '<script id="qusto" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
       bodyContent: /* HTML */ `<a href="${outboundUrl}">➡️</a>`
     })
     await page.goto(url)
@@ -496,7 +496,7 @@ test.describe('outbound links feature when using legacy .compat extension', () =
     const { url } = await initializePageDynamically(page, {
       testId,
       scriptConfig:
-        '<script id="plausible" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
+        '<script id="qusto" async src="/tracker/js/plausible.compat.local.manual.outbound-links.js"></script>',
       bodyContent: /* HTML */ `
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <a href="${outboundUrl}">

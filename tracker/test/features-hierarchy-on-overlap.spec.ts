@@ -51,7 +51,7 @@ for (const mode of ['legacy', 'web'] as const) {
           mode
         ),
         bodyContent: /* HTML */ `<a
-          class="plausible-event-name=Custom+Event"
+          class="qusto-event-name=Custom+Event"
           href="${downloadUrl}"
           >Outbound Download</a
         >`
@@ -176,14 +176,14 @@ for (const mode of ['web', 'esm'] as const) {
             <script type="module">
               import { init, track } from '/tracker/js/npm_package/plausible.js';
               init(${JSON.stringify(config)})
-              window.plausible = { l: true }
+              window.qusto = { l: true }
             </script>
           `
           },
           mode
         ),
         bodyContent: /* HTML */ `
-          <form method="POST" class="plausible-event-name=A+Tagged+Form">
+          <form method="POST" class="qusto-event-name=A+Tagged+Form">
             <input id="name" type="text" placeholder="Name" /><input
               type="submit"
               value="Submit"
@@ -224,14 +224,14 @@ for (const mode of ['web', 'esm'] as const) {
             <script type="module">
               import { init, track } from '/tracker/js/npm_package/plausible.js';
               init(${JSON.stringify(config)})
-              window.plausible = { l: true }
+              window.qusto = { l: true }
             </script>
           `
           },
           mode
         ),
         bodyContent: /* HTML */ `
-          <div class="plausible-event-name--A+Tagged+Form">
+          <div class="qusto-event-name--A+Tagged+Form">
             <form onsubmit="${customSubmitHandlerStub}">
               <input type="email" />
             </form>

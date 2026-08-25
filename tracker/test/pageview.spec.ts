@@ -79,13 +79,13 @@ for (const mode of ['web', 'esm']) {
         bodyContent: /* HTML */ `
           <a
             id="alfa"
-            onclick="window.plausible('pageview', { u: '/:masked/alfa' })"
+            onclick="window.qusto('pageview', { u: '/:masked/alfa' })"
             href="#"
             >A</a
           >
           <a
             id="beta"
-            onclick="window.plausible('pageview', { url: '/:masked/beta' })"
+            onclick="window.qusto('pageview', { url: '/:masked/beta' })"
             href="#"
             >B</a
           >

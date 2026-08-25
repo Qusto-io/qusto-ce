@@ -13,6 +13,21 @@ defmodule Plausible.SentryFilterTest do
              Plausible.SentryFilter.before_send(event)
   end
 
+  test "groups Finch transport errors under the same fingerprint as legacy Mint transport errors" do
+    for type <- ["Mint.TransportError", "Finch.TransportError"] do
+      event = %Sentry.Event{
+        event_id: "5f0a9f9b04df4050884966c87a4e62b8",
+        timestamp: "2025-02-19T13:23:05.705493",
+        exception: [%{type: type}],
+        original_exception: %{reason: :econnrefused},
+        fingerprint: ["to be", " replaced"]
+      }
+
+      assert %Sentry.Event{fingerprint: ["mint_transport", :econnrefused]} =
+               Plausible.SentryFilter.before_send(event)
+    end
+  end
+
   test "ignores excess cowboy error messages" do
     event = %Sentry.Event{
       event_id: "5f0a9f9b04df4050884966c87a4e62b8",

@@ -57,6 +57,43 @@ defmodule Plausible.Ingestion.PersistorTest do
     assert ingested_event.clickhouse_event.session_id == 123
   end
 
+  test "remote persistor decodes a gzip-compressed response body" do
+    event = build(:event, name: "pageview")
+    ingest_event = %Event{clickhouse_event: event, clickhouse_session_attrs: @session_params}
+
+    bypass = Bypass.open()
+
+    Bypass.expect_once(bypass, "POST", "/event", fn conn ->
+      {:ok, body, conn} = Plug.Conn.read_body(conn)
+
+      {input_event, session_attrs} =
+        body
+        |> Base.decode64!(padding: false)
+        |> :erlang.binary_to_term()
+
+      event_payload =
+        input_event
+        |> Map.merge(session_attrs)
+        |> Map.put(:session_id, 123)
+        |> :erlang.term_to_binary()
+        |> Base.encode64(padding: false)
+        |> :zlib.gzip()
+
+      conn
+      |> Plug.Conn.put_resp_header("content-encoding", "gzip")
+      |> Plug.Conn.resp(200, event_payload)
+    end)
+
+    assert {:ok, ingested_event} =
+             Persistor.persist_event(ingest_event, nil,
+               backend: Persistor.Remote,
+               url: bypass_url(bypass)
+             )
+
+    refute ingested_event.dropped?
+    assert ingested_event.clickhouse_event.session_id == 123
+  end
+
   test "ingests using persistor with relay" do
     conn =
       Phoenix.ConnTest.build_conn(:post, "/api/events", %{

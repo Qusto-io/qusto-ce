@@ -1,0 +1,28 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "litellm/cloud-reason",
+  "instructions": [
+    "../../CLAUDE.md",
+    "AGENTS.md"
+  ],
+  "mcp": {
+    "daxo-governed": { "enabled": true },
+    "daxo-plane": { "enabled": true },
+    "daxo-kalc": { "enabled": false },
+    "daxo-qusto": { "enabled": true },
+    "daxo-mcp": { "enabled": false }
+  },
+  "tools": {
+    "daxo-qusto*": true
+  },
+  "agent": {
+    "qusto-ce": {
+      "description": "Qusto CE engine — Elixir/Phoenix analytics core",
+      "tools": {
+        "daxo-governed*": true,
+        "daxo-plane*": true,
+        "daxo-qusto*": true
+      }
+    }
+  }
+}

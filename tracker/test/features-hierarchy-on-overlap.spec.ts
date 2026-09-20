@@ -7,7 +7,10 @@ import {
 } from './support/test-utils'
 import { test, expect } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
-import { initializePageDynamically } from './support/initialize-page-dynamically'
+import {
+  compatLocalScript,
+  initializePageDynamically
+} from './support/initialize-page-dynamically'
 import { mockManyRequests } from './support/mock-many-requests'
 import { ScriptConfig } from './support/types'
 import { customSubmitHandlerStub } from './support/html-fixtures'
@@ -45,8 +48,9 @@ for (const mode of ['legacy', 'web'] as const) {
               outboundLinks: true,
               fileDownloads: true
             },
-            legacy:
-              '<script async src="/tracker/js/plausible.file-downloads.local.manual.outbound-links.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.file-downloads.local.manual.outbound-links.tagged-events.js'
+            )
           },
           mode
         ),
@@ -92,8 +96,9 @@ for (const mode of ['legacy', 'web'] as const) {
               outboundLinks: true,
               fileDownloads: true
             },
-            legacy:
-              '<script async src="/tracker/js/plausible.file-downloads.local.manual.outbound-links.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.file-downloads.local.manual.outbound-links.tagged-events.js'
+            )
           },
           mode
         ),
@@ -136,8 +141,9 @@ for (const mode of ['legacy', 'web'] as const) {
               outboundLinks: true,
               fileDownloads: true
             },
-            legacy:
-              '<script async src="/tracker/js/plausible.file-downloads.local.manual.outbound-links.tagged-events.js"></script>'
+            legacy: compatLocalScript(
+              '/tracker/js/plausible.file-downloads.local.manual.outbound-links.tagged-events.js'
+            )
           },
           mode
         ),

@@ -1,7 +1,15 @@
 import { test, expect } from '@playwright/test'
-import { initializePageDynamically } from './support/initialize-page-dynamically'
+import {
+  compatLocalScript,
+  initializePageDynamically
+} from './support/initialize-page-dynamically'
 import { mockManyRequests } from './support/mock-many-requests'
+import { LOCAL_SERVER_ADDR } from './support/server'
 import { switchByMode } from './support/test-utils'
+
+function eventEndpoint(apiPath: string): string {
+  return apiPath.includes('://') ? apiPath : `${LOCAL_SERVER_ADDR}${apiPath}`
+}
 
 const DOMAIN = 'example.com'
 
@@ -54,11 +62,13 @@ for (const mode of ['web', 'esm', 'legacy']) {
           testId,
           scriptConfig: switchByMode(
             {
-              legacy: `<script data-api="${apiPath}" async id="qusto" data-domain="${DOMAIN}" src="${
+              legacy: compatLocalScript(
                 captureOnLocalhost
                   ? '/tracker/js/plausible.compat.local.manual.js'
-                  : '/tracker/js/plausible.compat.manual.js'
-              }"></script>`,
+                  : '/tracker/js/plausible.compat.manual.js',
+                DOMAIN,
+                eventEndpoint(apiPath)
+              ),
               web: { domain: DOMAIN, endpoint: apiPath, captureOnLocalhost },
               esm: `<script type="module">import { init, track } from "/tracker/js/npm_package/plausible.js"; init(${JSON.stringify(
                 config

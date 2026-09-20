@@ -640,6 +640,9 @@ defmodule Plausible.Imported.GoogleAnalytics4Test do
     assert List.first(results) == %{
              "bounce_rate" => 35.0,
              "city" => 792_680,
+             # visit:city rows carry the resolved city name (see
+             # external_stats_controller add_geo_names/2).
+             "name" => "Belgrade",
              "visit_duration" => 39.0,
              "visitors" => 1233,
              "visits" => 1273
@@ -648,6 +651,7 @@ defmodule Plausible.Imported.GoogleAnalytics4Test do
     assert List.last(results) == %{
              "bounce_rate" => 0.0,
              "city" => 11_951_298,
+             "name" => "Sachsenheim",
              "visit_duration" => 271.0,
              "visitors" => 1,
              "visits" => 1

@@ -323,6 +323,74 @@ defmodule PlausibleWeb.Api.ExternalStatsController.BreakdownTest do
            }
   end
 
+  test "breakdown by visit:city includes the city name", %{conn: conn, site: site} do
+    populate_stats(site, [
+      build(:pageview,
+        country_code: "EE",
+        city_geoname_id: 588_409,
+        timestamp: ~N[2021-01-01 00:00:00]
+      ),
+      build(:pageview,
+        country_code: "EE",
+        city_geoname_id: 588_409,
+        timestamp: ~N[2021-01-01 00:25:00]
+      )
+    ])
+
+    conn =
+      get(conn, "/api/v1/stats/breakdown", %{
+        "site_id" => site.domain,
+        "period" => "day",
+        "date" => "2021-01-01",
+        "property" => "visit:city"
+      })
+
+    assert %{"results" => [%{"city" => 588_409, "name" => "Tallinn", "visitors" => 2}]} =
+             json_response(conn, 200)
+  end
+
+  test "breakdown by visit:region includes the region name", %{conn: conn, site: site} do
+    populate_stats(site, [
+      build(:pageview,
+        country_code: "EE",
+        subdivision1_code: "EE-37",
+        timestamp: ~N[2021-01-01 00:00:00]
+      )
+    ])
+
+    conn =
+      get(conn, "/api/v1/stats/breakdown", %{
+        "site_id" => site.domain,
+        "period" => "day",
+        "date" => "2021-01-01",
+        "property" => "visit:region"
+      })
+
+    assert %{"results" => [%{"region" => "EE-37", "name" => "Harjumaa", "visitors" => 1}]} =
+             json_response(conn, 200)
+  end
+
+  test "breakdown by visit:city omits name for an unknown city id", %{conn: conn, site: site} do
+    populate_stats(site, [
+      build(:pageview,
+        country_code: "EE",
+        city_geoname_id: 999_999_999,
+        timestamp: ~N[2021-01-01 00:00:00]
+      )
+    ])
+
+    conn =
+      get(conn, "/api/v1/stats/breakdown", %{
+        "site_id" => site.domain,
+        "period" => "day",
+        "date" => "2021-01-01",
+        "property" => "visit:city"
+      })
+
+    assert %{"results" => [row]} = json_response(conn, 200)
+    refute Map.has_key?(row, "name")
+  end
+
   test "breakdown by visit:referrer", %{conn: conn, site: site} do
     populate_stats(site, [
       build(:pageview,

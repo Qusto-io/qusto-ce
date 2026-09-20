@@ -70,13 +70,17 @@ server:
 console:
 	@iex -S mix
 
-# Start MinIO for S3/import tests (matches config/.env.test port 10000)
+# Start MinIO for S3/import tests (matches config/.env.test port 10000).
+# Image: quay.io, pinned. Docker Hub's minio/minio now refuses anonymous pulls
+# ("pull access denied for minio/minio"), which broke this target — and with it
+# the whole `Build and test` job — on every branch and PR (2026-09-20).
+MINIO_IMAGE ?= quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
 minio:
 	docker run -d --rm -p 10000:10000 -p 10001:10001 \
 		--name plausible-minio \
 		-e MINIO_ROOT_USER=minioadmin \
 		-e MINIO_ROOT_PASSWORD=minioadmin \
-		minio/minio server /data --address ":10000" --console-address ":10001"
+		$(MINIO_IMAGE) server /data --address ":10000" --console-address ":10001"
 	while ! docker exec plausible-minio mc alias set local http://localhost:10000 minioadmin minioadmin; do sleep 1; done
 	docker exec plausible-minio mc mb --ignore-existing local/test-exports
 	docker exec plausible-minio mc mb --ignore-existing local/test-imports

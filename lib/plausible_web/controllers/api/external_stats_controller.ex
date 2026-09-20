@@ -46,6 +46,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
       %{results: results, meta: meta} =
         Plausible.Stats.breakdown(site, query, metrics, {limit, page})
 
+      results = add_geo_names(results, params["property"])
       payload = maybe_add_warning(%{results: results}, meta)
 
       json(conn, payload)
@@ -53,6 +54,35 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
       err_tuple -> send_json_error_response(conn, err_tuple)
     end
   end
+
+  # Qusto: visit:city and visit:region breakdowns return opaque codes — a
+  # GeoNames id ("2950159") and an ISO 3166-2 code ("DE-BE"). The internal
+  # dashboard API resolves both to names; this public API did not, so API
+  # consumers (the Qusto e-commerce dashboard among them) showed numeric city
+  # ids next to billing-address city names (demo data review F1, 2026-09-19).
+  # Additive: each row gains `name` when the code resolves. An unknown code
+  # gets no `name` (not "N/A"), so a consumer can fall back to the code.
+  defp add_geo_names(results, "visit:city") do
+    Enum.map(results, fn row ->
+      case Location.get_city(row_code(row, :city)) do
+        %{name: name} when is_binary(name) and name != "" -> Map.put(row, :name, name)
+        _ -> row
+      end
+    end)
+  end
+
+  defp add_geo_names(results, "visit:region") do
+    Enum.map(results, fn row ->
+      case Location.get_subdivision(row_code(row, :region)) do
+        %{name: name} when is_binary(name) and name != "" -> Map.put(row, :name, name)
+        _ -> row
+      end
+    end)
+  end
+
+  defp add_geo_names(results, _property), do: results
+
+  defp row_code(row, key), do: Map.get(row, key) || Map.get(row, Atom.to_string(key))
 
   defp validate_property(%{"property" => property}) do
     cond do

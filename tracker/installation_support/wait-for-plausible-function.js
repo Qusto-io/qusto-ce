@@ -2,7 +2,7 @@ import { runThrottledCheck } from './run-check'
 
 export async function waitForQustoFunction(timeout = 5000) {
   const checkFn = (opts) => {
-    if (window.qusto?.l) {
+    if (window.qusto?.l || window.plausible?.l) {
       return true
     }
     if (opts.timeout) {

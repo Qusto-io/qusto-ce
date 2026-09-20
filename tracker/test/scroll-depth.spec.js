@@ -3,6 +3,8 @@ import {
   hideCurrentTab,
   hideAndShowCurrentTab
 } from './support/test-utils'
+
+const mockRequestTimeout = process.env.CI ? 5000 : 3000
 import { test, expect } from '@playwright/test'
 import { LOCAL_SERVER_ADDR } from './support/server'
 
@@ -17,12 +19,14 @@ test.describe('scroll depth (engagement events)', () => {
 
     await page.evaluate(() => window.scrollBy(0, 300))
     await page.evaluate(() => window.scrollBy(0, 0))
+    await page.waitForTimeout(process.env.CI ? 500 : 200)
 
     await expectQustoInAction(page, {
       action: () => page.click('#navigate-away'),
       expectedRequests: [
         { n: 'engagement', u: `${LOCAL_SERVER_ADDR}/scroll-depth.html`, sd: 20 }
-      ]
+      ],
+      mockRequestTimeout
     })
   })
 

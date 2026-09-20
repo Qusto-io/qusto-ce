@@ -19,7 +19,7 @@ const DEFAULT_CONFIG = {
   captureOnLocalhost: true
 }
 
-test('with queue code from the web snippet, tracks `plausible` calls made before the script is loaded', async ({
+test('with queue code from the web snippet, tracks `qusto` calls made before the script is loaded', async ({
   page
 }, { testId }) => {
   const config = { ...DEFAULT_CONFIG }
@@ -27,14 +27,14 @@ test('with queue code from the web snippet, tracks `plausible` calls made before
     testId,
     scriptConfig: config,
     bodyContent:
-      '<script>window.qusto("loaded", { props: { plausibleLoadedAtEventTime: window.qusto.l ? true : false }, interactive: false })</script>'
+      '<script>window.qusto("loaded", { props: { qustoLoadedAtEventTime: window.qusto.l ? true : false }, interactive: false })</script>'
   })
   await expectQustoInAction(page, {
     action: () => page.goto(url),
     expectedRequests: [
       {
         n: 'loaded',
-        p: { plausibleLoadedAtEventTime: false },
+        p: { qustoLoadedAtEventTime: false },
         i: false,
         d: config.domain,
         u: `${LOCAL_SERVER_ADDR}${url}`

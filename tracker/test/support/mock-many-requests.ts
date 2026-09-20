@@ -51,7 +51,7 @@ export async function mockManyRequests({
 }: MockManyRequestsOptions) {
   const requestList: unknown[] = []
   const scope = scopeMockToPage ? page : page.context()
-  await scope.route(path, async (route, request) => {
+  const routeHandler = async (route, request) => {
     if (responseDelay) {
       await delay(responseDelay)
     }
@@ -63,7 +63,8 @@ export async function mockManyRequests({
       ...DEFAULT_RESPONSE,
       ...fulfill
     })
-  })
+  }
+  await scope.route(path, routeHandler)
 
   const getRequestList = (): Promise<unknown[]> =>
     new Promise((resolve) => {
@@ -82,7 +83,11 @@ export async function mockManyRequests({
       }, POLL_INTERVAL_MS)
     })
 
-  return { getRequestList }
+  const stopMocking = async () => {
+    await scope.unroute(path, routeHandler)
+  }
+
+  return { getRequestList, stopMocking }
 }
 
 function shouldAllow(

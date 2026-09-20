@@ -6,6 +6,28 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+## v3.2.1 - 2026-05-12
+
+### Added
+
+### Removed
+
+- Removed phoenix storybook dependency
+
+### Changed
+
+### Fixed
+
+## v3.2.0 - 2026-01-16
+
+### Added
+
 - A visitor percentage breakdown is now shown on all reports, both on the dashboard and in the detailed breakdown
 - Shared links can now be limited to a particular segment of the data
 

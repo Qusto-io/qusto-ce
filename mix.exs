@@ -102,7 +102,7 @@ defmodule Plausible.MixProject do
       {:eqrcode, "~> 0.2.1"},
       {:ex_machina, "~> 2.3", only: [:dev, :test, :ce_dev, :ce_test]},
       {:excoveralls, "~> 0.10", only: :test},
-      {:finch, "~> 0.21"},
+      {:finch, "~> 0.23.0"},
       {:floki, "~> 0.36"},
       {:lazy_html, "~> 0.1.8"},
       {:fun_with_flags, "~> 1.13.0"},
@@ -121,7 +121,7 @@ defmodule Plausible.MixProject do
       {:opentelemetry, "~> 1.1"},
       {:opentelemetry_api, "~> 1.1"},
       {:opentelemetry_ecto, "~> 1.1.0"},
-      {:opentelemetry_exporter, "~> 1.6.0"},
+      {:opentelemetry_exporter, "~> 1.10.0"},
       {:opentelemetry_phoenix, "~> 1.0"},
       {:opentelemetry_oban, "~> 1.1.1"},
       {:phoenix, "~> 1.8.2"},
@@ -172,13 +172,13 @@ defmodule Plausible.MixProject do
       {:zstream, "~> 0.6.4"},
       {:con_cache,
        git: "https://github.com/aerosol/con_cache", branch: "ensure-dirty-ops-emit-telemetry"},
-      {:req, "~> 0.6.1"},
+      {:req, "~> 0.7.4"},
       {:happy_tcp, github: "ruslandoga/happy_tcp", only: [:ce, :ce_dev, :ce_test]},
       {:ex_json_schema, "~> 0.11.1"},
       {:odgn_json_pointer, "~> 3.1.0"},
       {:phoenix_bakery, "~> 0.1.2", only: [:ce, :ce_dev, :ce_test]},
       {:site_encrypt, github: "sasa1977/site_encrypt", only: [:ce, :ce_dev, :ce_test]},
-      {:phoenix_storybook, "~> 0.9"},
+      {:phoenix_html_helpers, "~> 1.0"},
       {:libcluster, "~> 3.5"}
     ]
   end
@@ -193,12 +193,10 @@ defmodule Plausible.MixProject do
       "assets.typecheck": ["cmd npm --prefix assets run typecheck"],
       "assets.build": [
         "tailwind default",
-        "tailwind storybook",
         "esbuild default"
       ],
       "assets.deploy": [
         "tailwind default --minify",
-        "tailwind storybook --minify",
         "esbuild default --minify",
         "phx.digest"
       ]

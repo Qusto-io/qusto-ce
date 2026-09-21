@@ -49,6 +49,13 @@ cmd_setup() {
   git config rerere.autoupdate true
   echo "rerere: enabled (autoupdate on)"
 
+  # Backs the `merge=ours` entries in .gitattributes (branded binary assets).
+  # Git ships no built-in "ours" file driver: `true` succeeds without touching
+  # the working-tree copy, which leaves our version in place. Without this the
+  # attribute is inert and those files conflict as before - it fails safe.
+  git config merge.ours.driver true
+  echo "merge driver: ours (branded assets keep our side - see .gitattributes)"
+
   mkdir -p "${LIVE_CACHE}"
   if [ -d "${SHARED_CACHE}" ] && [ -n "$(ls -A "${SHARED_CACHE}" 2>/dev/null || true)" ]; then
     # `cp -R src dst` nests src INSIDE dst when dst already exists, which silently

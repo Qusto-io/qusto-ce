@@ -1,0 +1,24 @@
+# Branded static assets: always keep Qusto's version on an upstream merge.
+#
+# These are logos, favicons and app icons. They are Qusto artwork by definition,
+# they are binary (so git cannot merge them and rerere cannot record a
+# resolution for them), and they conflict on every single upstream merge —
+# 9 of the 43 non-branding conflicts in the 2026-09-21 trial merge were exactly
+# these files, re-resolved by hand each time for no decision value.
+#
+# `merge=ours` needs the driver defined per clone; `scripts/ops/upstream-merge.sh
+# setup` does it, or by hand:
+#
+#     git config merge.ours.driver true
+#
+# WITHOUT that config git falls back to the default driver and these conflict as
+# before — it fails safe, it does not silently corrupt.
+#
+# ⚠️ Scope this narrowly and never to code. `merge=ours` discards upstream's
+# side *silently*: no conflict, no prompt, nothing in the merge summary. That is
+# correct for our own artwork and wrong for anything where upstream might have
+# fixed something we want.
+
+priv/static/favicon.ico        merge=ours
+priv/static/images/ce/**       merge=ours
+priv/static/images/ee/**       merge=ours

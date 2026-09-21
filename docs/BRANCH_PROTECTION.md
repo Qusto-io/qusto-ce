@@ -1,5 +1,12 @@
 # GitHub Branch Protection Configuration
 
+> **⚠️ Out of date as of 2026-09-21 — this repo is now a single trunk.**
+> Sections below that describe a `develop` branch, a `develop` → staging auto-deploy, or branch
+> protection on `develop` no longer reflect reality. `main` is the only trunk, and a push to
+> `main` **is** a production deploy. Dependabot targets the default branch. The staging deploy
+> job still exists but is `workflow_dispatch`-only; `staging.qusto.io` is not currently served.
+> See ADR-008 (vault: `02-technical/architecture/`) and PR #140.
+
 ## Overview
 
 This guide provides step-by-step instructions for configuring branch protection rules for the Qusto Analytics repository. Branch protection ensures code quality by requiring CI checks to pass and pull request reviews before merging.

@@ -12,6 +12,17 @@ defmodule Plausible.InstallationSupport.Detection.ChecksTest do
     @moduletag :capture_log
 
     @expected_domain "example.com"
+    @detector_artifact_path "priv/tracker/installation_support/detector.js"
+
+    describe "bundled detector contract" do
+      test "the wrapper calls the global function the bundled detector exposes" do
+        detector_code = File.read!(Application.app_dir(:plausible, @detector_artifact_path))
+
+        global = Plausible.InstallationSupport.Checks.Detection.detector_global_function()
+
+        assert detector_code =~ "window.#{global}"
+      end
+    end
 
     describe "running detection" do
       test "handles wordpress detection, retrying on 429" do

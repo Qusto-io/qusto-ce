@@ -238,6 +238,19 @@ defmodule Plausible.TestUtils do
     NaiveDateTime.new!(date, ~T[00:00:00])
   end
 
+  @doc """
+  Retries `expectation` until it returns `{true, result}`.
+
+  Note the backoff is **linear, not constant**: attempt N sleeps
+  `wait_time_ms * N`. So the total budget is
+
+      wait_time_ms * retries * (retries + 1) / 2
+
+  which grows quadratically in `retries`. `eventually(fun, 50, 10)` waits 2.8s,
+  but `eventually(fun, 50, 50)` waits **63.8s** - past ExUnit's 60s default
+  timeout, so the test dies with an opaque `ExUnit.TimeoutError` instead of a
+  useful assertion failure. Keep the budget well under the test timeout.
+  """
   def eventually(expectation, wait_time_ms \\ 50, retries \\ 10) do
     Enum.reduce_while(1..retries, nil, fn attempt, _acc ->
       case expectation.() do

@@ -1,0 +1,139 @@
+name: Upstream Drift
+
+# qusto-ce is a fork of plausible/analytics. Drift from upstream is invisible day
+# to day and only hurts when a security fix needs to be merged in a hurry — by
+# which point the merge is large and conflict-ridden. This job makes the distance
+# a number someone sees every week, and raises a flag when upstream ships
+# something that looks security-relevant.
+#
+# It never modifies code. It reports.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  UPSTREAM_REPO: https://github.com/plausible/analytics.git
+  UPSTREAM_REF: master
+  # Drift above this many commits gets an issue raised/refreshed.
+  DRIFT_THRESHOLD: 150
+
+jobs:
+  measure-drift:
+    name: measure-drift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Fetch upstream
+        run: |
+          set -euo pipefail
+          git remote add upstream "${UPSTREAM_REPO}" 2>/dev/null || \
+            git remote set-url upstream "${UPSTREAM_REPO}"
+          git fetch --no-tags upstream "${UPSTREAM_REF}"
+
+      - name: Measure
+        id: measure
+        run: |
+          set -euo pipefail
+          base="$(git merge-base HEAD upstream/${UPSTREAM_REF})"
+          behind="$(git rev-list --count HEAD..upstream/${UPSTREAM_REF})"
+          ahead="$(git rev-list --count upstream/${UPSTREAM_REF}..HEAD)"
+          base_date="$(git log -1 --format=%cs "${base}")"
+
+          # Upstream commits since the merge base whose subject suggests a
+          # security fix. Acronyms are word-bounded on purpose: an unanchored
+          # RCE matches "sou(rce)s" and buried the real hits in noise.
+          sec_file="$(mktemp)"
+          git log --no-merges --format='%h %s' "${base}..upstream/${UPSTREAM_REF}" \
+            | grep -iE 'security|CVE-[0-9]|GHSA|vulnerab|sanitiz|\bRCE\b|\bXSS\b|\bSSRF\b|\bCSRF\b|\bIDOR\b|injection|auth(entication)? bypass|privilege escalation' \
+            > "${sec_file}" || true
+          sec_count="$(wc -l < "${sec_file}" | tr -d '[:space:]')"
+
+          {
+            echo "behind=${behind}"
+            echo "ahead=${ahead}"
+            echo "base=${base}"
+            echo "base_date=${base_date}"
+            echo "sec_count=${sec_count}"
+            echo "sec_file=${sec_file}"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Upstream drift — \`plausible/analytics@${UPSTREAM_REF}\`"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Commits behind upstream | **${behind}** |"
+            echo "| Commits ahead (Qusto's own) | ${ahead} |"
+            echo "| Merge base | \`${base:0:10}\` (${base_date}) |"
+            echo "| Security-looking upstream commits since base | **${sec_count}** |"
+            echo ""
+            if [ "${sec_count}" -gt 0 ]; then
+              echo "<details><summary>Security-looking commits</summary>"
+              echo ""
+              echo '```'
+              head -50 "${sec_file}"
+              echo '```'
+              echo ""
+              echo "</details>"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Raise or refresh the tracking issue
+        if: ${{ steps.measure.outputs.behind != '0' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEHIND: ${{ steps.measure.outputs.behind }}
+          AHEAD: ${{ steps.measure.outputs.ahead }}
+          BASE: ${{ steps.measure.outputs.base }}
+          BASE_DATE: ${{ steps.measure.outputs.base_date }}
+          SEC_COUNT: ${{ steps.measure.outputs.sec_count }}
+          THRESHOLD: ${{ env.DRIFT_THRESHOLD }}
+        run: |
+          set -euo pipefail
+
+          # Only escalate to an issue once drift is material or upstream has
+          # shipped something security-shaped. Otherwise the summary is enough.
+          if [ "${BEHIND}" -lt "${THRESHOLD}" ] && [ "${SEC_COUNT}" -eq 0 ]; then
+            echo "Drift ${BEHIND} < ${THRESHOLD} and no security-looking commits — summary only."
+            exit 0
+          fi
+
+          title="Upstream drift: ${BEHIND} commits behind plausible/analytics"
+
+          # Built with printf rather than a heredoc: a heredoc terminator must sit
+          # at column 0, which would end this YAML block scalar early.
+          body_file="$(mktemp)"
+          {
+            printf 'Automated weekly measurement from `.github/workflows/upstream-drift.yml`.\n\n'
+            printf '| | |\n|---|---|\n'
+            printf '| Commits behind upstream | **%s** |\n' "${BEHIND}"
+            printf '| Commits ahead (Qusto own) | %s |\n' "${AHEAD}"
+            printf '| Merge base | `%s` (%s) |\n' "${BASE}" "${BASE_DATE}"
+            printf '| Security-looking upstream commits since base | **%s** |\n\n' "${SEC_COUNT}"
+            printf 'Why this matters: the cost of absorbing upstream grows with the gap, and it is\n'
+            printf 'paid at the worst possible moment - when a CVE lands and the merge is urgent.\n\n'
+            printf 'See ADR-008 (build variant / branch model) and the drift remediation plan in\n'
+            printf 'the vault under `02-technical/architecture/`.\n\n'
+            printf '_This issue is updated in place each week; it is not a new issue per run._\n'
+          } > "${body_file}"
+
+          existing="$(gh issue list --state open --label upstream-drift \
+            --json number -q '.[0].number' 2>/dev/null || true)"
+
+          if [ -n "${existing}" ]; then
+            gh issue edit "${existing}" --title "${title}" --body-file "${body_file}"
+            echo "Updated issue #${existing}"
+          else
+            gh label create upstream-drift --description "Fork drift from plausible/analytics" --color ededed 2>/dev/null || true
+            gh issue create --title "${title}" --body-file "${body_file}" --label upstream-drift
+          fi

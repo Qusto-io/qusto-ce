@@ -230,6 +230,15 @@ jobs:
               https://github.com/Qusto-io/qusto-ce.git "${BUILD_DIR}"
             cd "${BUILD_DIR}"
             docker build -t "${IMAGE}" -t "qusto/qusto-ce:${CE_VERSION}" .
+
+            # Phase 0 gate: prove the image boots and serves BEFORE the running
+            # production container is swapped for it. Previously the health check
+            # ran after `compose up`, so a bad image took prod down and the check
+            # merely reported the outage. The smoke boots the image against
+            # throwaway Postgres/ClickHouse on an isolated network - never the
+            # production databases - and runs migrations there.
+            bash "${BUILD_DIR}/scripts/ops/smoke-ce-image.sh" "${IMAGE}"
+
             cd "${EE_DIR}"
             if grep -q '^CE_VERSION=' .env; then
               sed -i "s/^CE_VERSION=.*/CE_VERSION=${CE_VERSION}/" .env

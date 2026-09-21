@@ -246,8 +246,11 @@ jobs:
                 # Dockerfile default MIX_ENV=ce, which excludes extra/lib (see
                 # elixirc_paths(:ce) in mix.exs), so EE-only modules are absent.
                 # Printing this keeps "deployed" from being read as "EE code is live".
-                EE_MODULES="$(docker compose exec -T analytics sh -c \
-                  'ls /app/lib/plausible-*/ebin/ | grep -c "^Elixir\.Plausible\.InstallationSupport" || true' 2>/dev/null | tr -d "[:space:]")"
+                # `|| true` must be OUTSIDE the substitution: this script runs under
+                # `set -euo pipefail`, so a failing `docker compose exec` would otherwise
+                # abort an already-healthy deploy over a diagnostic line.
+                EE_MODULES="$({ docker compose exec -T analytics sh -c \
+                  'ls /app/lib/plausible-*/ebin/ | grep -c "^Elixir\.Plausible\.InstallationSupport"' 2>/dev/null || true; } | tr -d '[:space:]')"
                 if [ "${EE_MODULES:-0}" = "0" ]; then
                   echo "==> Build variant: CE (MIX_ENV=ce) — extra/lib is NOT compiled; EE-only code is absent from this image"
                 else

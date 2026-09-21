@@ -75,15 +75,63 @@ A change can pass one and fail the other; that has happened more than once. If
   Node 24**. npm on macOS drops the Linux-only optional `@emnapi/*` packages and
   CI then fails `npm ci` with `EUSAGE`.
 
-## Gratuitous divergence
+## Divergence: what to retire, and what to leave alone (Phase 2)
 
-Some conflicts buy nothing and should be retired rather than re-resolved forever
-(DRIFT-01 Phase 2):
+Measured on the 2026-09-21 trial merge: **103 conflicts, 60 branding / 43 not**.
+Taking the 43 apart changed the picture, so the rules below are the conclusions —
+not guesses.
 
-- `.github/workflows/elixir.yml` — ours is 202 lines, upstream's 308. Establish
-  what Qusto actually needs and move back toward upstream's shape.
-- Storybook — deleted here, kept upstream. Keeping the deletion is fine; the
-  point is that it is written down so nobody re-litigates it mid-merge.
+### Retired: branded binary assets → `merge=ours`
+
+Logos, favicons and app icons are ours by definition, are binary (so git cannot
+merge them and rerere cannot record a resolution), and conflicted on every merge
+for no decision value. `.gitattributes` now pins them to our side. **103 → 98.**
+
+Needs `git config merge.ours.driver true`, which `upstream-merge.sh setup` does.
+Without it the attribute is inert and they conflict as before — it fails safe.
+
+### Not divergence at all: action-version lag
+
+Five workflow conflicts — `all-checks-pass`, `migrations-validation`, `codespell`,
+`publish-docs`, `terraform-e2e` — are **purely** older pinned action SHAs. Nothing
+Qusto-specific. Dependabot (now targeting `main`) closes them on its own, and its
+bumps land on upstream's *exact* pins: PR #141 moves codespell to
+`8f01853…# v2.2`, which is character-for-character what upstream has.
+
+**Do not hand-edit these.** It duplicates Dependabot and conflicts with its open
+PRs. Merge them instead.
+
+### ⚠️ Do NOT converge `.github/workflows/elixir.yml`
+
+An earlier draft of the Phase 2 plan said to move it back toward upstream's shape
+(ours 202 lines, upstream's 308). **That is wrong and would break the repository.**
+
+- Our `static` and `security` jobs are *named* `static` and `security`, and those
+  exact strings are **required status checks** on `main`. Upstream's `static` is
+  named "Static checks (format, credo, dialyzer)" and upstream has **no `security`
+  job at all**. Converging renames one check and deletes the other, so both
+  required contexts stop reporting and **every PR blocks forever**.
+- Our `security` job is what runs `mix deps.audit` and `mix sobelow`. Upstream
+  does not have it. Converging would silently delete security scanning.
+
+This divergence is load-bearing. Keep it.
+
+### Left alone deliberately
+
+- **Storybook** — deleted here, kept upstream. Keep it deleted; written down so
+  nobody re-litigates it mid-merge.
+- **4 favicon PNGs** (`favicon-16x16/32x32` under `images/ce` and `images/ee`) —
+  upstream deleted them in "Update the favicon set to SVG with an ICO fallback".
+  They are unreferenced in our code, *but* `priv/static/cache_manifest.json` still
+  lists them, so removing them means regenerating the Phoenix digest. Not worth
+  coupling to a merge. These stay as modify/delete conflicts; standing answer is
+  **keep ours**. (`merge=ours` cannot help: a merge driver never runs when one
+  side deleted the file.)
+- **`.tool-versions`** — upstream is on Erlang 28.5 / Elixir 1.20.4-otp-28; we are
+  on 27.3.4.6 / 1.18.3. That is a real toolchain upgrade and belongs *inside* a
+  Phase 3 slice, not a standalone convergence.
+- **`mix.exs`** — the divergence is the project name/source_url (ours forever) and
+  `elixirc_paths/1`, which is load-bearing for the CE build variant (ADR-008).
 
 ## Slice, don't leap
 

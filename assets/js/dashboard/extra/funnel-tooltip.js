@@ -1,3 +1,12 @@
+// Goal and funnel-step labels are user-supplied, so they must not be
+// interpolated into innerHTML unescaped. Ported from plausible/analytics
+// 7cb4f44441 ("Escape goal name in the funnel tooltip to prevent XSS", #6181).
+function escapeHTML(str) {
+  const div = document.createElement('div')
+  div.appendChild(document.createTextNode(str))
+  return div.innerHTML
+}
+
 export default function FunnelTooltip(palette, funnel) {
   return (context) => {
     const tooltipModel = context.tooltip
@@ -30,9 +39,9 @@ export default function FunnelTooltip(palette, funnel) {
       tooltipEl.innerHTML = `
         <aside class="text-gray-100 flex flex-col">
           <div class="flex justify-between items-center border-b-2 border-gray-700 pb-2">
-            <span class="font-semibold mr-4 text-lg">${previousStep ? `<span class="mr-2">${previousStep.label}</span>` : ''}
+            <span class="font-semibold mr-4 text-lg">${previousStep ? `<span class="mr-2">${escapeHTML(previousStep.label)}</span>` : ''}
               <span class="text-gray-500 mr-2">→</span>
-              ${tooltipModel.title}
+              ${escapeHTML(tooltipModel.title)}
             </span>
           </div>
 

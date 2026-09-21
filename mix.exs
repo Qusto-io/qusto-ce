@@ -146,7 +146,7 @@ defmodule Plausible.MixProject do
       {:opentelemetry_cowboy, "~> 1.0"},
       # # https://github.com/open-telemetry/opentelemetry-erlang-contrib/issues/428
       {:opentelemetry_semantic_conventions, "~> 1.27", override: true},
-      {:phoenix, "~> 1.8.2"},
+      {:phoenix, "~> 1.8.9"},
       {:phoenix_view, "~> 2.0"},
       {:phoenix_ecto, "~> 4.5"},
       {:phoenix_html, "~> 4.1"},

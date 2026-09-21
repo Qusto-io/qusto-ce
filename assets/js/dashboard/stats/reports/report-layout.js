@@ -15,6 +15,7 @@ export function ReportLayout({
       )}
     >
       {children}
+      <div data-testid="report-end"></div>
     </div>
   )
 }

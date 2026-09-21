@@ -20,14 +20,25 @@ export const header = (report: Locator, label: HasTextArg) =>
     .filter({ hasText: label })
     .getByRole('button')
 
-export const expectHeaders = async (report: Locator, headers: HaveTextArg) =>
-  expect(report.getByTestId('report-header')).toHaveText(headers)
+export const scrollReportIntoView = async (report: Locator) => {
+  await report.getByTestId('report-end').scrollIntoViewIfNeeded()
+}
+
+export const expectHeaders = async (report: Locator, headers: HaveTextArg) => {
+  await scrollReportIntoView(report)
+  await expect(report.getByTestId('report-header')).toHaveText(headers)
+}
 
 export const expectRows = async (report: Locator, labels: HaveTextArg) =>
-  expect(report.getByTestId('report-row').getByRole('link')).toHaveText(labels)
+  expect(
+    report.getByTestId('report-row').getByTestId('dimension-value')
+  ).toHaveText(labels)
 
 export const rowLink = (report: Locator, label: HasTextArg) =>
-  report.getByTestId('report-row').filter({ hasText: label }).getByRole('link')
+  report
+    .getByTestId('report-row')
+    .filter({ hasText: label })
+    .getByTestId('dimension-value')
 
 export const expectMetricValues = async (
   report: Locator,

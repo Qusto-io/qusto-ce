@@ -39,6 +39,7 @@ test('sources breakdown', async ({ page, request }) => {
       { name: 'pageview', referrer_source: 'ablog.example.com' },
       {
         name: 'pageview',
+        referrer_source: 'Google',
         utm_medium: 'SomeUTMMedium',
         utm_source: 'SomeUTMSource',
         utm_campaign: 'SomeUTMCampaign',
@@ -61,15 +62,15 @@ test('sources breakdown', async ({ page, request }) => {
 
     await expectRows(report, [
       'DuckDuckGo',
-      'Direct / None',
       'Facebook',
+      'Google',
       'ablog.example.com',
       'theguardian.com'
     ])
 
     await expectMetricValues(report, 'DuckDuckGo', ['2', '33.3%'])
-    await expectMetricValues(report, 'Direct / None', ['1', '16.7%'])
     await expectMetricValues(report, 'Facebook', ['1', '16.7%'])
+    await expectMetricValues(report, 'Google', ['1', '16.7%'])
     await expectMetricValues(report, 'ablog.example.com', ['1', '16.7%'])
     await expectMetricValues(report, 'theguardian.com', ['1', '16.7%'])
   })

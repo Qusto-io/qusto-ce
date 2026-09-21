@@ -42,6 +42,7 @@ export function DrilldownLink({
 
     return (
       <AppNavigationLink
+        data-testid="dimension-value"
         title={`Add filter: ${plainFilterText({ ...dashboardState, labels: newLabels }, filter)}`}
         className={className}
         path={path}
@@ -56,6 +57,10 @@ export function DrilldownLink({
       </AppNavigationLink>
     )
   } else {
-    return <span className={className}>{children}</span>
+    return (
+      <span data-testid="dimension-value" className={className}>
+        {children}
+      </span>
+    )
   }
 }

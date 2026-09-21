@@ -133,7 +133,7 @@ test('top stats show relevant metrics', async ({ page, request }) => {
 
   await page.goto('/' + domain, { waitUntil: 'commit' })
 
-  await expect(page).toHaveTitle(/Plausible/)
+  await expect(page).toHaveTitle(/Qusto/)
 
   await expect(page.getByRole('button', { name: domain })).toBeVisible()
 

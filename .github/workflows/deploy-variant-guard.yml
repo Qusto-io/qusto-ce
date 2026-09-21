@@ -1,6 +1,9 @@
 name: Deploy Variant Guard
 
-# Production (qusto-prod-1) runs a MIX_ENV=ce image: `deploy.yml` builds with
+# Production (qusto-prod-1) runs a MIX_ENV=ce image, which excludes BOTH extra/lib/
+# (Elixir) and assets/js/dashboard/extra/ (JS, via BUILD_EXTRA=false).
+#
+# `deploy.yml` builds with
 # `docker build .` and no --build-arg, so the Dockerfile default `ARG MIX_ENV=ce`
 # applies. `mix.exs` sets `elixirc_paths(:ce), do: ["lib"]`, so `extra/lib` is
 # NEVER compiled into what production runs.
@@ -25,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -37,26 +40,47 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Paths excluded from the MIX_ENV=ce build that production runs.
-          # Keep in sync with elixirc_paths(:ce) in mix.exs.
-          EXCLUDED_PREFIX="extra/lib/"
+          # Paths the production MIX_ENV=ce build does NOT ship. There are TWO
+          # independent exclusion mechanisms and they are easy to conflate:
+          #
+          #   extra/lib/                  Elixir. mix.exs elixirc_paths(:ce) => ["lib"],
+          #                               so these modules are never compiled.
+          #   assets/js/dashboard/extra/  JavaScript. config/ce.exs builds with
+          #                               --define:BUILD_EXTRA=false, and the import
+          #                               sites are guarded by `if (BUILD_EXTRA)`, so
+          #                               esbuild dead-code-eliminates the whole tree.
+          #
+          # The JS path was missing until 2026-09-21, and its absence is exactly how a
+          # funnel-tooltip XSS fix (PR #152) got described as live when the vulnerable
+          # file is not in the production bundle at all. Same trap, second time.
+          EXCLUDED_PREFIXES="extra/lib/ assets/js/dashboard/extra/"
 
           changed="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}")"
-          ee_only_changes="$(printf '%s\n' "${changed}" | grep "^${EXCLUDED_PREFIX}" || true)"
+
+          # Accumulate through a file: building a multi-line shell string inline
+          # would need a literal newline, which ends this YAML block scalar.
+          hits_file="$(mktemp)"
+          printf '%s\n' "${changed}" > "${hits_file}.all"
+          : > "${hits_file}"
+          for prefix in ${EXCLUDED_PREFIXES}; do
+            grep "^${prefix}" "${hits_file}.all" >> "${hits_file}" || true
+          done
+          ee_only_changes="$(cat "${hits_file}")"
 
           if [ -z "${ee_only_changes}" ]; then
-            echo "No changes under ${EXCLUDED_PREFIX} — production compiles everything in this PR."
+            echo "No changes under: ${EXCLUDED_PREFIXES}"
+            echo "Production ships everything in this PR."
             exit 0
           fi
 
-          echo "Files under ${EXCLUDED_PREFIX} in this PR:"
+          echo "Files in this PR that the production CE build does not ship:"
           printf '  %s\n' ${ee_only_changes}
           echo ""
 
           if printf '%s' "${LABELS}" | tr ',' '\n' | grep -qx "ee-only"; then
-            echo "::notice title=EE-only change acknowledged::This PR changes ${EXCLUDED_PREFIX}, which the production MIX_ENV=ce image does not compile. Labelled 'ee-only', so this is intentional — do not describe it as live on qusto-prod-1 after merge."
+            echo "::notice title=EE-only change acknowledged::This PR changes paths the production MIX_ENV=ce build excludes. Labelled 'ee-only', so this is intentional — do not describe it as live on qusto-prod-1 after merge."
             exit 0
           fi
 
-          echo "::error title=Change will not reach production::This PR modifies ${EXCLUDED_PREFIX}, which is excluded from the MIX_ENV=ce build that qusto-prod-1 runs (mix.exs: elixirc_paths(:ce) => [\"lib\"]). Merging will deploy a functionally identical image. If that is intended, add the 'ee-only' label. If the change must reach production, move the code under lib/."
+          echo "::error title=Change will not reach production::This PR modifies paths excluded from the MIX_ENV=ce build that qusto-prod-1 runs — extra/lib/ (mix.exs elixirc_paths(:ce)) and/or assets/js/dashboard/extra/ (config/ce.exs --define:BUILD_EXTRA=false). Merging deploys a functionally identical artifact. If that is intended, add the 'ee-only' label and do not report the change as live. If it must reach production, move the code out of the excluded path."
           exit 1

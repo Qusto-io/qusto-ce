@@ -3,8 +3,11 @@ name: Deploy
 on:
   push:
     branches:
-      - develop    # Auto-deploy to staging
-      - main       # Manual deploy to production
+      - main       # Single trunk: a push to main IS a production deploy
+  # `develop` no longer auto-deploys. The staging host has been unreachable since
+  # 2026-09-11 (staging.qusto.io returns 404 and every develop run failed), and the
+  # repo has collapsed to a single trunk. The staging job below is retained but is
+  # now reachable only via workflow_dispatch, so it can be revived deliberately.
   workflow_dispatch:
     inputs:
       environment:
@@ -35,7 +38,7 @@ jobs:
   deploy-staging:
     name: Deploy to Staging
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging'
     environment:
       name: staging
       url: https://staging.qusto.io
@@ -239,6 +242,17 @@ jobs:
                 curl -sf http://127.0.0.1:8000/api/health
                 echo ""
                 echo "==> CE analytics healthy (${IMAGE})"
+                # State the build variant explicitly. Production builds with the
+                # Dockerfile default MIX_ENV=ce, which excludes extra/lib (see
+                # elixirc_paths(:ce) in mix.exs), so EE-only modules are absent.
+                # Printing this keeps "deployed" from being read as "EE code is live".
+                EE_MODULES="$(docker compose exec -T analytics sh -c \
+                  'ls /app/lib/plausible-*/ebin/ | grep -c "^Elixir\.Plausible\.InstallationSupport" || true' 2>/dev/null | tr -d "[:space:]")"
+                if [ "${EE_MODULES:-0}" = "0" ]; then
+                  echo "==> Build variant: CE (MIX_ENV=ce) — extra/lib is NOT compiled; EE-only code is absent from this image"
+                else
+                  echo "==> Build variant: EE (extra/lib compiled; ${EE_MODULES} InstallationSupport modules present)"
+                fi
                 exit 0
               fi
               sleep 5

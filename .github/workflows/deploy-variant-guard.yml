@@ -1,0 +1,62 @@
+name: Deploy Variant Guard
+
+# Production (qusto-prod-1) runs a MIX_ENV=ce image: `deploy.yml` builds with
+# `docker build .` and no --build-arg, so the Dockerfile default `ARG MIX_ENV=ce`
+# applies. `mix.exs` sets `elixirc_paths(:ce), do: ["lib"]`, so `extra/lib` is
+# NEVER compiled into what production runs.
+#
+# A change under extra/lib/ is therefore invisible in production. This guard makes
+# that explicit at review time so an EE-only change can't be reported as "deployed
+# and live" on the strength of a green CE deploy.
+#
+# To land an intentional EE-only change, add the `ee-only` label to the PR.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  variant-guard:
+    name: variant-guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Flag changes that production does not compile
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          set -euo pipefail
+
+          # Paths excluded from the MIX_ENV=ce build that production runs.
+          # Keep in sync with elixirc_paths(:ce) in mix.exs.
+          EXCLUDED_PREFIX="extra/lib/"
+
+          changed="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}")"
+          ee_only_changes="$(printf '%s\n' "${changed}" | grep "^${EXCLUDED_PREFIX}" || true)"
+
+          if [ -z "${ee_only_changes}" ]; then
+            echo "No changes under ${EXCLUDED_PREFIX} — production compiles everything in this PR."
+            exit 0
+          fi
+
+          echo "Files under ${EXCLUDED_PREFIX} in this PR:"
+          printf '  %s\n' ${ee_only_changes}
+          echo ""
+
+          if printf '%s' "${LABELS}" | tr ',' '\n' | grep -qx "ee-only"; then
+            echo "::notice title=EE-only change acknowledged::This PR changes ${EXCLUDED_PREFIX}, which the production MIX_ENV=ce image does not compile. Labelled 'ee-only', so this is intentional — do not describe it as live on qusto-prod-1 after merge."
+            exit 0
+          fi
+
+          echo "::error title=Change will not reach production::This PR modifies ${EXCLUDED_PREFIX}, which is excluded from the MIX_ENV=ce build that qusto-prod-1 runs (mix.exs: elixirc_paths(:ce) => [\"lib\"]). Merging will deploy a functionally identical image. If that is intended, add the 'ee-only' label. If the change must reach production, move the code under lib/."
+          exit 1

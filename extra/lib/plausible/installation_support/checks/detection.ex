@@ -25,6 +25,9 @@ defmodule Plausible.InstallationSupport.Checks.Detection do
                     {:error, _} -> ""
                   end)
 
+  # Global function name the bundled detector assigns to `window`
+  @detector_global_function "scanPageBeforeQustoInstallation"
+
   # Puppeteer wrapper function that executes the vanilla JS detector code
   @puppeteer_wrapper_code """
   export default async function({ page, context: { url, userAgent, ...functionContext } }) {
@@ -33,11 +36,11 @@ defmodule Plausible.InstallationSupport.Checks.Detection do
       await page.goto(url);
 
       await page.evaluate(() => {
-        #{@detector_code} // injects window.scanPageBeforePlausibleInstallation
+        #{@detector_code} // injects window.#{@detector_global_function}
       });
 
       return await page.evaluate(
-        (c) => window.scanPageBeforePlausibleInstallation(c),
+        (c) => window.#{@detector_global_function}(c),
         { ...functionContext }
       );
     } catch (error) {
@@ -61,6 +64,9 @@ defmodule Plausible.InstallationSupport.Checks.Detection do
 
   @impl true
   def report_progress_as, do: "We're checking your site to recommend the best installation method"
+
+  @doc false
+  def detector_global_function, do: @detector_global_function
 
   @impl true
   def perform(%State{url: url, assigns: %{detect_v1?: detect_v1?}} = state, opts) do

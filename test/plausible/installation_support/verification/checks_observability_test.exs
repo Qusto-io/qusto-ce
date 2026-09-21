@@ -49,8 +49,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksObservabilityTest do
         json_response_verification_stub(%{
           "completed" => true,
           "trackerIsInHtml" => true,
-          "plausibleIsOnWindow" => true,
-          "plausibleIsInitialized" => true,
+          "qustoIsOnWindow" => true,
+          "qustoIsInitialized" => true,
           "testEvent" => %{
             "normalizedBody" => %{
               "domain" => "wrong-domain.com"
@@ -76,8 +76,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksObservabilityTest do
         json_response_verification_stub(%{
           "completed" => true,
           "trackerIsInHtml" => true,
-          "plausibleIsOnWindow" => true,
-          "plausibleIsInitialized" => true,
+          "qustoIsOnWindow" => true,
+          "qustoIsInitialized" => true,
           "testEvent" => %{}
         })
 

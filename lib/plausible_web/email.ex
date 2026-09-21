@@ -50,7 +50,8 @@ defmodule PlausibleWeb.Email do
     |> subject("Qusto is now tracking your website stats")
     |> render("site_setup_success_email.html",
       user: user,
-      site: site
+      site: site,
+      site_team: site.team
     )
   end
 

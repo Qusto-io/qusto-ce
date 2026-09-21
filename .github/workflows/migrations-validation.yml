@@ -27,7 +27,9 @@ jobs:
           config:
             - 'config/**'
 
-    - if: steps.changes.outputs.lib == 'true' || steps.changes.outputs.extra == 'true' || steps.changes.outputs.config == 'true'
+    - if: |
+        !contains(github.event.pull_request.labels.*.name, 'upstream-merge') &&
+        (steps.changes.outputs.lib == 'true' || steps.changes.outputs.extra == 'true' || steps.changes.outputs.config == 'true')
       run: |
         echo "::error file=${{ fromJSON(steps.changes.outputs.lib_files)[0] }}::Code and migrations shouldn't be changed at the same time"
         exit 1

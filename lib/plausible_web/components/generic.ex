@@ -519,7 +519,10 @@ defmodule PlausibleWeb.Components.Generic do
         :if={@server_mode?}
         class={[
           "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-blue-600 dark:focus:ring-[var(--color-dark-primary)] focus:ring-offset-2",
-          if(@checked, do: "bg-blue-600 dark:bg-[var(--color-dark-primary)]", else: "dark:bg-gray-600 bg-gray-200"),
+          if(@checked,
+            do: "bg-blue-600 dark:bg-[var(--color-dark-primary)]",
+            else: "dark:bg-gray-600 bg-gray-200"
+          ),
           if(@disabled, do: "opacity-50")
         ]}
       >

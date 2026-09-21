@@ -373,10 +373,14 @@ defmodule PlausibleWeb.Live.Components.ComboBoxTest do
                  }
                end,
                50,
-               50
+               20
              )
     end
 
+    # 20 retries, not 50: eventually/3 backs off linearly, so 50 retries is a
+    # 63.8s budget - past ExUnit's 60s timeout. The suggestion arrives in ~500ms,
+    # and 20 retries still allows 10.5s, so a real regression now fails as an
+    # assertion instead of an opaque ExUnit.TimeoutError. See qusto-ce#158.
     @tag :slow
     test "uses the suggestions function asynchronously", %{conn: conn} do
       {:ok, lv, _html} = live_isolated(conn, SampleViewAsync, session: %{})
@@ -394,7 +398,7 @@ defmodule PlausibleWeb.Live.Components.ComboBoxTest do
                  }
                end,
                50,
-               50
+               20
              )
     end
   end

@@ -13,3 +13,8 @@ config/.env.test:.*DATABASE_URL=
 .env.example:.*SECRET_KEY_BASE=
 DEPLOYMENT.md:.*SECRET_KEY_BASE=
 docker-compose.deploy.yml:.*SECRET_KEY_BASE=
+
+# Deploy smoke harness — generates throwaway credentials at runtime with
+# `openssl rand` and passes them to a container it tears down. No value is
+# stored here; the lines matched are a variable assignment and a `-e` flag.
+scripts/ops/smoke-ce-image.sh:.*SECRET_KEY_BASE=

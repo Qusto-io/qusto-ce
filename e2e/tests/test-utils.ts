@@ -21,6 +21,35 @@ export async function expectLiveViewConnected(page: Page) {
     .toBeGreaterThan(0)
 }
 
+const dashboardTimeout = process.env.CI ? 20_000 : 10_000
+
+/** Top stats (#visitors etc.) load asynchronously after the LiveView shell mounts. */
+export async function expectDashboardTopStat(
+  page: Page,
+  selector: string,
+  text: string
+) {
+  const metric = page.locator(selector)
+  await expect(metric).toBeVisible({ timeout: dashboardTimeout })
+  await expect(metric).toHaveText(text, { timeout: dashboardTimeout })
+}
+
+export async function expectSiteDomainSwitcher(
+  page: Page,
+  domain: string
+) {
+  await expect(page.getByRole('button', { name: domain })).toBeVisible({
+    timeout: dashboardTimeout
+  })
+}
+
+export async function gotoSiteDashboard(page: Page, domain: string) {
+  await page.goto('/' + domain, { waitUntil: 'commit' })
+  await expect(page.locator('#visitors')).toBeVisible({
+    timeout: dashboardTimeout
+  })
+}
+
 export function randomID() {
   return Math.random().toString(16).slice(2)
 }

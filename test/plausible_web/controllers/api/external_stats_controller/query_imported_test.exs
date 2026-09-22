@@ -341,6 +341,42 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
     end
   end
 
+  describe "timeseries with imported data" do
+    setup :create_site_import
+
+    test "views_per_visit breakdown by time:month", %{
+      conn: conn,
+      site: site,
+      site_import: site_import
+    } do
+      populate_stats(site, site_import.id, [
+        # January 2021 - only imported
+        build(:imported_visitors, date: ~D[2021-01-01], visits: 6, pageviews: 7),
+        # March 2021 - imported + native combined
+        build(:imported_visitors, date: ~D[2021-03-01], visits: 1, pageviews: 4),
+        build(:pageview, user_id: 1, timestamp: ~N[2021-03-15 00:00:00]),
+        build(:pageview, user_id: 1, timestamp: ~N[2021-03-15 00:05:00]),
+        # September 2021 - only native
+        build(:pageview, user_id: 2, timestamp: ~N[2021-09-01 00:00:00])
+      ])
+
+      conn =
+        post(conn, "/api/v2/query", %{
+          "site_id" => site.domain,
+          "metrics" => ["views_per_visit"],
+          "date_range" => ["2021-01-01", "2021-12-31"],
+          "dimensions" => ["time:month"],
+          "include" => %{"imports" => true}
+        })
+
+      assert json_response(conn, 200)["results"] == [
+               %{"dimensions" => ["2021-01-01"], "metrics" => [1.17]},
+               %{"dimensions" => ["2021-03-01"], "metrics" => [3.0]},
+               %{"dimensions" => ["2021-09-01"], "metrics" => [1.0]}
+             ]
+    end
+  end
+
   test "breaks down all metrics by visit:referrer with imported data", %{conn: conn, site: site} do
     site_import =
       insert(:site_import,
@@ -683,25 +719,25 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
                breakdown_and_first.("visit:source")
     end
 
-    for goal_name <- Plausible.Goals.SystemGoals.goals_with_url() do
-      test "returns url breakdown for #{goal_name} goal", %{conn: conn, site: site} do
-        insert(:goal, event_name: unquote(goal_name), site: site)
+    for event_name <- Plausible.Event.SystemEvents.events_with_url_prop() do
+      test "returns url breakdown for #{event_name} goal", %{conn: conn, site: site} do
+        insert(:goal, event_name: unquote(event_name), site: site)
         site_import = insert(:site_import, site: site)
 
         populate_stats(site, site_import.id, [
           build(:event,
-            name: unquote(goal_name),
+            name: unquote(event_name),
             "meta.key": ["url"],
             "meta.value": ["https://one.com"]
           ),
           build(:imported_custom_events,
-            name: unquote(goal_name),
+            name: unquote(event_name),
             visitors: 2,
             events: 5,
             link_url: "https://one.com"
           ),
           build(:imported_custom_events,
-            name: unquote(goal_name),
+            name: unquote(event_name),
             visitors: 5,
             events: 10,
             link_url: "https://two.com"
@@ -721,7 +757,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
             "date_range" => "all",
             "dimensions" => ["event:props:url"],
             "filters" => [
-              ["is", "event:goal", [unquote(goal_name)]]
+              ["is", "event:goal", [unquote(event_name)]]
             ],
             "include" => %{"imports" => true}
           })
@@ -736,25 +772,25 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
       end
     end
 
-    for goal_name <- Plausible.Goals.SystemGoals.goals_with_path() do
-      test "returns path breakdown for #{goal_name} goal", %{conn: conn, site: site} do
-        insert(:goal, event_name: unquote(goal_name), site: site)
+    for event_name <- Plausible.Event.SystemEvents.events_with_path_prop() do
+      test "returns path breakdown for #{event_name} goal", %{conn: conn, site: site} do
+        insert(:goal, event_name: unquote(event_name), site: site)
         site_import = insert(:site_import, site: site)
 
         populate_stats(site, site_import.id, [
           build(:event,
-            name: unquote(goal_name),
+            name: unquote(event_name),
             "meta.key": ["path"],
             "meta.value": ["/one"]
           ),
           build(:imported_custom_events,
-            name: unquote(goal_name),
+            name: unquote(event_name),
             visitors: 2,
             events: 5,
             path: "/one"
           ),
           build(:imported_custom_events,
-            name: unquote(goal_name),
+            name: unquote(event_name),
             visitors: 5,
             events: 10,
             path: "/two"
@@ -774,7 +810,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
             "date_range" => "all",
             "dimensions" => ["event:props:path"],
             "filters" => [
-              ["is", "event:goal", [unquote(goal_name)]]
+              ["is", "event:goal", [unquote(event_name)]]
             ],
             "include" => %{"imports" => true}
           })
@@ -1296,11 +1332,12 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
     end
   end
 
-  describe "scroll depth metric warnings" do
-    test "returns warning when a site_import without scroll depth is in queried range", %{
-      conn: conn,
-      site: site
-    } do
+  describe "metric warnings" do
+    test "returns scroll_depth warning when a site_import without scroll depth is in queried range",
+         %{
+           conn: conn,
+           site: site
+         } do
       site_import =
         insert(:site_import, site: site, start_date: ~D[2021-02-01], end_date: ~D[2021-02-28])
 
@@ -1336,7 +1373,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
              }
     end
 
-    test "does not return warning when imports requested but rejected", %{
+    test "does not return scroll depth warning when imports requested but rejected", %{
       conn: conn,
       site: site
     } do
@@ -1372,7 +1409,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
       refute meta["metric_warnings"]["scroll_depth"]
     end
 
-    test "does not return warning when imports without scroll depth exist but outside the queried range",
+    test "does not return scroll_depth warning when imports without scroll depth exist but outside the queried range",
          %{
            conn: conn,
            site: site
@@ -1404,7 +1441,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
       refute meta["metric_warnings"]["scroll_depth"]
     end
 
-    test "does not return warning when imported scroll depth exists", %{
+    test "does not return scroll_depth warning when imported scroll depth exists", %{
       conn: conn,
       site: site
     } do
@@ -1448,6 +1485,192 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryImportedTest do
 
       assert meta["imports_included"]
       refute meta["metric_warnings"]["scroll_depth"]
+    end
+
+    test "returns bounce_rate warning when query includes imported and page filter used", %{
+      conn: conn,
+      site: site
+    } do
+      site_import =
+        insert(:site_import, site: site, start_date: ~D[2021-02-01], end_date: ~D[2021-02-28])
+
+      populate_stats(site, site_import.id, [
+        build(:pageview, user_id: 123, pathname: "/", timestamp: ~N[2021-02-01 00:00:00]),
+        build(:pageview, user_id: 123, pathname: "/next", timestamp: ~N[2021-02-01 00:10:00]),
+        build(:pageview, pathname: "/", timestamp: ~N[2021-02-01 00:00:00]),
+        build(:imported_pages, page: "/", date: ~D[2021-02-01]),
+        build(:imported_pages, pageviews: 3, page: "/", date: ~D[2021-02-02]),
+        build(:imported_visitors, date: ~D[2021-02-01]),
+        build(:imported_visitors, pageviews: 3, date: ~D[2021-02-02])
+      ])
+
+      conn =
+        post(conn, "/api/v2/query", %{
+          "site_id" => site.domain,
+          "metrics" => ["visitors", "pageviews", "bounce_rate"],
+          "date_range" => "all",
+          "filters" => [["is", "event:page", ["/"]]],
+          "include" => %{"imports" => true}
+        })
+
+      assert %{"results" => results, "meta" => meta} = json_response(conn, 200)
+
+      assert results == [%{"dimensions" => [], "metrics" => [4, 6, 50.0]}]
+
+      assert meta["imports_included"] == true
+
+      assert bounce_rate_warning = meta["metric_warnings"]["bounce_rate"]
+
+      expected_warning = Plausible.Stats.QueryResult.no_imported_bounce_rate_warning()
+      assert bounce_rate_warning["code"] == to_string(expected_warning.code)
+      assert bounce_rate_warning["warning"] == expected_warning.warning
+    end
+
+    test "returns bounce_rate warning when query includes imported and page dimension used", %{
+      conn: conn,
+      site: site
+    } do
+      site_import =
+        insert(:site_import, site: site, start_date: ~D[2021-02-01], end_date: ~D[2021-02-28])
+
+      populate_stats(site, site_import.id, [
+        build(:pageview, user_id: 123, pathname: "/", timestamp: ~N[2021-02-01 00:00:00]),
+        build(:pageview, user_id: 123, pathname: "/next", timestamp: ~N[2021-02-01 00:10:00]),
+        build(:pageview, pathname: "/", timestamp: ~N[2021-02-01 00:00:00]),
+        build(:imported_pages, page: "/", date: ~D[2021-02-01]),
+        build(:imported_pages, pageviews: 3, page: "/", date: ~D[2021-02-02]),
+        build(:imported_visitors, date: ~D[2021-02-01]),
+        build(:imported_visitors, pageviews: 3, date: ~D[2021-02-02])
+      ])
+
+      conn =
+        post(conn, "/api/v2/query", %{
+          "site_id" => site.domain,
+          "metrics" => ["visitors", "pageviews", "bounce_rate"],
+          "date_range" => "all",
+          "dimensions" => ["event:page"],
+          "include" => %{"imports" => true}
+        })
+
+      assert %{"results" => results, "meta" => meta} = json_response(conn, 200)
+
+      assert results == [
+               %{"dimensions" => ["/"], "metrics" => [4, 6, 50.0]},
+               %{"dimensions" => ["/next"], "metrics" => [1, 1, 0.0]}
+             ]
+
+      assert meta["imports_included"] == true
+
+      assert bounce_rate_warning = meta["metric_warnings"]["bounce_rate"]
+
+      expected_warning = Plausible.Stats.QueryResult.no_imported_bounce_rate_warning()
+      assert bounce_rate_warning["code"] == to_string(expected_warning.code)
+      assert bounce_rate_warning["warning"] == expected_warning.warning
+    end
+  end
+
+  describe "order_by" do
+    test "bounce_rate", %{site: site, conn: conn} do
+      site_import =
+        insert(:site_import, site: site, start_date: ~D[2021-01-01], end_date: ~D[2021-02-28])
+
+      populate_stats(site, site_import.id, [
+        build(:pageview, user_id: 123, pathname: "/a", timestamp: ~N[2021-01-01 00:00:00]),
+        build(:imported_entry_pages,
+          entry_page: "/a",
+          entrances: 2,
+          bounces: 1,
+          date: ~D[2021-01-01]
+        ),
+        build(:imported_entry_pages,
+          entry_page: "/b",
+          entrances: 4,
+          bounces: 1,
+          date: ~D[2021-01-01]
+        )
+      ])
+
+      conn =
+        post(conn, "/api/v2/query", %{
+          "site_id" => site.domain,
+          "metrics" => ["bounce_rate"],
+          "order_by" => [["bounce_rate", "asc"]],
+          "date_range" => "all",
+          "dimensions" => ["visit:entry_page"],
+          "include" => %{"imports" => true}
+        })
+
+      response = json_response(conn, 200)
+
+      assert [
+               %{"dimensions" => ["/b"], "metrics" => [25.0]},
+               %{"dimensions" => ["/a"], "metrics" => [67.0]}
+             ] = response["results"]
+    end
+
+    test "visit_duration", %{site: site, conn: conn} do
+      site_import =
+        insert(:site_import, site: site, start_date: ~D[2021-01-01], end_date: ~D[2021-02-28])
+
+      populate_stats(site, site_import.id, [
+        build(:pageview, user_id: 123, pathname: "/a", timestamp: ~N[2021-01-01 00:00:00]),
+        build(:imported_exit_pages,
+          exit_page: "/a",
+          exits: 2,
+          visit_duration: 90,
+          date: ~D[2021-01-01]
+        ),
+        build(:imported_exit_pages,
+          exit_page: "/b",
+          exits: 4,
+          visit_duration: 400,
+          date: ~D[2021-01-01]
+        )
+      ])
+
+      conn =
+        post(conn, "/api/v2/query", %{
+          "site_id" => site.domain,
+          "metrics" => ["visit_duration"],
+          "order_by" => [["visit_duration", "desc"]],
+          "dimensions" => ["visit:exit_page"],
+          "date_range" => "all",
+          "include" => %{"imports" => true}
+        })
+
+      response = json_response(conn, 200)
+
+      assert [
+               %{"dimensions" => ["/b"], "metrics" => [100.0]},
+               %{"dimensions" => ["/a"], "metrics" => [30.0]}
+             ] = response["results"]
+    end
+
+    test "views_per_visit", %{site: site, conn: conn} do
+      site_import =
+        insert(:site_import, site: site, start_date: ~D[2021-01-01], end_date: ~D[2021-02-28])
+
+      populate_stats(site, site_import.id, [
+        build(:pageview, user_id: 123, pathname: "/a", timestamp: ~N[2021-01-01 00:00:00]),
+        build(:imported_visitors,
+          visits: 1,
+          pageviews: 3,
+          date: ~D[2021-01-01]
+        )
+      ])
+
+      conn =
+        post(conn, "/api/v2/query", %{
+          "site_id" => site.domain,
+          "metrics" => ["views_per_visit"],
+          "order_by" => [["views_per_visit", "asc"]],
+          "date_range" => "all",
+          "include" => %{"imports" => true}
+        })
+
+      response = json_response(conn, 200)
+
+      assert [%{"dimensions" => [], "metrics" => [2.0]}] = response["results"]
     end
   end
 

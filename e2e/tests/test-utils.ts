@@ -21,7 +21,10 @@ export const header = (report: Locator, label: HasTextArg) =>
     .getByRole('button')
 
 export const scrollReportIntoView = async (report: Locator) => {
-  await report.getByTestId('report-end').scrollIntoViewIfNeeded()
+  const reportEnd = report.getByTestId('report-end')
+  if ((await reportEnd.count()) > 0) {
+    await reportEnd.scrollIntoViewIfNeeded()
+  }
 }
 
 export const expectHeaders = async (report: Locator, headers: HaveTextArg) => {

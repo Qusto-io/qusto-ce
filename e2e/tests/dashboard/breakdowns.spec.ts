@@ -11,7 +11,8 @@ import {
   detailsLink,
   closeModalButton,
   header,
-  searchInput
+  searchInput,
+  scrollReportIntoView
 } from '../test-utils'
 
 test('sources breakdown', async ({ page, request }) => {
@@ -91,8 +92,8 @@ test('sources breakdown', async ({ page, request }) => {
 
     await expectRows(modal(page), [
       'DuckDuckGo',
-      'Direct / None',
       'Facebook',
+      'Google',
       'ablog.example.com',
       'theguardian.com'
     ])
@@ -532,6 +533,7 @@ test('pages breakdown modal', async ({ page, request }) => {
   await pagesTabButton.scrollIntoViewIfNeeded()
   await expect(pagesTabButton).toHaveAttribute('data-active', 'true')
 
+  await scrollReportIntoView(report)
   await detailsLink(report).click()
 
   await expect(

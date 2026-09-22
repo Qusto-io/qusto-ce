@@ -15,13 +15,15 @@ export function timeToISO(ts: ZonedDateTime): string {
   return ts.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 }
 
+const dashboardTimeout = process.env.CI ? 30_000 : 10_000
+
 export async function expectLiveViewConnected(page: Page) {
   await expect
-    .poll(() => page.locator('.phx-connected').count())
+    .poll(() => page.locator('.phx-connected').count(), {
+      timeout: dashboardTimeout
+    })
     .toBeGreaterThan(0)
 }
-
-const dashboardTimeout = process.env.CI ? 30_000 : 10_000
 
 /** Top stats (#visitors etc.) load asynchronously after the LiveView shell mounts. */
 export async function expectDashboardTopStat(

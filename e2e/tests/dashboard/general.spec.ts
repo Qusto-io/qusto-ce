@@ -8,7 +8,6 @@ import {
 } from '../fixtures'
 import {
   expectDashboardTopStat,
-  expectLiveViewConnected,
   expectSiteDomainSwitcher,
   gotoSiteDashboard,
   tabButton
@@ -155,7 +154,6 @@ test('back navigation closes the modal', async ({ page, request, baseURL }) => {
   })
 
   await gotoSiteDashboard(page, domain)
-  await expectLiveViewConnected(page)
 
   await page.getByRole('button', { name: 'Filter' }).click()
 

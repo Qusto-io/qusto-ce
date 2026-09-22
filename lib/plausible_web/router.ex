@@ -74,6 +74,7 @@ defmodule PlausibleWeb.Router do
     plug PlausibleWeb.AuthPlug
     plug PlausibleWeb.Plugs.AuthorizeSiteAccess
     plug PlausibleWeb.Plugs.NoRobots
+    plug PlausibleWeb.Plugs.InternalStatsApiVersion
   end
 
   pipeline :docs_stats_api do
@@ -109,14 +110,17 @@ defmodule PlausibleWeb.Router do
   end
 
   on_ee do
-    scope alias: PlausibleWeb.Live,
-          assigns: %{connect_live_socket: true, skip_plausible_tracking: true} do
-      pipe_through [:browser, :csrf, :app_layout, :flags]
+    live_session :customer_support,
+      on_mount: PlausibleWeb.Live.SuperAdminLiveAuth do
+      scope alias: PlausibleWeb.Live,
+            assigns: %{connect_live_socket: true, skip_plausible_tracking: true} do
+        pipe_through [:browser, :csrf, :app_layout, :flags]
 
-      live "/cs", CustomerSupport, :index, as: :customer_support
-      live "/cs/teams/team/:id", CustomerSupport.Team, :show, as: :customer_support_team
-      live "/cs/users/user/:id", CustomerSupport.User, :show, as: :customer_support_user
-      live "/cs/sites/site/:id", CustomerSupport.Site, :show, as: :customer_support_site
+        live "/cs", CustomerSupport, :index, as: :customer_support
+        live "/cs/teams/team/:id", CustomerSupport.Team, :show, as: :customer_support_team
+        live "/cs/users/user/:id", CustomerSupport.User, :show, as: :customer_support_user
+        live "/cs/sites/site/:id", CustomerSupport.Site, :show, as: :customer_support_site
+      end
     end
   end
 
@@ -270,34 +274,20 @@ defmodule PlausibleWeb.Router do
     scope "/stats", PlausibleWeb.Api do
       on_ee do
         get "/:domain/funnels/:id", StatsController, :funnel
+
+        post "/:domain/exploration/next", StatsController, :exploration_next
+        post "/:domain/exploration/funnel", StatsController, :exploration_funnel
+
+        post "/:domain/exploration/next-with-funnel",
+             StatsController,
+             :exploration_next_with_funnel
       end
 
       scope private: %{allow_consolidated_views: true} do
         post "/:domain/query", StatsController, :query
+        post "/:domain/export", StatsController, :csv_export
+        get "/:domain/google-search-terms", StatsController, :google_search_terms
         get "/:domain/current-visitors", StatsController, :current_visitors
-        get "/:domain/main-graph", StatsController, :main_graph
-        get "/:domain/top-stats", StatsController, :top_stats
-        get "/:domain/sources", StatsController, :sources
-        get "/:domain/channels", StatsController, :channels
-        get "/:domain/utm_mediums", StatsController, :utm_mediums
-        get "/:domain/utm_sources", StatsController, :utm_sources
-        get "/:domain/utm_campaigns", StatsController, :utm_campaigns
-        get "/:domain/utm_contents", StatsController, :utm_contents
-        get "/:domain/utm_terms", StatsController, :utm_terms
-        get "/:domain/referrers/:referrer", StatsController, :referrer_drilldown
-        get "/:domain/pages", StatsController, :pages
-        get "/:domain/entry-pages", StatsController, :entry_pages
-        get "/:domain/exit-pages", StatsController, :exit_pages
-        get "/:domain/countries", StatsController, :countries
-        get "/:domain/regions", StatsController, :regions
-        get "/:domain/cities", StatsController, :cities
-        get "/:domain/browsers", StatsController, :browsers
-        get "/:domain/browser-versions", StatsController, :browser_versions
-        get "/:domain/operating-systems", StatsController, :operating_systems
-        get "/:domain/operating-system-versions", StatsController, :operating_system_versions
-        get "/:domain/screen-sizes", StatsController, :screen_sizes
-        get "/:domain/conversions", StatsController, :conversions
-        get "/:domain/custom-prop-values/:prop_key", StatsController, :custom_prop_values
         get "/:domain/suggestions/:filter_name", StatsController, :filter_suggestions
 
         get "/:domain/suggestions/custom-prop-values/:prop_key",
@@ -534,7 +524,6 @@ defmodule PlausibleWeb.Router do
       get "/sso/notice", SSOController, :provision_notice
       get "/sso/issue", SSOController, :provision_issue
       get "/logout", AuthController, :logout
-      get "/team/select", AuthController, :select_team
     end
 
     scope "/", PlausibleWeb do
@@ -551,7 +540,6 @@ defmodule PlausibleWeb.Router do
 
     on_ce do
       get "/logout", AuthController, :logout
-      get "/team/select", AuthController, :select_team
     end
 
     delete "/me", AuthController, :delete_me
@@ -559,25 +547,6 @@ defmodule PlausibleWeb.Router do
     get "/auth/google/callback", AuthController, :google_auth_callback
 
     get "/", PageController, :index
-
-    # Marketing Pages
-    get "/product", MarketingController, :product_overview
-    get "/product/ecommerce", MarketingController, :ecommerce
-    get "/product/ai-search", MarketingController, :ai_search
-    get "/product/funnels", MarketingController, :funnels
-    get "/product/privacy", MarketingController, :privacy
-    get "/pricing", MarketingController, :pricing
-    get "/about", MarketingController, :about
-    get "/contact", MarketingController, :contact
-
-    # Legal Pages
-    get "/privacy-policy", MarketingController, :privacy_policy
-    get "/terms", MarketingController, :terms
-    get "/gdpr", MarketingController, :gdpr
-
-    # Blog
-    get "/blog", BlogController, :index
-    get "/blog/:id", BlogController, :show
 
     get "/billing/change-plan/preview/:plan_id", BillingController, :change_plan_preview
     post "/billing/change-plan/:new_plan_id", BillingController, :change_plan
@@ -606,12 +575,6 @@ defmodule PlausibleWeb.Router do
     post "/sites/invitations/:invitation_id/reject", InvitationController, :reject_invitation
 
     delete "/sites/:domain/invitations/:invitation_id", InvitationController, :remove_invitation
-
-    get "/sites/:domain/transfer-ownership", Site.MembershipController, :transfer_ownership_form
-    post "/sites/:domain/transfer-ownership", Site.MembershipController, :transfer_ownership
-
-    get "/sites/:domain/change-team", Site.MembershipController, :change_team_form
-    post "/sites/:domain/change-team", Site.MembershipController, :change_team
 
     put "/sites/:domain/memberships/u/:id/role/:new_role",
         Site.MembershipController,
@@ -733,7 +696,7 @@ defmodule PlausibleWeb.Router do
 
       put "/:domain/settings", SiteController, :update_settings
 
-      get "/:domain/export", StatsController, :csv_export
+      get "/:domain", StatsController, :stats
       get "/:domain/*path", StatsController, :stats
     end
   end

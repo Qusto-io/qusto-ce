@@ -205,13 +205,35 @@ defmodule PlausibleWeb.Live.Sites do
             <Heroicons.plus class="size-4" /> Add website
           </.button_link>
           <.button_link
-            :if={not Teams.setup?(@current_team) and @has_sites?}
-            href={Routes.auth_path(@socket, :select_team)}
+            :if={not Teams.setup?(@current_team) and @has_sites? and length(@teams) == 1}
+            href={Routes.site_path(@socket, :index, __team: hd(@teams).identifier)}
             theme="secondary"
             mt?={false}
           >
             Go to team sites
           </.button_link>
+
+          <PrimaDropdown.dropdown
+            :if={not Teams.setup?(@current_team) and @has_sites? and length(@teams) > 1}
+            id="go-to-team-dropdown"
+          >
+            <PrimaDropdown.dropdown_trigger id="go-to-team-dropdown-trigger" theme="secondary">
+              Go to team sites <Heroicons.chevron_down mini class="size-4 mt-0.5" />
+            </PrimaDropdown.dropdown_trigger>
+
+            <PrimaDropdown.dropdown_menu id="go-to-team-dropdown-menu">
+              <div class="max-h-[200px] overflow-y-auto">
+                <PrimaDropdown.dropdown_item
+                  :for={team <- @teams}
+                  as={&link/1}
+                  id={"go-to-team-dropdown-menuitem-#{team.identifier}"}
+                  href={Routes.site_path(@socket, :index, __team: team.identifier)}
+                >
+                  {Teams.name(team)}
+                </PrimaDropdown.dropdown_item>
+              </div>
+            </PrimaDropdown.dropdown_menu>
+          </PrimaDropdown.dropdown>
         </div>
       </div>
 
@@ -416,7 +438,7 @@ defmodule PlausibleWeb.Live.Sites do
     >
       <.unstyled_link
         href={Routes.stats_path(PlausibleWeb.Endpoint, :stats, @consolidated_view.domain, [])}
-        class="flex flex-col justify-between gap-6 h-full bg-white p-6 dark:bg-[var(--color-dark-bg-card)] rounded-md shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-150"
+        class="flex flex-col justify-between gap-6 h-full bg-white p-6 dark:bg-gray-900 rounded-md shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-150"
       >
         <div class="flex flex-col flex-1 justify-between gap-y-5">
           <div class="flex flex-col gap-y-2 mb-auto">
@@ -429,7 +451,7 @@ defmodule PlausibleWeb.Live.Sites do
           </div>
           <span
             :if={is_map(@consolidated_sparkline)}
-            class="max-w-sm sm:max-w-none text-[var(--qusto-primary)] my-auto"
+            class="h-[48px] max-w-sm sm:max-w-none text-indigo-500 my-auto"
             data-test-id="consolidated-view-chart-loaded"
           >
             <PlausibleWeb.Live.Components.Visitors.chart
@@ -470,7 +492,7 @@ defmodule PlausibleWeb.Live.Sites do
         </div>
         <div
           :if={@consolidated_sparkline == :loading}
-          class="flex flex-col gap-y-2 min-h-[254px] h-full text-center animate-pulse"
+          class="flex flex-col gap-y-2 h-[290px] sm:h-[236px] text-center animate-pulse"
           data-test-id="consolidated-viw-stats-loading"
         >
           <div class="flex-2 dark:bg-gray-750 bg-gray-100 rounded-md"></div>
@@ -534,7 +556,7 @@ defmodule PlausibleWeb.Live.Sites do
         href={Routes.stats_path(PlausibleWeb.Endpoint, :stats, @site.domain, [])}
         class="block group-has-[.phx-click-loading]/sort:animate-pulse group-has-[.phx-click-loading]/sort:pointer-events-none"
       >
-        <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-[var(--color-dark-bg-card)] rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
+        <div class="col-span-1 flex flex-col gap-y-5 bg-white dark:bg-gray-900 rounded-md shadow-sm p-6 group-hover:shadow-lg cursor-pointer transition duration-100">
           <div class="w-full flex items-center justify-between gap-x-2.5">
             <.favicon domain={@site.domain} />
             <div class="flex-1 w-full">
@@ -551,7 +573,10 @@ defmodule PlausibleWeb.Live.Sites do
       </.unstyled_link>
 
       <div class="absolute right-1 top-3.5">
-        <.ellipsis_menu site={@site} can_manage?={List.first(@site.memberships).role != :viewer} />
+        <.ellipsis_menu
+          site={@site}
+          can_manage?={List.first(@site.memberships).role in [:owner, :admin, :editor]}
+        />
       </div>
     </li>
     """
@@ -578,7 +603,7 @@ defmodule PlausibleWeb.Live.Sites do
       >
         <PlausibleWeb.Components.Icons.pin_icon
           filled={true}
-          class="size-4.5 pb-px shrink-0 text-indigo-600 dark:text-[var(--qusto-primary)]"
+          class="size-4.5 pb-px shrink-0 text-indigo-600 dark:text-indigo-500"
         />
       </button>
 
@@ -646,7 +671,7 @@ defmodule PlausibleWeb.Live.Sites do
   def site_stats(assigns) do
     ~H"""
     <div class={[
-      "flex flex-col gap-y-2 h-[122px] text-center animate-pulse",
+      "flex flex-col gap-y-2 h-[116px] text-center animate-pulse",
       is_map(@sparkline) && " hidden"
     ]}>
       <div class="flex-2 dark:bg-gray-750 bg-gray-100 rounded-md"></div>
@@ -654,7 +679,7 @@ defmodule PlausibleWeb.Live.Sites do
     </div>
     <div :if={is_map(@sparkline)}>
       <span class="flex flex-col gap-y-5 text-gray-600 dark:text-gray-400 text-sm truncate">
-        <span class="max-w-sm sm:max-w-none text-[var(--qusto-primary)]">
+        <span class="h-[48px] max-w-sm sm:max-w-none text-indigo-500">
           <PlausibleWeb.Live.Components.Visitors.chart
             intervals={@sparkline.intervals}
             height={80}
@@ -807,39 +832,7 @@ defmodule PlausibleWeb.Live.Sites do
     site = Enum.find(socket.assigns.sites.entries, &(&1.domain == domain))
 
     if site do
-      socket =
-        case Sites.toggle_pin(socket.assigns.current_user, site) do
-          {:ok, preference} ->
-            flash_message =
-              if preference.pinned_at do
-                "Site pinned"
-              else
-                "Site unpinned"
-              end
-
-            socket
-            |> put_live_flash(:success, flash_message)
-            |> refresh_index_pins()
-            |> load_page()
-            |> push_event("js-exec", %{
-              to: "#site-card-#{hash_domain(site.domain)}",
-              attr: "data-pin-toggled"
-            })
-
-          {:error, :too_many_pins} ->
-            flash_message =
-              "Looks like you've hit the pinned sites limit! " <>
-                "Please unpin one of your pinned sites to make room for new pins"
-
-            socket
-            |> put_live_flash(:error, flash_message)
-            |> push_event("js-exec", %{
-              to: "#site-card-#{hash_domain(site.domain)}",
-              attr: "data-pin-failed"
-            })
-        end
-
-      {:noreply, socket}
+      {:noreply, apply_pin_toggle(socket, site)}
     else
       Sentry.capture_message("Attempting to toggle pin for invalid domain.",
         extra: %{domain: domain, user: socket.assigns.current_user.id}
@@ -905,6 +898,34 @@ defmodule PlausibleWeb.Live.Sites do
         )
 
       {:noreply, assign(socket, :consolidated_view_cta_dismissed?, false)}
+    end
+  end
+
+  defp apply_pin_toggle(socket, site) do
+    case Sites.toggle_pin(socket.assigns.current_user, site) do
+      {:ok, preference} ->
+        flash_message = if preference.pinned_at, do: "Site pinned", else: "Site unpinned"
+
+        socket
+        |> put_live_flash(:success, flash_message)
+        |> refresh_index_pins()
+        |> load_page()
+        |> push_event("js-exec", %{
+          to: "#site-card-#{hash_domain(site.domain)}",
+          attr: "data-pin-toggled"
+        })
+
+      {:error, :too_many_pins} ->
+        flash_message =
+          "Looks like you've hit the pinned sites limit! " <>
+            "Please unpin one of your pinned sites to make room for new pins"
+
+        socket
+        |> put_live_flash(:error, flash_message)
+        |> push_event("js-exec", %{
+          to: "#site-card-#{hash_domain(site.domain)}",
+          attr: "data-pin-failed"
+        })
     end
   end
 

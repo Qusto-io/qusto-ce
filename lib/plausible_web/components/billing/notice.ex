@@ -289,7 +289,7 @@ defmodule PlausibleWeb.Components.Billing.Notice do
             Upgrade
           </.button_link>
           <.button_link
-            href="https://plausible.io/docs/subscription-plans"
+            href="https://docs.qusto.io/subscription-plans"
             theme="secondary"
             mt?={false}
           >
@@ -362,7 +362,7 @@ defmodule PlausibleWeb.Components.Billing.Notice do
             Upgrade
           </.button_link>
           <.button_link
-            href="https://plausible.io/docs/subscription-plans"
+            href="https://docs.qusto.io/subscription-plans"
             theme="secondary"
             mt?={false}
           >
@@ -386,7 +386,7 @@ defmodule PlausibleWeb.Components.Billing.Notice do
             Upgrade
           </.button_link>
           <.button_link
-            href="https://plausible.io/docs/subscription-plans"
+            href="https://docs.qusto.io/subscription-plans"
             theme="secondary"
             mt?={false}
           >
@@ -410,7 +410,7 @@ defmodule PlausibleWeb.Components.Billing.Notice do
             Upgrade
           </.button_link>
           <.button_link
-            href="https://plausible.io/docs/subscription-plans"
+            href="https://docs.qusto.io/subscription-plans"
             theme="secondary"
             mt?={false}
           >
@@ -454,7 +454,7 @@ defmodule PlausibleWeb.Components.Billing.Notice do
             Upgrade
           </.button_link>
           <.button_link
-            href="https://plausible.io/docs/subscription-plans"
+            href="https://docs.qusto.io/subscription-plans"
             theme="secondary"
             mt?={false}
           >
@@ -478,7 +478,7 @@ defmodule PlausibleWeb.Components.Billing.Notice do
             Upgrade
           </.button_link>
           <.button_link
-            href="https://plausible.io/docs/subscription-plans"
+            href="https://docs.qusto.io/subscription-plans"
             theme="secondary"
             mt?={false}
           >

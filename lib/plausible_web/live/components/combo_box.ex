@@ -188,7 +188,7 @@ defmodule PlausibleWeb.Live.Components.ComboBox do
       x-show="isOpen"
       x-ref="suggestions"
       class={[
-        "text-sm w-full dropdown z-50 absolute mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1/5 ring-black focus:outline-hidden dark:bg-[var(--color-dark-bg-elevated)]",
+        "text-sm w-full dropdown z-50 absolute mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1/5 ring-black focus:outline-hidden dark:bg-gray-800",
         @dropdown_class
       ]}
       style="display: none;"

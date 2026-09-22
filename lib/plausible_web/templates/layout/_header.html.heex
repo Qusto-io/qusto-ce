@@ -34,7 +34,7 @@
               <ul class="flex items-center gap-2 w-full sm:w-auto">
                 <li :if={
                   ee?() && @conn.assigns[:site] &&
-                    Plausible.Auth.is_super_admin?(@conn.assigns[:current_user])
+                    Plausible.Auth.super_admin?(@conn.assigns[:current_user])
                 }>
                   <.styled_link
                     class="text-sm mr-6"
@@ -45,7 +45,10 @@
                   </.styled_link>
                 </li>
                 <li
-                  :if={ee?() and Plausible.Teams.on_trial?(@conn.assigns[:current_team])}
+                  :if={
+                    ee?() and Plausible.Teams.on_trial?(@conn.assigns[:current_team]) and
+                      @conn.assigns[:current_team_role] in Plausible.Billing.allowed_roles()
+                  }
                   class="hidden sm:block"
                 >
                   <div class="flex items-center p-1 rounded-lg bg-yellow-100 dark:bg-yellow-600/35 overflow-hidden">
@@ -88,7 +91,6 @@
                         teams={@teams}
                         my_team={@my_team}
                         current_team={@current_team}
-                        more_teams?={@more_teams?}
                       />
                       <.dropdown_divider />
                       <.dropdown_item href={Routes.settings_path(@conn, :index)}>

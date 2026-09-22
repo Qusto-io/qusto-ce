@@ -21,6 +21,7 @@ type Event = {
   name: string
   user_id?: number
   scroll_depth?: number
+  engagement_time?: number
   revenue_reporting_amount?: string
   revenue_reporting_currency?: string
   pathname?: string
@@ -168,6 +169,8 @@ export async function makeSitePublic({
 }) {
   await page.goto(`/${domain}/settings/visibility`, { waitUntil: 'commit' })
 
+  await expectLiveViewConnected(page)
+
   await page
     .getByRole('form', { name: 'Make stats publicly available' })
     .getByRole('button')
@@ -191,6 +194,8 @@ export async function createSharedLink({
   const table = page.locator('#shared-links-table')
 
   await page.goto(`/${domain}/settings/visibility`, { waitUntil: 'commit' })
+
+  await expectLiveViewConnected(page)
 
   await page.getByRole('button', { name: 'Add shared link' }).click()
 

@@ -53,7 +53,7 @@ defmodule PlausibleWeb.Live.Installation do
         end
       else
         # On Community Edition, there's no v1 detection, nor pre-installation
-        # site scan - we just default the preselected tab to "manual".
+        # site scan - we just default the pre-selected tab to "manual".
 
         # Although it's functionally unnecessary, we stick to using `%AsyncResult{}`
         # for these assigns to minimize branching out the CE code and maintain only
@@ -114,7 +114,7 @@ defmodule PlausibleWeb.Live.Installation do
           <:loading>
             <div class="text-center text-gray-500">
               {if(@flow == Flows.review(),
-                do: "Scanning your site to detect how Qusto is integrated...",
+                do: "Scanning your site to detect how Plausible is integrated...",
                 else: "Determining the simplest integration path for your website..."
               )}
             </div>
@@ -179,7 +179,16 @@ defmodule PlausibleWeb.Live.Installation do
             <% end %>
             <Instructions.npm_instructions :if={@installation_type.result == "npm"} />
 
-            <.button type="submit" class="w-full mt-8">
+            <.button
+              type="submit"
+              class={
+                "w-full mt-8 " <>
+                  install_method_event_classes(
+                    @installation_type.result,
+                    recommended_installation_type
+                  )
+              }
+            >
               {verify_cta(@installation_type.result)}
             </.button>
           </.form>
@@ -203,6 +212,23 @@ defmodule PlausibleWeb.Live.Installation do
   defp verify_cta("wordpress"), do: "Verify WordPress installation"
   defp verify_cta("gtm"), do: "Verify Tag Manager installation"
   defp verify_cta("npm"), do: "Verify NPM installation"
+
+  defp install_method_event_classes(installation_type, recommended) do
+    method = installation_method_label(installation_type)
+    match = if installation_type == recommended, do: "true", else: "false"
+
+    Enum.join(
+      [
+        "plausible-event-name=Site+installation+method",
+        "plausible-event-method=#{method}",
+        "plausible-event-recommended_match=#{match}"
+      ],
+      " "
+    )
+  end
+
+  defp installation_method_label("manual"), do: "script"
+  defp installation_method_label(other), do: other
 
   on_ee do
     defp detect_recommended_installation_type(flow, site) do

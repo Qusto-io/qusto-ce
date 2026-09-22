@@ -193,6 +193,27 @@ defmodule Plausible.Stats.Dashboard.QueryParserTest do
     end
   end
 
+  describe "dimensions" do
+    test "parses breakdown-only dimensions" do
+      params = Map.merge(@base_params, %{"dimensions" => ["event:prop_key"]})
+      {:ok, parsed} = parse(params)
+      assert parsed.dimensions == ["event:prop_key"]
+    end
+  end
+
+  describe "order_by" do
+    test "breakdown-only dimensions can be used in order_by" do
+      params =
+        Map.merge(@base_params, %{
+          "dimensions" => ["event:prop_key"],
+          "order_by" => [["event:prop_key", "asc"]]
+        })
+
+      {:ok, parsed} = parse(params)
+      assert parsed.order_by == [{"event:prop_key", :asc}]
+    end
+  end
+
   describe "filters" do
     test "parses valid filters" do
       params =
@@ -213,6 +234,15 @@ defmodule Plausible.Stats.Dashboard.QueryParserTest do
                [:is, "visit:source", ["Bing"]],
                [:is_not, "event:props:theme", ["system", "(none)"]]
              ]
+    end
+
+    test "cannot filter by breakdown-only dimensions" do
+      params =
+        Map.merge(@base_params, %{
+          "filters" => [["is", "event:prop_key", ["author"]]]
+        })
+
+      {:error, %QueryError{code: :invalid_filters}} = parse(params)
     end
 
     test "parses city filter with multiple clauses" do
@@ -249,12 +279,20 @@ defmodule Plausible.Stats.Dashboard.QueryParserTest do
       params = Map.merge(@base_params, %{"metrics" => []})
       assert {:error, %QueryError{code: :invalid_metrics}} = parse(params)
     end
+  end
 
-    test "now can't be fixed externally" do
+  describe "fixing now" do
+    test "now can't be fixed externally via params" do
       params = Map.merge(@base_params, %{"now" => "2026-02-17T10:08:52.272894Z"})
       {:ok, parsed} = parse(params)
 
       assert parsed.now == nil
+    end
+
+    test "now can be fixed as an optional extra argument to parse/2" do
+      {:ok, parsed} = parse(@base_params, now: ~U[2026-02-17 10:08:00Z])
+
+      assert parsed.now == ~U[2026-02-17 10:08:00Z]
     end
   end
 end

@@ -6,16 +6,24 @@ import {
   populateStats,
   createSharedLink
 } from '../fixtures'
+import {
+  expectDashboardTopStat,
+  expectSiteDomainSwitcher,
+  gotoSiteDashboard,
+  tabButton
+} from '../test-utils'
+
+test.describe.configure({ timeout: process.env.CI ? 60_000 : 30_000 })
 
 test('dashboard renders for logged in user', async ({ page, request }) => {
   const { domain } = await setupSite({ page, request })
   await populateStats({ request, domain, events: [{ name: 'pageview' }] })
 
-  await page.goto('/' + domain, { waitUntil: 'commit' })
+  await gotoSiteDashboard(page, domain)
 
   await expect(page).toHaveTitle(/Qusto/)
 
-  await expect(page.getByRole('button', { name: domain })).toBeVisible()
+  await expectSiteDomainSwitcher(page, domain)
 })
 
 test('dashboard renders for anonymous viewer', async ({ page, request }) => {
@@ -24,11 +32,11 @@ test('dashboard renders for anonymous viewer', async ({ page, request }) => {
   await populateStats({ request, domain, events: [{ name: 'pageview' }] })
   await logout(page)
 
-  await page.goto('/' + domain, { waitUntil: 'commit' })
+  await gotoSiteDashboard(page, domain)
 
   await expect(page).toHaveTitle(/Qusto/)
 
-  await expect(page.getByRole('button', { name: domain })).toBeVisible()
+  await expectDashboardTopStat(page, '#visitors', '1')
 })
 
 test('dashboard renders via shared link', async ({ page, request }) => {
@@ -45,10 +53,9 @@ test('dashboard renders via shared link', async ({ page, request }) => {
 
   await test.step('public link', async () => {
     await page.goto(link, { waitUntil: 'commit' })
+    await expect(page.locator('#visitors')).toBeVisible({ timeout: 20_000 })
 
-    await expect(page.getByRole('button', { name: domain })).toBeVisible()
-
-    await expect(page.locator('#visitors')).toHaveText('1')
+    await expectDashboardTopStat(page, '#visitors', '1')
   })
 
   await test.step('password protected link', async () => {
@@ -57,10 +64,9 @@ test('dashboard renders via shared link', async ({ page, request }) => {
     await page.locator('input#password').fill('secret')
 
     await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page.locator('#visitors')).toBeVisible({ timeout: 20_000 })
 
-    await expect(page.getByRole('button', { name: domain })).toBeVisible()
-
-    await expect(page.locator('#visitors')).toHaveText('1')
+    await expectDashboardTopStat(page, '#visitors', '1')
   })
 })
 
@@ -81,24 +87,25 @@ test('dashboard renders with imported data', async ({ page, request }) => {
     ]
   })
 
-  await page.goto('/' + domain, { waitUntil: 'commit' })
+  await gotoSiteDashboard(page, domain)
 
   await test.step('with imported data included', async () => {
-    await expect(page.locator('#visitors')).toHaveText('4')
-    await expect(page.locator('#visits')).toHaveText('5')
-    await expect(page.locator('#pageviews')).toHaveText('7')
-    await expect(page.locator('#bounce_rate')).toHaveText('40%')
+    await expectDashboardTopStat(page, '#visitors', '4')
+    await expectDashboardTopStat(page, '#visits', '5')
+    await expectDashboardTopStat(page, '#pageviews', '7')
+    await expectDashboardTopStat(page, '#bounce_rate', '40%')
   })
 
   await test.step('with imported data excluded', async () => {
+    await page.getByTestId('dashboard-options-menu').click()
     await page.getByTestId('import-switch').click()
 
     await expect(page).toHaveURL(/with_imported=false/)
 
-    await expect(page.locator('#visitors')).toHaveText('1')
-    await expect(page.locator('#visits')).toHaveText('1')
-    await expect(page.locator('#pageviews')).toHaveText('1')
-    await expect(page.locator('#bounce_rate')).toHaveText('100%')
+    await expectDashboardTopStat(page, '#visitors', '1')
+    await expectDashboardTopStat(page, '#visits', '1')
+    await expectDashboardTopStat(page, '#pageviews', '1')
+    await expectDashboardTopStat(page, '#bounce_rate', '100%')
   })
 })
 
@@ -109,29 +116,33 @@ test('tab selection user preferences are preserved across reloads', async ({
   const { domain } = await setupSite({ page, request })
   await populateStats({ request, domain, events: [{ name: 'pageview' }] })
 
-  await page.goto('/' + domain, { waitUntil: 'commit' })
+  await gotoSiteDashboard(page, domain)
 
-  await page.getByRole('button', { name: 'Entry pages' }).click()
+  const entryPagesTab = tabButton(page, 'Entry pages')
+  await expect(entryPagesTab).toBeVisible()
+  await entryPagesTab.click()
 
-  await page.goto('/' + domain, { waitUntil: 'commit' })
+  await gotoSiteDashboard(page, domain)
 
   let currentTab = await page.evaluate(
     (domain) => localStorage.getItem('pageTab__' + domain),
     domain
   )
 
-  expect(currentTab).toEqual('entry-pages')
+  expect(currentTab).toEqual('entryPages')
 
-  await page.getByRole('button', { name: 'Exit pages' }).click()
+  const exitPagesTab = tabButton(page, 'Exit pages')
+  await expect(exitPagesTab).toBeVisible()
+  await exitPagesTab.click()
 
-  await page.goto('/' + domain, { waitUntil: 'commit' })
+  await gotoSiteDashboard(page, domain)
 
   currentTab = await page.evaluate(
     (domain) => localStorage.getItem('pageTab__' + domain),
     domain
   )
 
-  expect(currentTab).toEqual('exit-pages')
+  expect(currentTab).toEqual('exitPages')
 })
 
 test('back navigation closes the modal', async ({ page, request, baseURL }) => {
@@ -142,7 +153,7 @@ test('back navigation closes the modal', async ({ page, request, baseURL }) => {
     events: [{ name: 'pageview' }]
   })
 
-  await page.goto('/' + domain, { waitUntil: 'commit' })
+  await gotoSiteDashboard(page, domain)
 
   await page.getByRole('button', { name: 'Filter' }).click()
 

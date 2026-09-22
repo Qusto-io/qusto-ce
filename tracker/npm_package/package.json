@@ -1,7 +1,7 @@
 {
-  "name": "@qusto-ce/tracker",
-  "version": "0.4.4",
-  "description": "Qusto Analytics official frontend tracking library",
+  "name": "@plausible-analytics/tracker",
+  "version": "0.4.5",
+  "description": "Plausible Analytics official frontend tracking library",
   "scripts": {
     "test": "echo \"Error: Testing done in the tracker folder\" && exit 1"
   },
@@ -11,9 +11,9 @@
     "website-analytics",
     "analytics"
   ],
-  "author": "Qusto Analytics",
+  "author": "Plausible Analytics",
   "license": "MIT",
-  "homepage": "https://qusto.io",
+  "homepage": "https://plausible.io",
   "type": "module",
   "module": "./plausible.js",
   "types": "./plausible.d.ts"

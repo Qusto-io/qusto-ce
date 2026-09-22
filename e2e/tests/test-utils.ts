@@ -34,10 +34,7 @@ export async function expectDashboardTopStat(
   await expect(metric).toHaveText(text, { timeout: dashboardTimeout })
 }
 
-export async function expectSiteDomainSwitcher(
-  page: Page,
-  domain: string
-) {
+export async function expectSiteDomainSwitcher(page: Page, domain: string) {
   await expect(page.getByRole('button', { name: domain })).toBeVisible({
     timeout: dashboardTimeout
   })

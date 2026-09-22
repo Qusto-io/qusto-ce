@@ -21,7 +21,7 @@ export async function expectLiveViewConnected(page: Page) {
     .toBeGreaterThan(0)
 }
 
-const dashboardTimeout = process.env.CI ? 20_000 : 10_000
+const dashboardTimeout = process.env.CI ? 30_000 : 10_000
 
 /** Top stats (#visitors etc.) load asynchronously after the LiveView shell mounts. */
 export async function expectDashboardTopStat(

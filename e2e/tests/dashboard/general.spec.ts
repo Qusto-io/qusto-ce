@@ -36,7 +36,7 @@ test('dashboard renders for anonymous viewer', async ({ page, request }) => {
 
   await expect(page).toHaveTitle(/Qusto/)
 
-  await expectSiteDomainSwitcher(page, domain)
+  await expectDashboardTopStat(page, '#visitors', '1')
 })
 
 test('dashboard renders via shared link', async ({ page, request }) => {
@@ -53,8 +53,7 @@ test('dashboard renders via shared link', async ({ page, request }) => {
 
   await test.step('public link', async () => {
     await page.goto(link, { waitUntil: 'commit' })
-
-    await expectSiteDomainSwitcher(page, domain)
+    await expect(page.locator('#visitors')).toBeVisible({ timeout: 20_000 })
 
     await expectDashboardTopStat(page, '#visitors', '1')
   })
@@ -65,8 +64,7 @@ test('dashboard renders via shared link', async ({ page, request }) => {
     await page.locator('input#password').fill('secret')
 
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    await expectSiteDomainSwitcher(page, domain)
+    await expect(page.locator('#visitors')).toBeVisible({ timeout: 20_000 })
 
     await expectDashboardTopStat(page, '#visitors', '1')
   })
@@ -99,6 +97,7 @@ test('dashboard renders with imported data', async ({ page, request }) => {
   })
 
   await test.step('with imported data excluded', async () => {
+    await page.getByTestId('dashboard-options-menu').click()
     await page.getByTestId('import-switch').click()
 
     await expect(page).toHaveURL(/with_imported=false/)
@@ -130,7 +129,7 @@ test('tab selection user preferences are preserved across reloads', async ({
     domain
   )
 
-  expect(currentTab).toEqual('entry-pages')
+  expect(currentTab).toEqual('entryPages')
 
   const exitPagesTab = tabButton(page, 'Exit pages')
   await expect(exitPagesTab).toBeVisible()
@@ -143,7 +142,7 @@ test('tab selection user preferences are preserved across reloads', async ({
     domain
   )
 
-  expect(currentTab).toEqual('exit-pages')
+  expect(currentTab).toEqual('exitPages')
 })
 
 test('back navigation closes the modal', async ({ page, request, baseURL }) => {

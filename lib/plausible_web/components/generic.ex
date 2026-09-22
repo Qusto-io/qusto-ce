@@ -48,9 +48,21 @@ defmodule PlausibleWeb.Components.Generic do
   @button_base_class "btn-base"
 
   @button_sizes %{
+    "xs" => "btn-xs",
     "sm" => "btn-sm",
     "md" => "btn-md"
   }
+
+  attr(:class, :string, default: "")
+  slot(:inner_block, required: true)
+
+  def auth_container(assigns) do
+    ~H"""
+    <div class={["w-full max-w-md mx-auto mt-10 pb-16 px-4", @class]}>
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
 
   attr(:type, :string, default: "button")
   attr(:theme, :string, default: "primary")

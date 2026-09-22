@@ -3,6 +3,7 @@ defmodule PlausibleWeb.Components.Generic do
   Generic reusable components
   """
   use Phoenix.Component, global_prefixes: ~w(x-)
+  use PlausibleWeb.VerifiedRoutes
 
   import PlausibleWeb.Components.Icons
 
@@ -1324,6 +1325,25 @@ defmodule PlausibleWeb.Components.Generic do
     >
       {render_slot(@inner_block)}
     </span>
+    """
+  end
+
+  attr(:plan, :string, required: true)
+  attr(:color, :atom, default: :indigo, values: [:gray, :indigo, :yellow, :green, :red])
+  attr(:rest, :global)
+
+  def upgrade_pill(assigns) do
+    ~H"""
+    <.link
+      href={~p"/billing/choose-plan"}
+      class="inline-block"
+      {@rest}
+    >
+      <.pill color={@color} class="gap-x-1">
+        <.diamond_icon class="size-3.5 [&_path]:stroke-2" />
+        {@plan}
+      </.pill>
+    </.link>
     """
   end
 

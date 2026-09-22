@@ -4,6 +4,8 @@ defmodule PlausibleWeb.Email do
   """
 
   use Plausible
+  use PlausibleWeb.VerifiedRoutes
+
   import Bamboo.Email
   import Bamboo.PostmarkHelper
 
@@ -15,7 +17,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(user)
     |> tag("activation-email")
-    |> subject("#{code} is your Qusto email verification code")
+    |> subject("#{code} is your Plausible email verification code")
     |> render("activation_email.html", user: user, code: code)
   end
 
@@ -31,7 +33,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("create-site-email")
-    |> subject("Your Qusto setup: Add your website details")
+    |> subject("Add your first site to start tracking")
     |> render("create_site_email.html", user: user)
   end
 
@@ -39,7 +41,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("help-email")
-    |> subject("Your Qusto setup: Waiting for the first page views")
+    |> subject("No traffic recorded yet")
     |> render("site_setup_help_email.html",
       user: user,
       site: site,
@@ -51,11 +53,10 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("setup-success-email")
-    |> subject("Qusto is now tracking your website stats")
+    |> subject("Your first visitor just showed up")
     |> render("site_setup_success_email.html",
       user: user,
-      site: site,
-      site_team: site.team
+      site: site
     )
   end
 
@@ -63,7 +64,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("check-stats-email")
-    |> subject("Check your Qusto website stats")
+    |> subject("How Plausible is different")
     |> render("check_stats_email.html", user: user)
   end
 
@@ -79,7 +80,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(user)
     |> tag("two-factor-enabled-email")
-    |> subject("Qusto Two-Factor Authentication enabled")
+    |> subject("Plausible Two-Factor Authentication enabled")
     |> render("two_factor_enabled_email.html", user: user)
   end
 
@@ -87,7 +88,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(user)
     |> tag("two-factor-disabled-email")
-    |> subject("Qusto Two-Factor Authentication disabled")
+    |> subject("Plausible Two-Factor Authentication disabled")
     |> render("two_factor_disabled_email.html", user: user)
   end
 
@@ -182,7 +183,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(user)
     |> tag("over-limit")
-    |> subject("[Action required] You have outgrown your Qusto subscription tier")
+    |> subject("[Action required] You have outgrown your Plausible subscription tier")
     |> render("over_limit.html", %{
       user: user,
       team: team,
@@ -191,24 +192,21 @@ defmodule PlausibleWeb.Email do
     })
   end
 
-  def enterprise_over_limit_internal_email(user, pageview_usage, site_usage, site_allowance) do
+  def enterprise_over_limit_internal_email(team, assigns) do
+    assigns = Map.put(assigns, :team, team)
+
     base_email(%{layout: nil})
     |> to("enterprise@plausible.io")
     |> tag("enterprise-over-limit")
-    |> subject("#{user.email} has outgrown their enterprise plan")
-    |> render("enterprise_over_limit_internal.html", %{
-      user: user,
-      pageview_usage: pageview_usage,
-      site_usage: site_usage,
-      site_allowance: site_allowance
-    })
+    |> subject("#{team.name} has outgrown their enterprise plan")
+    |> render("enterprise_over_limit_internal.html", assigns)
   end
 
   def dashboard_locked(user, team, usage, suggested_volume) do
     priority_email()
     |> to(user)
     |> tag("dashboard-locked")
-    |> subject("[Action required] Your Qusto dashboard is now locked")
+    |> subject("[Action required] Your Plausible dashboard is now locked")
     |> render("dashboard_locked.html", %{
       user: user,
       team: team,
@@ -223,7 +221,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(owner)
     |> tag("yearly-renewal")
-    |> subject("Your Qusto subscription is up for renewal")
+    |> subject("Your Plausible subscription is up for renewal")
     |> render("yearly_renewal_notification.html", %{
       user: owner,
       team: team,
@@ -244,7 +242,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(owner)
     |> tag("yearly-expiration")
-    |> subject("Your Qusto subscription is about to expire")
+    |> subject("Your Plausible subscription is about to expire")
     |> render("yearly_expiration_notification.html", %{
       user: owner,
       team: team,
@@ -257,7 +255,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user.email)
     |> tag("cancelled-email")
-    |> subject("Mind sharing your thoughts on Qusto?")
+    |> subject("Where did Plausible fall short?")
     |> render("cancellation_email.html", user: user)
   end
 
@@ -512,11 +510,7 @@ defmodule PlausibleWeb.Email do
       end
 
     download_url =
-      PlausibleWeb.Router.Helpers.site_url(
-        PlausibleWeb.Endpoint,
-        :download_export,
-        site.domain
-      ) <> "?__team=#{site.team.identifier}"
+      url(~p"/#{site.domain}/download/export?#{[__team: site.team.identifier]}")
 
     priority_email()
     |> to(user)
@@ -556,23 +550,58 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(notification.email)
     |> tag("drop-traffic-warning-first")
-    |> subject("We'll stop counting your stats")
+    |> subject("Your stats stop collecting soon")
     |> render("approaching_accept_traffic_until.html",
       time: "next week",
       user: %{email: notification.email, name: notification.name},
-      team: notification.team
+      team: notification.team,
+      deletion_date: nil
     )
   end
 
-  def approaching_accept_traffic_until_tomorrow(notification) do
+  def approaching_accept_traffic_until_tomorrow(notification, deletion_date \\ nil) do
     base_email()
     |> to(notification.email)
     |> tag("drop-traffic-warning-final")
-    |> subject("A reminder that we'll stop counting your stats tomorrow")
+    |> subject("Your stats stop tomorrow")
     |> render("approaching_accept_traffic_until.html",
       time: "tomorrow",
       user: %{email: notification.email, name: notification.name},
-      team: notification.team
+      team: notification.team,
+      deletion_date: deletion_date
+    )
+  end
+
+  def deletion_full_notice_email(user, team, schedule, sites_summary) do
+    days = Plausible.Teams.DeletionSchedule.first_notice_before_deletion_days()
+
+    base_email()
+    |> to(user)
+    |> tag("deletion-full-notice")
+    |> subject("Your Plausible dashboards and stats will be deleted in #{days} days")
+    |> render("deletion_full_notice_email.html",
+      user: user,
+      team: team,
+      category: schedule.category,
+      deletion_date: schedule.deletion_date,
+      sites_summary: sites_summary
+    )
+  end
+
+  def deletion_reminder_email(user, team, schedule, sites_summary) do
+    days = Plausible.Teams.DeletionSchedule.reminder_before_deletion_days()
+
+    base_email()
+    |> to(user)
+    |> tag("deletion-reminder")
+    |> subject(
+      "Final notice: your Plausible dashboards and stats will be deleted in #{days} days"
+    )
+    |> render("deletion_reminder_email.html",
+      user: user,
+      team: team,
+      deletion_date: schedule.deletion_date,
+      sites_summary: sites_summary
     )
   end
 

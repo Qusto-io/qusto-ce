@@ -21,7 +21,6 @@ type Event = {
   name: string
   user_id?: number
   scroll_depth?: number
-  engagement_time?: number
   revenue_reporting_amount?: string
   revenue_reporting_currency?: string
   pathname?: string
@@ -105,7 +104,7 @@ export async function register({
   const emails = emailData.filter(
     (e) =>
       e.to![0]![0] === user.name &&
-      e.subject.indexOf('is your Plausible email verification code') > -1
+      e.subject.indexOf('is your Qusto email verification code') > -1
   )
 
   expect(emails.length).toEqual(1)
@@ -117,7 +116,7 @@ export async function register({
   await page.getByRole('button', { name: 'Activate' }).click()
 
   await expect(
-    page.getByRole('button', { name: 'Install Plausible' })
+    page.getByRole('button', { name: 'Install Qusto' })
   ).toBeVisible()
 }
 
@@ -134,11 +133,9 @@ export async function login({ page, user }: { page: Page; user: User }) {
 }
 
 export async function logout(page: Page) {
-  await page.goto('/logout', { waitUntil: 'commit' })
+  await page.goto('/logout?redirect=/login', { waitUntil: 'commit' })
 
-  await expect(
-    page.getByRole('heading', { name: 'Welcome to Plausible!' })
-  ).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Log in' })).toBeVisible()
 }
 
 export async function addSite({
@@ -151,13 +148,13 @@ export async function addSite({
   await page.goto('/sites/new', { waitUntil: 'commit' })
 
   await expect(
-    page.getByRole('button', { name: 'Install Plausible' })
+    page.getByRole('button', { name: 'Install Qusto' })
   ).toBeVisible()
 
   await page.getByLabel('Domain').fill(domain)
   await page.getByLabel('Reporting timezone').selectOption('Etc/UTC')
 
-  await page.getByRole('button', { name: 'Install Plausible' }).click()
+  await page.getByRole('button', { name: 'Install Qusto' }).click()
 
   await expect(page).toHaveURL(/\/installation/)
 }
@@ -502,15 +499,13 @@ export async function addFunnel({
 export async function setupSite({
   user,
   page,
-  request,
-  ...opts
+  request
 }: {
   user?: User
   page: Page
   request: APIRequestContext
-  domain?: string
 }): Promise<{ domain: string; user: User }> {
-  const domain = opts.domain ?? `${randomID()}.example.com`
+  const domain = `${randomID()}.example.com`
 
   if (!user) {
     const userID = randomID()

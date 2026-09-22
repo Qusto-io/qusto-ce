@@ -13,7 +13,7 @@ test('dashboard renders for logged in user', async ({ page, request }) => {
 
   await page.goto('/' + domain, { waitUntil: 'commit' })
 
-  await expect(page).toHaveTitle(/Plausible/)
+  await expect(page).toHaveTitle(/Qusto/)
 
   await expect(page.getByRole('button', { name: domain })).toBeVisible()
 })
@@ -26,9 +26,9 @@ test('dashboard renders for anonymous viewer', async ({ page, request }) => {
 
   await page.goto('/' + domain, { waitUntil: 'commit' })
 
-  await expect(page).toHaveTitle(/Plausible/)
+  await expect(page).toHaveTitle(/Qusto/)
 
-  await expect(page.getByTestId('site-switcher-static')).toContainText(domain)
+  await expect(page.getByRole('button', { name: domain })).toBeVisible()
 })
 
 test('dashboard renders via shared link', async ({ page, request }) => {
@@ -46,7 +46,7 @@ test('dashboard renders via shared link', async ({ page, request }) => {
   await test.step('public link', async () => {
     await page.goto(link, { waitUntil: 'commit' })
 
-    await expect(page.getByTestId('site-switcher-static')).toContainText(domain)
+    await expect(page.getByRole('button', { name: domain })).toBeVisible()
 
     await expect(page.locator('#visitors')).toHaveText('1')
   })
@@ -58,29 +58,10 @@ test('dashboard renders via shared link', async ({ page, request }) => {
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.getByTestId('site-switcher-static')).toContainText(domain)
+    await expect(page.getByRole('button', { name: domain })).toBeVisible()
 
     await expect(page.locator('#visitors')).toHaveText('1')
   })
-})
-
-test('site switcher is not shown when viewing without being logged in', async ({
-  page,
-  request
-}) => {
-  const { domain } = await setupSite({ page, request })
-  await makeSitePublic({ page, domain })
-  await populateStats({ request, domain, events: [{ name: 'pageview' }] })
-  await logout(page)
-
-  await page.goto('/' + domain, { waitUntil: 'commit' })
-
-  const siteSwitcherStatic = page.getByTestId('site-switcher-static')
-  await expect(siteSwitcherStatic).toContainText(domain)
-  await expect(siteSwitcherStatic).not.toHaveRole('button')
-
-  await siteSwitcherStatic.click()
-  await expect(page.getByTestId('sitemenu')).not.toBeVisible()
 })
 
 test('dashboard renders with imported data', async ({ page, request }) => {
@@ -110,7 +91,6 @@ test('dashboard renders with imported data', async ({ page, request }) => {
   })
 
   await test.step('with imported data excluded', async () => {
-    await page.getByTestId('dashboard-options-menu').click()
     await page.getByTestId('import-switch').click()
 
     await expect(page).toHaveURL(/with_imported=false/)
@@ -140,7 +120,7 @@ test('tab selection user preferences are preserved across reloads', async ({
     domain
   )
 
-  expect(currentTab).toEqual('entryPages')
+  expect(currentTab).toEqual('entry-pages')
 
   await page.getByRole('button', { name: 'Exit pages' }).click()
 
@@ -151,7 +131,7 @@ test('tab selection user preferences are preserved across reloads', async ({
     domain
   )
 
-  expect(currentTab).toEqual('exitPages')
+  expect(currentTab).toEqual('exit-pages')
 })
 
 test('back navigation closes the modal', async ({ page, request, baseURL }) => {

@@ -73,7 +73,7 @@ defmodule PlausibleWeb.Live.SiteTransferSettings do
 
       <.tile docs="transfer-ownership">
         <:title>Transfer site</:title>
-        <:subtitle>Move this site to another team or Plausible account.</:subtitle>
+        <:subtitle>Move this site to another team or Qusto account.</:subtitle>
 
         <.form
           :let={f}
@@ -127,7 +127,7 @@ defmodule PlausibleWeb.Live.SiteTransferSettings do
                 name={f[:destination].name}
                 value={:account}
                 checked={f[:destination].value == :account}
-                label="Another Plausible account"
+                label="Another Qusto account"
               />
               <div
                 :if={f[:destination].value == :account}

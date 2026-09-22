@@ -5,7 +5,7 @@ defmodule PlausibleWeb.Live.SiteTransferSettingsTest do
 
   import Phoenix.LiveViewTest
 
-  @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
+  @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
 
   setup [:create_user, :log_in, :create_site]
 
@@ -17,8 +17,8 @@ defmodule PlausibleWeb.Live.SiteTransferSettingsTest do
       {:ok, _lv, html} = get_liveview(conn, site)
 
       assert html =~ "Transfer site"
-      assert html =~ "Move this site to another team or Plausible account"
-      assert html =~ "Another Plausible account"
+      assert html =~ "Move this site to another team or Qusto account"
+      assert html =~ "Another Qusto account"
 
       assert element_exists?(html, ~s|input[name="form[destination]"][value="account"]|)
 

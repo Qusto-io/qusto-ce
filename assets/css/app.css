@@ -103,6 +103,7 @@
   /* Set v3 default ring behavior */
   --default-ring-width: 2px;
   --default-ring-color: var(--qusto-primary);
+  --animate-pulse: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
   /* === QUSTO WARM DARK MODE - Backgrounds === */
   --color-dark-bg-base: #1a1612; /* Warm charcoal base */
@@ -504,28 +505,10 @@ a.link-accent:hover {
   color: var(--color-dark-primary) !important;
 }
 
-blockquote {
-  @apply px-4 py-2 my-4 border-l-4 border-gray-500;
-}
-
 @media (width >= 1280px) {
   .container {
     max-width: 70rem;
   }
-}
-
-.pricing-table {
-  height: 920px;
-}
-
-@media (width >= 768px) {
-  .pricing-table {
-    height: auto;
-  }
-}
-
-.light-text {
-  color: #f0f4f8;
 }
 
 .transition {
@@ -597,41 +580,6 @@ blockquote {
   }
 }
 
-.just-text h1,
-.just-text h2,
-.just-text h3 {
-  margin-top: 1em;
-  margin-bottom: 0.5em;
-}
-
-.just-text p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-.dropdown-content::before {
-  top: -16px;
-  right: 8px;
-  left: auto;
-  border: 8px solid transparent;
-  border-bottom-color: rgb(27 31 35 / 15%);
-}
-
-.dropdown-content::before,
-.dropdown-content::after {
-  position: absolute;
-  display: inline-block;
-  content: '';
-}
-
-.dropdown-content::after {
-  top: -14px;
-  right: 9px;
-  left: auto;
-  border: 7px solid transparent;
-  border-bottom-color: #fff;
-}
-
 .feather {
   height: 1em;
   width: 1em;
@@ -661,20 +609,6 @@ blockquote {
 .fade-enter-active {
   opacity: 1;
   transition: opacity 100ms ease-in;
-}
-
-.datamaps-subunit {
-  cursor: pointer;
-}
-
-.fullwidth-shadow::before {
-  @apply absolute top-0 w-screen h-full bg-gray-50 dark:bg-gray-850;
-
-  box-shadow: 0 4px 2px -2px rgb(0 0 0 / 6%);
-  content: '';
-  z-index: -1;
-  left: calc(-1 * calc(50vw - 50%));
-  background-color: inherit;
 }
 
 iframe[hidden] {

@@ -6,11 +6,26 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Allow querying revenue metrics (`total_revenue`, `average_revenue`) with visit dimensions in Stats API v2
+- Allow querying `views_per_visit` with a time dimension in Stats API
+- Add `bounce_rate` to page-filtered Top Stats even when imports are included, but render a metric warning about imported data not included in `bounce_rate` tooltip.
+- Add `time_on_page` to page-filtered Top Stats even when imports are included, unless legacy time on page is in view.
+- Adds team_id to query debug metadata (saved in system.query_log log_comment column)
+- Add "Unknown" option to Countries shield, for when the country code is unrecognized
+- Add "Last 24 Hours" to dashboard time range picker and Stats API v2
+
 ### Removed
 
 ### Changed
 
+- Keybind hints are hidden on smaller screens
+- Site index is sortable alphanumerically and by traffic
+
 ### Fixed
+
+- Fixed Stats API timeseries returning time buckets falling outside the queried range
+- Fixed issue with all non-interactive events being counted as interactive
+- Fixed countries map countries staying highlighted on Chrome
 
 ## v3.2.1 - 2026-05-12
 
@@ -36,7 +51,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Segment filters are visible to anyone who can view the dashboard with that segment applied, including personal segments on public dashboards
-- Keybind hints are hidden on smaller screens
+- When accessing a link to a shared password-protected dashboard subpage (e.g. `.../pages`), the viewer will be redirected to that subpage after providing the password
 
 ### Fixed
 

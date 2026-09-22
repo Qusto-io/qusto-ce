@@ -5,6 +5,8 @@
 config/.env.dev:.*SECRET_KEY_BASE=
 config/.env.load:.*SECRET_KEY_BASE=
 config/.env.test:.*SECRET_KEY_BASE=
+config/.env.e2e_test:.*SECRET_KEY_BASE=
+config/.env.e2e_test:.*TOTP_VAULT_KEY=
 
 # Test database URLs
 config/.env.test:.*DATABASE_URL=

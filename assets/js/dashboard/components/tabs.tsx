@@ -38,7 +38,9 @@ const TabButtonText = ({
       'text-gray-900 dark:text-gray-100 font-bold tracking-[-.01em]': active
     })}
   >
-    {children}
+    <span data-active={active ? 'true' : 'false'} data-testid="tab-button">
+      {children}
+    </span>
   </span>
 )
 
@@ -59,7 +61,10 @@ export const TabButton = ({
     })}
   >
     <button
-      className={classNames('group/tab flex rounded-sm', className)}
+      className={classNames(
+        'group/tab relative flex rounded-sm before:absolute before:inset-[-16px_-6px] before:content-[" "]',
+        className
+      )}
       onClick={onClick}
     >
       <TabButtonText active={active}>{children}</TabButtonText>
@@ -92,7 +97,7 @@ export const DropdownTabButton = ({
             })}
           >
             <Popover.Button
-              className="group/tab inline-flex justify-between rounded-xs"
+              className="group/tab relative inline-flex justify-between rounded-xs before:absolute before:inset-[-16px_-6px] before:content-[' ']"
               ref={dropdownButtonRef}
             >
               <TabButtonText active={active}>{children}</TabButtonText>
@@ -180,6 +185,7 @@ const Items = ({ options, searchable, closeDropdown }: ItemsProps) => {
         </div>
       )}
       <div
+        data-testid="dropdown-items"
         className={'max-h-[224px] overflow-y-auto flex flex-col gap-y-0.5 p-1'}
       >
         {showableData.map(({ selected, label, onClick }, index) => {

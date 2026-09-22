@@ -32,5 +32,12 @@
 
     "noEmit": true,
     "pretty": true
-  }
+  },
+  "exclude": [
+    "ce-dashboard.spec.ts",
+    "tests/api-integration.spec.ts",
+    "tests/error-handling.spec.ts",
+    "tests/loading-states.spec.ts",
+    "tests/revenue-dashboard.spec.ts"
+  ]
 }

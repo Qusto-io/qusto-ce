@@ -8,7 +8,7 @@ defmodule PlausibleWeb.Components.Generic do
 
   @notice_themes %{
     gray: %{
-      bg: "bg-gray-100 dark:bg-[var(--color-dark-bg-elevated)]",
+      bg: "bg-gray-100 dark:bg-gray-800",
       icon: "text-gray-600 dark:text-gray-300",
       title_text: "text-sm text-gray-900 dark:text-gray-100",
       body_text: "text-sm text-gray-800 dark:text-gray-200 leading-5"
@@ -33,27 +33,23 @@ defmodule PlausibleWeb.Components.Generic do
     }
   }
 
+  # Themes/sizes/base are defined as component classes in
+  # assets/css/app.css and mirrored by the React `Button` component in
+  # assets/js/dashboard/components/button.tsx. Update there only.
   @button_themes %{
-    "primary" =>
-      "bg-blue-600 dark:bg-[var(--color-dark-primary)] text-white hover:bg-blue-700 dark:hover:bg-[var(--color-dark-primary-hover)] focus-visible:outline-blue-600 dark:focus-visible:outline-[var(--color-dark-primary)] disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0",
-    "cta" =>
-      "bg-[var(--qusto-accent)] dark:bg-[var(--color-dark-accent)] text-white hover:bg-[var(--qusto-orange-600)] dark:hover:bg-[var(--color-dark-accent-hover)] focus-visible:outline-[var(--qusto-accent)] disabled:opacity-50 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg active:translate-y-0 active:scale-100",
-    "secondary" =>
-      "border-2 border-blue-600 dark:border-[var(--color-dark-primary)] bg-transparent text-blue-600 dark:text-[var(--color-dark-primary)] hover:bg-blue-50 dark:hover:bg-[rgba(74,158,255,0.1)] disabled:opacity-50 transition-all duration-150",
-    "yellow" =>
-      "bg-yellow-600/90 text-white hover:bg-yellow-600 focus-visible:outline-yellow-600 disabled:bg-yellow-400/60 disabled:dark:bg-yellow-600/30 disabled:dark:text-white/35",
-    "danger" =>
-      "border border-gray-300 dark:border-gray-700 text-red-600 dark:text-red-400 bg-white dark:bg-[var(--color-dark-bg-elevated)] hover:text-red-700 hover:shadow-sm dark:hover:text-red-300 active:text-red-800 disabled:text-red-700/40 disabled:hover:shadow-none dark:disabled:text-red-500/35",
-    "ghost" =>
-      "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:text-gray-500 disabled:dark:text-gray-600 disabled:hover:bg-transparent",
-    "icon" => "text-gray-400 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+    "primary" => "btn-theme-primary",
+    "secondary" => "btn-theme-secondary",
+    "yellow" => "btn-theme-yellow",
+    "danger" => "btn-theme-danger",
+    "ghost" => "btn-theme-ghost",
+    "icon" => "btn-theme-icon"
   }
 
-  @button_base_class "whitespace-nowrap truncate inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-md cursor-pointer disabled:cursor-not-allowed"
+  @button_base_class "btn-base"
 
   @button_sizes %{
-    "sm" => "px-3 py-2",
-    "md" => "px-3.5 py-2.5"
+    "sm" => "btn-sm",
+    "md" => "btn-md"
   }
 
   attr(:type, :string, default: "button")
@@ -189,12 +185,9 @@ defmodule PlausibleWeb.Components.Generic do
 
   def upgrade(assigns) do
     ~H"""
-    <div
-      class={["rounded-md p-5 bg-gray-100 dark:bg-[var(--color-dark-bg-elevated)]", @class]}
-      {@rest}
-    >
+    <div class={["rounded-md p-5 bg-gray-100 dark:bg-gray-800", @class]} {@rest}>
       <div class="flex flex-col gap-y-4">
-        <div class="flex-shrink-0 bg-white dark:bg-gray-700 max-w-max rounded-md p-2 border border-gray-200 dark:border-gray-600 text-blue-600 dark:text-[var(--color-dark-primary)]">
+        <div class="flex-shrink-0 bg-white dark:bg-gray-700 max-w-max rounded-md p-2 border border-gray-200 dark:border-gray-600 text-indigo-500">
           {render_slot(@icon)}
         </div>
         <div class="flex flex-col gap-y-2">
@@ -215,6 +208,7 @@ defmodule PlausibleWeb.Components.Generic do
   attr(:dismissable_id, :any, default: nil)
   attr(:show_icon, :boolean, default: true)
   attr(:class, :string, default: "")
+  attr(:icon_class, :string, default: "")
   attr(:rest, :global)
   slot(:inner_block)
   slot(:actions)
@@ -238,7 +232,7 @@ defmodule PlausibleWeb.Components.Generic do
           @actions != [] && "items-start flex-col md:items-center md:flex-row"
         ]}>
           <div class="flex gap-x-3 flex-1">
-            <div :if={@show_icon && @title} class="shrink-0 mt-px">
+            <div :if={@show_icon && @title} class={["shrink-0 mt-px", @icon_class]}>
               <%= if @icon != [] do %>
                 {render_slot(@icon)}
               <% else %>
@@ -286,7 +280,7 @@ defmodule PlausibleWeb.Components.Generic do
       new_tab={@new_tab}
       href={@href}
       method={@method}
-      class={"text-blue-600 hover:text-blue-700 dark:text-[var(--color-dark-primary)] dark:hover:text-[var(--color-dark-primary-hover)] transition-colors duration-150 " <> @class}
+      class={"text-indigo-600 hover:text-indigo-700 dark:text-indigo-500 dark:hover:text-indigo-400 transition-colors duration-150 " <> @class}
       {@rest}
     >
       {render_slot(@inner_block)}
@@ -335,7 +329,7 @@ defmodule PlausibleWeb.Components.Generic do
         x-on:click.outside="close($refs.button)"
         style="display: none;"
         class={[
-          "origin-top-right absolute z-50 right-0 mt-2 p-1.5 w-max rounded-md shadow-lg overflow-hidden bg-white dark:bg-[var(--color-dark-bg-elevated)] ring-1 ring-black/5 focus:outline-none",
+          "origin-top-right absolute z-50 right-0 mt-2 p-1.5 w-max rounded-md shadow-lg overflow-hidden bg-white dark:bg-gray-800 ring-1 ring-black/5 focus:outline-none",
           @menu_class
         ]}
       >
@@ -450,7 +444,7 @@ defmodule PlausibleWeb.Components.Generic do
   def spinner(assigns) do
     ~H"""
     <svg
-      class={["animate-spin h-4 w-4 text-blue-600 dark:text-[var(--color-dark-primary)]", @class]}
+      class={["animate-spin h-4 w-4 text-indigo-500", @class]}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
@@ -518,11 +512,8 @@ defmodule PlausibleWeb.Components.Generic do
       <span
         :if={@server_mode?}
         class={[
-          "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-blue-600 dark:focus:ring-[var(--color-dark-primary)] focus:ring-offset-2",
-          if(@checked,
-            do: "bg-blue-600 dark:bg-[var(--color-dark-primary)]",
-            else: "dark:bg-gray-600 bg-gray-200"
-          ),
+          "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2",
+          if(@checked, do: "bg-indigo-600", else: "dark:bg-gray-600 bg-gray-200"),
           if(@disabled, do: "opacity-50")
         ]}
       >
@@ -537,10 +528,10 @@ defmodule PlausibleWeb.Components.Generic do
       <span
         :if={!@server_mode?}
         class={[
-          "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-blue-600 dark:focus:ring-[var(--color-dark-primary)] focus:ring-offset-2",
+          "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2",
           if(@disabled, do: "opacity-50")
         ]}
-        x-bind:class={"#{@js_active_var} ? 'bg-blue-600 dark:bg-[var(--color-dark-primary)]' : 'dark:bg-gray-600 bg-gray-200'"}
+        x-bind:class={"#{@js_active_var} ? 'bg-indigo-600' : 'dark:bg-gray-600 bg-gray-200'"}
       >
         <span
           aria-hidden="true"
@@ -622,10 +613,7 @@ defmodule PlausibleWeb.Components.Generic do
 
   def tile(assigns) do
     ~H"""
-    <div
-      data-test-id="settings-tile"
-      class="shadow-sm bg-white dark:bg-[var(--color-dark-bg-card)] rounded-md mb-6"
-    >
+    <div data-test-id="settings-tile" class="shadow-sm bg-white dark:bg-gray-900 rounded-md mb-6">
       <header class="relative py-4 px-6">
         <.title>
           {render_slot(@title)}
@@ -825,11 +813,15 @@ defmodule PlausibleWeb.Components.Generic do
   defp icon_class(link_assigns) do
     classes = List.wrap(link_assigns[:class]) |> Enum.join(" ")
 
-    if String.contains?(classes, "text-sm") or
-         String.contains?(classes, "text-xs") do
-      ["size-3"]
-    else
-      ["size-4"]
+    cond do
+      String.contains?(classes, "text-sm") ->
+        ["size-3.5"]
+
+      String.contains?(classes, "text-xs") ->
+        ["size-3"]
+
+      true ->
+        ["size-4"]
     end
   end
 
@@ -838,10 +830,7 @@ defmodule PlausibleWeb.Components.Generic do
   def focus_list(assigns) do
     ~H"""
     <ol class="list-disc space-y-1 ml-4 text-sm">
-      <li
-        :for={item <- @item}
-        class="marker:text-blue-700 dark:marker:text-[var(--color-dark-primary)]"
-      >
+      <li :for={item <- @item} class="marker:text-indigo-700 dark:marker:text-indigo-700">
         {render_slot(item)}
       </li>
     </ol>
@@ -858,7 +847,7 @@ defmodule PlausibleWeb.Components.Generic do
   def focus_box(assigns) do
     ~H"""
     <div
-      class="bg-white w-full max-w-lg mx-auto dark:bg-[var(--color-dark-bg-card)] text-gray-900 dark:text-gray-100 shadow-md rounded-md mt-12"
+      class="bg-white w-full max-w-lg mx-auto dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-md rounded-md mt-12"
       {@rest}
     >
       <div class={if(@padding?, do: "p-8")}>
@@ -1002,10 +991,7 @@ defmodule PlausibleWeb.Components.Generic do
         type="submit"
         class={[
           "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full transition-colors ease-in-out duration-200",
-          if(@set_to,
-            do: "bg-blue-600 dark:bg-[var(--color-dark-primary)]",
-            else: "bg-gray-200 dark:bg-gray-600"
-          ),
+          if(@set_to, do: "bg-indigo-600", else: "bg-gray-200 dark:bg-gray-600"),
           if(@disabled?, do: "cursor-not-allowed")
         ]}
         disabled={@disabled?}
@@ -1063,10 +1049,10 @@ defmodule PlausibleWeb.Components.Generic do
       case assigns.theme do
         "default" ->
           %{
-            light: "text-[var(--qusto-brand-blue)]",
-            light_hover: "text-[var(--qusto-primary)]",
-            dark: "text-[var(--color-dark-primary)]",
-            dark_hover: "text-[var(--color-dark-primary-hover)]"
+            light: "text-indigo-700",
+            light_hover: "text-indigo-600",
+            dark: "text-indigo-500",
+            dark_hover: "text-indigo-400"
           }
 
         "danger" ->
@@ -1205,7 +1191,7 @@ defmodule PlausibleWeb.Components.Generic do
               type="text"
               name="filter-text"
               id="filter-text"
-              class="w-full max-w-80 pl-8 pr-3.5 py-2.5 text-sm dark:bg-gray-750 dark:text-gray-300 focus:ring-blue-500 dark:focus:ring-[var(--color-dark-primary)] focus:border-blue-500 dark:focus:border-[var(--color-dark-primary)] block border-gray-300 dark:border-gray-750 rounded-md dark:placeholder:text-gray-400 focus:outline-none focus:ring-3 focus:ring-blue-500/20 dark:focus:ring-blue-500/25"
+              class="w-full max-w-80 pl-8 pr-3.5 py-2.5 text-sm dark:bg-gray-750 dark:text-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block border-gray-300 dark:border-gray-750 rounded-md dark:placeholder:text-gray-400 focus:outline-none focus:ring-3 focus:ring-indigo-500/20 dark:focus:ring-indigo-500/25 focus:border-indigo-500"
               placeholder="Press / to search"
               x-ref="filter_text"
               phx-debounce={200}
@@ -1301,14 +1287,14 @@ defmodule PlausibleWeb.Components.Generic do
 
   def highlighted(assigns) do
     ~H"""
-    <span class="font-medium text-blue-600 dark:text-[var(--color-dark-primary)]">
+    <span class="font-medium text-indigo-600 dark:text-gray-100">
       {render_slot(@inner_block)}
     </span>
     """
   end
 
   attr(:class, :string, default: "")
-  attr(:color, :atom, default: :gray, values: [:gray, :indigo, :primary, :yellow, :green, :red])
+  attr(:color, :atom, default: :gray, values: [:gray, :indigo, :yellow, :green, :red])
   attr(:rest, :global)
   slot(:inner_block, required: true)
 
@@ -1334,11 +1320,7 @@ defmodule PlausibleWeb.Components.Generic do
   end
 
   defp get_pill_color_classes(:indigo) do
-    "bg-[var(--qusto-blue-50)] text-[var(--qusto-primary)] dark:bg-[var(--color-dark-bg-hover)] dark:text-[var(--color-dark-primary)]"
-  end
-
-  defp get_pill_color_classes(:primary) do
-    "bg-[var(--qusto-blue-50)] text-[var(--qusto-primary)] dark:bg-[var(--color-dark-bg-hover)] dark:text-[var(--color-dark-primary)]"
+    "bg-indigo-100/60 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-300"
   end
 
   defp get_pill_color_classes(:yellow) do

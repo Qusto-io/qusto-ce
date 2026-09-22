@@ -136,10 +136,20 @@ cmd_status() {
     behind="$(git rev-list --count "HEAD..upstream/${UPSTREAM_REF}")"
     ahead="$(git rev-list --count "upstream/${UPSTREAM_REF}..HEAD")"
     echo "merge base : ${base:0:10} ($(git log -1 --format=%cs "${base}"))"
-    echo "behind     : ${behind}"
+    echo "behind     : ${behind} (git ancestry; squash merges do not move the base)"
     echo "ahead      : ${ahead}"
   else
     echo "no merge base with upstream/${UPSTREAM_REF} yet"
+  fi
+
+  integrated_file="${repo_root}/docs/UPSTREAM_INTEGRATION_STATE.md"
+  if [ -f "${integrated_file}" ]; then
+    integrated="$(sed -n 's/^integrated_upstream_tip: //p' "${integrated_file}" | head -1)"
+    if [ -n "${integrated}" ] && git cat-file -e "${integrated}^{commit}" 2>/dev/null; then
+      remaining="$(git rev-list --count "${integrated}..upstream/${UPSTREAM_REF}")"
+      echo "integrated : ${integrated:0:10} ($(git log -1 --format=%cs "${integrated}"))"
+      echo "remaining  : ${remaining} upstream commit(s) after integrated tip"
+    fi
   fi
 
   echo "rerere     : $(git config --get rerere.enabled || echo 'NOT ENABLED - run setup')"

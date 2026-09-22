@@ -1,5 +1,5 @@
 <div class="w-full max-w-lg mx-auto mt-8">
-  <div class="mx-3 bg-white dark:bg-[var(--color-dark-bg-elevated)] shadow-sm sm:rounded-lg">
+  <div class="mx-3 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
     <div class="p-5 sm:px-10 sm:py-8">
       <div class="mx-auto flex items-center justify-center rounded-full bg-green-100 h-12 w-12">
         <svg
@@ -29,7 +29,7 @@
           <p class="mt-4 text-gray-600 dark:text-gray-300 text-center text-sm">
             This shared link is locked because the owner of the site does not have access to the Shared Links feature. To restore it, the owner must upgrade to a suitable plan.
           </p>
-        <% %{site_role: role} when role in [:owner, :billing] -> %>
+        <% %{site_role: role} when role in Plausible.Billing.allowed_roles() -> %>
           <div class="mt-4 text-gray-600 dark:text-gray-300 text-center text-sm">
             <p>
               It looks like you don't have a valid subscription for this dashboard.

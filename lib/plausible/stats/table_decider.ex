@@ -7,7 +7,9 @@ defmodule Plausible.Stats.TableDecider do
   use Plausible
 
   import Enum, only: [empty?: 1]
-  import Plausible.Stats.Filters, only: [dimensions_used_in_filters: 1]
+
+  import Plausible.Stats.Filters,
+    only: [dimensions_used_in_filters: 1, filtering_on_dimension?: 2]
 
   alias Plausible.Stats.{Query, QueryError}
 
@@ -49,8 +51,9 @@ defmodule Plausible.Stats.TableDecider do
     conflicting_event_metrics = event_only_metrics -- @revenue_metrics
 
     cond do
-      # event:page is a special case handled in QueryOptimizer.split_sessions_query
-      event_only_dimensions == ["event:page"] ->
+      # event:page (optionally with event:hostname) is a special case handled in QueryOptimizer.split_sessions_query
+      "event:page" in event_only_dimensions and
+          event_only_dimensions -- ["event:page", "event:hostname"] == [] ->
         :ok
 
       not empty?(session_only_metrics) and not empty?(event_only_dimensions) ->
@@ -124,7 +127,8 @@ defmodule Plausible.Stats.TableDecider do
   #   See `time_slots` usage in `Plausible.Stats.SQL.Expression` to understand how this is done.
   @smearable_metrics [:visitors, :visits]
   defp smear_session_metrics({:sessions, metrics} = value, query) do
-    if "time:minute" in query.dimensions or "time:hour" in query.dimensions do
+    if ("time:minute" in query.dimensions or "time:hour" in query.dimensions) and
+         not filtering_on_dimension?(query, "event:goal") do
       # Split metrics into two groups: one with visitors and visits, and the remaining ones
       {smearable_metrics, session_metrics} = Enum.split_with(metrics, &(&1 in @smearable_metrics))
 
@@ -146,7 +150,11 @@ defmodule Plausible.Stats.TableDecider do
   # :TRICKY: For time:minute dimension we prefer sessions over events as there
   # might be minutes where no events occurred but the session was active.
   defp metric_partitioner(query, metric) when metric in [:visitors, :visits] do
-    if "time:minute" in query.dimensions, do: :session, else: :either
+    if "time:minute" in query.dimensions and not filtering_on_dimension?(query, "event:goal") do
+      :session
+    else
+      :either
+    end
   end
 
   defp metric_partitioner(_, :conversion_rate), do: :either

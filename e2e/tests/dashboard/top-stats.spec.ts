@@ -1,28 +1,33 @@
 import { test, expect } from '@playwright/test'
-import {
-  ZonedDateTime,
-  ZoneOffset,
-  ChronoUnit,
-  DateTimeFormatter
-} from '@js-joda/core'
-import { Locale } from '@js-joda/locale'
+import { ChronoUnit, DateTimeFormatter } from '@js-joda/core'
+import { Locale } from '@js-joda/locale_en-us'
+import { currentTime, timeToISO } from '../test-utils'
 import { setupSite, populateStats, StatsEntry } from '../fixtures'
-
-function currentTime(): ZonedDateTime {
-  return ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS)
-}
-
-function timeToISO(ts: ZonedDateTime): string {
-  return ts.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-}
+import { randomID } from '../test-utils'
 
 test('site switcher allows switching between different sites', async ({
   page,
   request
 }) => {
-  const { domain: domain1, user } = await setupSite({ page, request })
-  const { domain: domain2 } = await setupSite({ page, request, user })
-  const { domain: domain3 } = await setupSite({ page, request, user })
+  const suffix = randomID()
+  // domain name matters in this test, the sites are sorted alphabetically in the dropdown
+  const { domain: domain1, user } = await setupSite({
+    page,
+    request,
+    domain: `a-${suffix}.example.com`
+  })
+  const { domain: domain2 } = await setupSite({
+    page,
+    request,
+    user,
+    domain: `b-${suffix}.example.com`
+  })
+  const { domain: domain3 } = await setupSite({
+    page,
+    request,
+    user,
+    domain: `c-${suffix}.example.com`
+  })
 
   await populateStats({
     request,
@@ -52,24 +57,33 @@ test('site switcher allows switching between different sites', async ({
   const domain2Link = page.getByRole('link', { name: domain2 })
   const domain3Link = page.getByRole('link', { name: domain3 })
 
-  const domain1Key = await domain1Link.locator('kbd').textContent()
-  const domain3Key = await domain3Link.locator('kbd').textContent()
-
   await expect(domain1Link).toBeVisible()
+  await expect(domain1Link.locator('kbd')).toHaveText('1')
   await expect(domain2Link).toBeVisible()
+  await expect(domain2Link.locator('kbd')).toHaveText('2')
   await expect(domain3Link).toBeVisible()
+  await expect(domain3Link.locator('kbd')).toHaveText('3')
 
   await page.getByRole('link', { name: domain2 }).click()
 
   await expect(page).toHaveURL(`/${domain2}`)
   await expect(switcherButton).toHaveText(domain2)
 
-  await page.keyboard.press(domain3Key!)
+  // make sure sites are loaded
+  await switcherButton.click()
+  await expect(domain3Link).toBeVisible()
+  // keybind should work when dropdown closed
+  await switcherButton.click()
+  await page.keyboard.press('3')
 
   await expect(page).toHaveURL(`/${domain3}`)
   await expect(switcherButton).toHaveText(domain3)
 
-  await page.keyboard.press(domain1Key!)
+  // make sure sites are loaded
+  await switcherButton.click()
+  await expect(domain1Link).toBeVisible()
+  // keybind should work when dropdown open
+  await page.keyboard.press('1')
 
   await expect(page).toHaveURL(`/${domain1}`)
   await expect(switcherButton).toHaveText(domain1)
@@ -133,7 +147,7 @@ test('top stats show relevant metrics', async ({ page, request }) => {
 
   await page.goto('/' + domain, { waitUntil: 'commit' })
 
-  await expect(page).toHaveTitle(/Qusto/)
+  await expect(page).toHaveTitle(/Plausible/)
 
   await expect(page.getByRole('button', { name: domain })).toBeVisible()
 
@@ -244,14 +258,14 @@ test('different graph time intervals are available', async ({
     'Last 28 days'
   )
 
-  const intervalButton = page.getByTestId('current-graph-interval')
-  const intervalOptions = page.getByTestId('graph-interval')
-  await expect(intervalButton).toHaveText('Days')
-  await intervalButton.click()
-  const intervalOptions28Days = await intervalOptions.allTextContents()
+  const optionsMenu = page.getByTestId('dashboard-options-menu')
 
-  expect(intervalOptions28Days.indexOf('Days') > -1).toBeTruthy()
-  expect(intervalOptions28Days.indexOf('Weeks') > -1).toBeTruthy()
+  await optionsMenu.click()
+  const graphIntervalSegments = page.getByTestId('graph-interval')
+  await expect(page.getByTestId('current-graph-interval')).toHaveText('Days')
+  await expect(graphIntervalSegments).toHaveCount(1)
+  await expect(graphIntervalSegments.filter({ hasText: 'Weeks' })).toBeVisible()
+  await optionsMenu.click()
 
   await page.getByTestId('current-query-period').click()
   await page
@@ -259,14 +273,11 @@ test('different graph time intervals are available', async ({
     .getByRole('link', { name: 'Today' })
     .click()
 
-  await expect(intervalButton).toHaveText('Hours')
-  await intervalButton.click()
-  // The popover does not appear right away
-  await expect(intervalOptions).toHaveCount(2)
-  const intervalOptionsToday = await intervalOptions.allTextContents()
-
-  expect(intervalOptionsToday.indexOf('Hours') > -1).toBeTruthy()
-  expect(intervalOptionsToday.indexOf('Minutes') > -1).toBeTruthy()
+  await optionsMenu.click()
+  await expect(page.getByTestId('current-graph-interval')).toHaveText('Hours')
+  await expect(graphIntervalSegments).toHaveCount(1)
+  await graphIntervalSegments.filter({ hasText: 'Min' }).click()
+  await expect(page.getByTestId('current-graph-interval')).toHaveText('Min')
 })
 
 test('navigating dates previous next time periods', async ({

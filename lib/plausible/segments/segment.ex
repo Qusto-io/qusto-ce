@@ -29,7 +29,6 @@ defmodule Plausible.Segments.Segment do
     |> cast(attrs, [
       :name,
       :segment_data,
-      :site_id,
       :type,
       :owner_id
     ])
@@ -152,21 +151,5 @@ defmodule Plausible.Segments.Segment do
       [:has_not_done, _] -> true
       _ -> false
     end
-  end
-end
-
-defimpl Jason.Encoder, for: Plausible.Segments.Segment do
-  def encode(%Plausible.Segments.Segment{} = segment, opts) do
-    %{
-      id: segment.id,
-      name: segment.name,
-      type: segment.type,
-      segment_data: segment.segment_data,
-      owner_id: segment.owner_id,
-      owner_name: if(is_nil(segment.owner_id), do: nil, else: segment.owner.name),
-      inserted_at: segment.inserted_at,
-      updated_at: segment.updated_at
-    }
-    |> Jason.Encode.map(opts)
   end
 end

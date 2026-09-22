@@ -34,7 +34,7 @@
               <ul class="flex items-center gap-2 w-full sm:w-auto">
                 <li :if={
                   ee?() && @conn.assigns[:site] &&
-                    Plausible.Auth.is_super_admin?(@conn.assigns[:current_user])
+                    Plausible.Auth.super_admin?(@conn.assigns[:current_user])
                 }>
                   <.styled_link
                     class="text-sm mr-6"
@@ -88,7 +88,6 @@
                         teams={@teams}
                         my_team={@my_team}
                         current_team={@current_team}
-                        more_teams?={@more_teams?}
                       />
                       <.dropdown_divider />
                       <.dropdown_item href={Routes.settings_path(@conn, :index)}>

@@ -3,29 +3,38 @@ updates:
   - package-ecosystem: "mix"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 3
-
+      interval: "daily"
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 1
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 2
-
+      interval: "daily"
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 1
   - package-ecosystem: "npm"
     directory: "/assets"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 3
-
+      interval: "daily"
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 1
   - package-ecosystem: "npm"
     directory: "/tracker"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 3
-
+      interval: "daily"
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 1
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    groups:
+      gha-dependencies:
+        patterns:
+          - "*"

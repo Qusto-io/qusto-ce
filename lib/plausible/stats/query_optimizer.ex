@@ -24,7 +24,7 @@ defmodule Plausible.Stats.QueryOptimizer do
     2. Adds a missing order_by clause to a query
     3. Updating "time" dimension in order_by to the right granularity
     4. Updates event:hostname filters to also apply on visit level for sane results.
-    5. Removes revenue metrics from dashboard queries if not requested, present or unavailable for the site.
+    5. [DEPRECATED AND WILL BE REMOVED] Removes revenue metrics from legacy queries if ineligible
     6. Trims the date range to the current time if query.include.trim_relative_date_range is true.
     7. Sets the join_type for the query based on the query.
 
@@ -169,19 +169,19 @@ defmodule Plausible.Stats.QueryOptimizer do
     }
   end
 
+  @event_page_dim_renames %{
+    "event:page" => "visit:entry_page",
+    "event:hostname" => "visit:entry_page_hostname"
+  }
+
   defp build_split_query(:sessions, metrics, query) do
-    dimensions =
-      query.dimensions
-      |> Enum.map(fn
-        "event:page" -> "visit:entry_page"
-        dimension -> dimension
-      end)
+    active_renames = Map.take(@event_page_dim_renames, query.dimensions)
+
+    dimensions = Enum.map(query.dimensions, &Map.get(active_renames, &1, &1))
 
     filters =
-      if "event:page" in query.dimensions do
-        Filters.rename_dimensions_used_in_filter(query.filters, %{
-          "event:page" => "visit:entry_page"
-        })
+      if map_size(active_renames) > 0 do
+        Filters.rename_dimensions_used_in_filter(query.filters, active_renames)
       else
         query.filters
       end

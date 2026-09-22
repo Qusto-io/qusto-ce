@@ -1,10 +1,4 @@
-# ===========================================
-# Qusto Development Makefile
-# Shortcuts for common development tasks
-# ===========================================
-
-.PHONY: help setup start stop reset status logs migrate seed test minio console bootstrap
-.PHONY: install server clickhouse clickhouse-prod clickhouse-stop clickhouse-postgres-remote postgres postgres-client postgres-prod postgres-stop browserless minio-stop sso
+.PHONY: help install server clickhouse clickhouse-prod clickhouse-stop clickhouse-postgres-remote postgres postgres-client postgres-prod postgres-stop
 
 require = \
 	  $(foreach 1,$1,$(__require))
@@ -12,24 +6,8 @@ __require = \
 	    $(if $(value $1),, \
 	    $(error Provide required parameter: $1$(if $(value 2), ($(strip $2)))))
 
-# Default target
 help:
-	@echo "Qusto Development Commands"
-	@echo "=========================="
-	@echo ""
-	@echo "  make setup     - Initial setup (first time only)"
-	@echo "  make start     - Start all services"
-	@echo "  make stop      - Stop all services"
-	@echo "  make reset     - Reset all data (DESTRUCTIVE)"
-	@echo "  make status    - Check service status"
-	@echo "  make logs      - View service logs"
-	@echo "  make migrate   - Run database migrations"
-	@echo "  make seed      - Seed database with test data"
-	@echo "  make test      - Run test suite"
-	@echo "  make server    - Start Phoenix server"
-	@echo "  make console   - Open IEx console"
-	@echo ""
-	@perl -nle'print $$& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 install: ## Run the initial setup
 	mix deps.get
@@ -78,8 +56,16 @@ postgres-stop: ## Stop and remove the postgres container
 browserless:
 	docker run -e "TOKEN=dummy_token" -p 3000:3000 --network host ghcr.io/browserless/chromium
 
+minio: ## Start a transient container with a recent version of minio (s3)
+	docker run -d --rm -p 10000:10000 -p 10001:10001 --name plausible_minio minio/minio server /data --address ":10000" --console-address ":10001"
+	while ! docker exec plausible_minio mc alias set local http://localhost:10000 minioadmin minioadmin; do sleep 1; done
+	docker exec plausible_minio sh -c 'mc mb local/dev-exports && mc ilm add --expiry-days 7 local/dev-exports'
+	docker exec plausible_minio sh -c 'mc mb local/dev-imports && mc ilm add --expiry-days 7 local/dev-imports'
+	docker exec plausible_minio sh -c 'mc mb local/test-exports && mc ilm add --expiry-days 7 local/test-exports'
+	docker exec plausible_minio sh -c 'mc mb local/test-imports && mc ilm add --expiry-days 7 local/test-imports'
+
 minio-stop: ## Stop and remove the minio container
-	docker stop plausible_minio || docker stop plausible-minio || true
+	docker stop plausible_minio
 
 sso:
 	$(call require, integration_id)
@@ -92,7 +78,7 @@ sso:
 
 	@sleep 2
 
-	@echo "Use the following IdP configuration:"
+	@echo "Use the following IdP configuration:" 
 	@echo ""
 	@echo "Sign-in URL: http://localhost:8080/simplesaml/saml2/idp/SSOService.php"
 	@echo ""
@@ -106,72 +92,24 @@ sso:
 	@echo "- user@plausible.test / plausible"
 	@echo "- user1@plausible.test / plausible"
 	@echo "- user2@plausible.test / plausible"
+	
+sso-stop:
+	docker stop idp
+	docker remove idp
 
-# Initial setup
-setup:
-	@chmod +x scripts/*.sh
-	@./scripts/dev-setup.sh
+generate-corefile:
+	$(call require, domain_id)
+	domain_id=$(domain_id) envsubst < $(PWD)/extra/fixture/Corefile.template > $(PWD)/extra/fixture/Corefile.gen.$(domain_id)
 
-# Start services
-start:
-	@./scripts/dev-start.sh
+mock-dns: generate-corefile
+	$(call require, domain_id)
+	docker run --rm -p 5354:53/udp -v $(PWD)/extra/fixture/Corefile.gen.$(domain_id):/Corefile coredns/coredns:latest -conf Corefile
 
-# Stop services
-stop:
-	@./scripts/dev-stop.sh
+loadtest-server:
+	@echo "Ensure your OTP installation is built with --enable-lock-counter"
+	MIX_ENV=load ERL_FLAGS="-emu_type lcnt +Mdai max" iex -S mix do phx.digest + phx.server
 
-# Reset environment
-reset:
-	@./scripts/dev-reset.sh
-
-# Check status
-status:
-	@./scripts/health-check.sh
-
-# View logs
-logs:
-	@docker compose logs -f
-
-# Run migrations
-migrate:
-	@mix ecto.migrate
-	@echo "✅ Migrations complete"
-
-# Seed database
-seed:
-	@mix run priv/repo/seeds.exs
-	@echo "✅ Database seeded"
-
-# Run tests
-test:
-	@mix test
-
-# Start Phoenix server
-server:
-	@mix phx.server
-
-# Open console
-console:
-	@iex -S mix
-
-# Start MinIO for S3/import tests (matches config/.env.test port 10000).
-# Image: quay.io, pinned. Docker Hub's minio/minio now refuses anonymous pulls
-# ("pull access denied for minio/minio"), which broke this target — and with it
-# the whole `Build and test` job — on every branch and PR (2026-09-20).
-MINIO_IMAGE ?= quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
-minio: ## Start a transient container with minio (S3) for tests
-	docker run -d --rm -p 10000:10000 -p 10001:10001 \
-		--name plausible-minio \
-		-e MINIO_ROOT_USER=minioadmin \
-		-e MINIO_ROOT_PASSWORD=minioadmin \
-		$(MINIO_IMAGE) server /data --address ":10000" --console-address ":10001"
-	while ! docker exec plausible-minio mc alias set local http://localhost:10000 minioadmin minioadmin; do sleep 1; done
-	docker exec plausible-minio mc mb --ignore-existing local/test-exports
-	docker exec plausible-minio mc mb --ignore-existing local/test-imports
-
-# Full setup + migrate + seed
-bootstrap: setup
+loadtest-client:
+	@echo "Set your limits for file descriptors/ephemeral ports high... Test begins shortly"
 	@sleep 5
-	@mix deps.get
-	@mix ecto.setup
-	@echo "✅ Bootstrap complete! Run: make server"
+	k6 run test/load/script.js  

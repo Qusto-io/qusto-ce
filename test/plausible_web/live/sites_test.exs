@@ -22,7 +22,7 @@ defmodule PlausibleWeb.Live.SitesTest do
       conn: conn,
       user: user
     } do
-      team2 = new_site().team
+      team2 = new_site().team |> Plausible.Teams.complete_setup()
 
       add_member(team2, user: user, role: :admin)
 
@@ -33,6 +33,11 @@ defmodule PlausibleWeb.Live.SitesTest do
       refute text =~ "You don't have any sites yet"
       assert text =~ "Add your first personal site"
       assert text =~ "Go to team sites"
+
+      assert element_exists?(
+               html,
+               ~s|a[href="/sites?__team=#{team2.identifier}"]|
+             )
     end
 
     test "renders settings link when current team is set", %{user: user, conn: conn} do
@@ -699,6 +704,78 @@ defmodule PlausibleWeb.Live.SitesTest do
                html,
                button_selector
              )
+    end
+
+    test "billing role member can pin a site via the ellipsis menu", %{conn: conn, user: user} do
+      site = new_site(owner: user)
+      team = site.team |> Plausible.Teams.complete_setup()
+      billing_user = add_member(team, role: :billing)
+
+      {:ok, conn: conn} = log_in(%{user: billing_user, conn: conn})
+
+      {:ok, lv, _html} = live(conn, "/sites?__team=#{team.identifier}")
+
+      button_selector =
+        ~s/button[phx-value-domain="#{site.domain}"][data-test-id="ellipsis-menu-pin-item"]/
+
+      html = lv |> element(button_selector) |> render_click()
+
+      assert html =~ "Site pinned"
+    end
+
+    test "billing role member does not see Settings in the ellipsis menu", %{
+      conn: conn,
+      user: user
+    } do
+      site = new_site(owner: user)
+      team = site.team |> Plausible.Teams.complete_setup()
+      billing_user = add_member(team, role: :billing)
+
+      {:ok, conn: conn} = log_in(%{user: billing_user, conn: conn})
+
+      {:ok, _lv, html} = live(conn, "/sites?__team=#{team.identifier}")
+
+      settings_selector =
+        ~s|li[data-domain="#{site.domain}"] a[href$="/settings/general"]|
+
+      refute element_exists?(html, settings_selector)
+    end
+  end
+
+  describe "ellipsis menu settings visibility" do
+    @allowed_to_see_settings [:owner, :editor, :admin]
+    for role <- @allowed_to_see_settings do
+      test "#{role} can see settings", %{conn: conn, user: user} do
+        site = new_site(owner: user)
+        team = site.team |> Plausible.Teams.complete_setup()
+        member = add_member(team, role: unquote(role))
+
+        {:ok, conn: conn} = log_in(%{user: member, conn: conn})
+
+        {:ok, _lv, html} = live(conn, "/sites?__team=#{team.identifier}")
+
+        assert element_exists?(
+                 html,
+                 ~s|li[data-domain="#{site.domain}"] a[href$="/settings/general"]|
+               )
+      end
+    end
+
+    for role <- Plausible.Teams.Membership.roles() -- @allowed_to_see_settings do
+      test "#{role} can't see settings", %{conn: conn, user: user} do
+        site = new_site(owner: user)
+        team = site.team |> Plausible.Teams.complete_setup()
+        member = add_member(team, role: :viewer)
+
+        {:ok, conn: conn} = log_in(%{user: member, conn: conn})
+
+        {:ok, _lv, html} = live(conn, "/sites?__team=#{team.identifier}")
+
+        refute element_exists?(
+                 html,
+                 ~s|li[data-domain="#{site.domain}"] a[href$="/settings/general"]|
+               )
+      end
     end
   end
 

@@ -1,5 +1,19 @@
 import type { Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
+import {
+  ZonedDateTime,
+  ZoneOffset,
+  ChronoUnit,
+  DateTimeFormatter
+} from '@js-joda/core'
+
+export function currentTime(): ZonedDateTime {
+  return ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS)
+}
+
+export function timeToISO(ts: ZonedDateTime): string {
+  return ts.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+}
 
 export async function expectLiveViewConnected(page: Page) {
   await expect
@@ -25,28 +39,14 @@ export const header = (report: Locator, label: HasTextArg) =>
     .filter({ hasText: label })
     .getByRole('button')
 
-export const scrollReportIntoView = async (report: Locator) => {
-  const reportEnd = report.getByTestId('report-end')
-  if ((await reportEnd.count()) > 0) {
-    await reportEnd.scrollIntoViewIfNeeded()
-  }
-}
-
-export const expectHeaders = async (report: Locator, headers: HaveTextArg) => {
-  await scrollReportIntoView(report)
-  await expect(report.getByTestId('report-header')).toHaveText(headers)
-}
+export const expectHeaders = async (report: Locator, headers: HaveTextArg) =>
+  expect(report.getByTestId('report-header')).toHaveText(headers)
 
 export const expectRows = async (report: Locator, labels: HaveTextArg) =>
-  expect(
-    report.getByTestId('report-row').getByTestId('dimension-value')
-  ).toHaveText(labels)
+  expect(report.getByTestId('report-row').getByRole('link')).toHaveText(labels)
 
 export const rowLink = (report: Locator, label: HasTextArg) =>
-  report
-    .getByTestId('report-row')
-    .filter({ hasText: label })
-    .getByTestId('dimension-value')
+  report.getByTestId('report-row').filter({ hasText: label }).getByRole('link')
 
 export const expectMetricValues = async (
   report: Locator,
@@ -63,6 +63,9 @@ export const expectMetricValues = async (
 export const dropdown = (report: Locator) =>
   report.getByTestId('dropdown-items')
 
+// Needed before opening dropdown again right after it closes (usually, when picking an item).
+// There's a leave transition for the dropdown and interacting with the dropdown opener
+// during the transition may mean that the dropdown doesn't actually open.
 export const expectDropdownClosed = async (report: Locator) =>
   expect(dropdown(report)).toHaveCount(0)
 

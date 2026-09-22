@@ -22,6 +22,7 @@ jobs:
             - 'lib/**'
             - '!lib/plausible/data_migration/**'
             - '!lib/plausible/migration_utils.ex'
+            - '!lib/mix/tasks/generate_countries_meta.ex'
           extra:
             - 'extra/**'
           config:

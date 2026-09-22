@@ -170,6 +170,7 @@ jobs:
             tracker/node_modules
             priv/tracker/js
             priv/tracker/installation_support
+            priv/geodb/dbip-country.mmdb.gz
             ${{ env.PERSISTENT_CACHE_DIR }}
           key: e2e-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-${{ hashFiles('**/mix.lock') }}
           restore-keys: |

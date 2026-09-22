@@ -7,7 +7,7 @@ import { ChangeArrow } from '../reports/change-arrow'
 import { UIMode } from '../../theme-context'
 
 const renderBucketLabel = function (
-  query,
+  dashboardState,
   graphData,
   label,
   comparison = false
@@ -20,16 +20,16 @@ const renderBucketLabel = function (
   const formattedLabel = dateFormatter({
     interval: graphData.interval,
     longForm: true,
-    period: query.period,
+    period: dashboardState.period,
     isPeriodFull,
     shouldShowYear
   })(label)
 
-  if (query.period === 'realtime') {
+  if (dashboardState.period === 'realtime') {
     return dateFormatter({
       interval: graphData.interval,
       longForm: true,
-      period: query.period,
+      period: dashboardState.period,
       shouldShowYear
     })(label)
   }
@@ -38,7 +38,7 @@ const renderBucketLabel = function (
     const date = dateFormatter({
       interval: 'day',
       longForm: true,
-      period: query.period,
+      period: dashboardState.period,
       shouldShowYear
     })(label)
     return `${date}, ${formattedLabel}`
@@ -57,7 +57,12 @@ const calculatePercentageDifference = function (oldValue, newValue) {
   }
 }
 
-const buildTooltipData = function (query, graphData, metric, tooltipModel) {
+const buildTooltipData = function (
+  dashboardState,
+  graphData,
+  metric,
+  tooltipModel
+) {
   const data = tooltipModel.dataPoints.find(
     (dataPoint) => dataPoint.dataset.yAxisID == 'y'
   )
@@ -67,26 +72,32 @@ const buildTooltipData = function (query, graphData, metric, tooltipModel) {
 
   const label =
     data &&
-    renderBucketLabel(query, graphData, graphData.labels[data.dataIndex])
+    renderBucketLabel(
+      dashboardState,
+      graphData,
+      graphData.labels[data.dataIndex]
+    )
   const comparisonLabel =
     comparisonData &&
     renderBucketLabel(
-      query,
+      dashboardState,
       graphData,
       graphData.comparison_labels[comparisonData.dataIndex],
       true
     )
 
-  const value = graphData.plot[data.dataIndex]
+  const value = data && graphData.plot?.[data.dataIndex]
 
   const formatter = MetricFormatterShort[metric]
-  const comparisonValue = graphData.comparison_plot?.[comparisonData.dataIndex]
+  const comparisonValue =
+    comparisonData && graphData.comparison_plot?.[comparisonData.dataIndex]
   const comparisonDifference =
     label &&
     comparisonData &&
+    value &&
     calculatePercentageDifference(comparisonValue, value)
 
-  const formattedValue = formatter(value)
+  const formattedValue = value && formatter(value)
   const formattedComparisonValue = comparisonData && formatter(comparisonValue)
 
   return {
@@ -100,7 +111,7 @@ const buildTooltipData = function (query, graphData, metric, tooltipModel) {
 
 let tooltipRoot
 
-export default function GraphTooltip(graphData, metric, query, theme) {
+export default function GraphTooltip(graphData, metric, dashboardState, theme) {
   return (context) => {
     const tooltipModel = context.tooltip
     const offset = document
@@ -136,11 +147,16 @@ export default function GraphTooltip(graphData, metric, query, theme) {
 
     if (tooltipModel.body) {
       const tooltipData = buildTooltipData(
-        query,
+        dashboardState,
         graphData,
         metric,
         tooltipModel
       )
+
+      if (!tooltipData.label) {
+        tooltipEl.style.display = 'none'
+        return
+      }
 
       tooltipRoot.render(
         <aside className="text-gray-100 flex flex-col gap-1.5">
@@ -158,32 +174,30 @@ export default function GraphTooltip(graphData, metric, query, theme) {
             ) : null}
           </div>
 
-          {tooltipData.label ? (
-            <div className="flex flex-col">
+          <div className="flex flex-col">
+            <div className="flex flex-row justify-between items-center text-sm">
+              <span className="flex items-center mr-4">
+                <div
+                  className="size-2 mr-2 rounded-full"
+                  style={{ backgroundColor: 'rgba(101,116,205)' }}
+                ></div>
+                <span>{tooltipData.label}</span>
+              </span>
+              <span className="font-bold">{tooltipData.formattedValue}</span>
+            </div>
+
+            {tooltipData.comparisonLabel ? (
               <div className="flex flex-row justify-between items-center text-sm">
                 <span className="flex items-center mr-4">
-                  <div
-                    className="size-2 mr-2 rounded-full"
-                    style={{ backgroundColor: 'rgba(101,116,205)' }}
-                  ></div>
-                  <span>{tooltipData.label}</span>
+                  <div className="size-2 mr-2 rounded-full bg-gray-500"></div>
+                  <span>{tooltipData.comparisonLabel}</span>
                 </span>
-                <span className="font-bold">{tooltipData.formattedValue}</span>
+                <span className="font-bold">
+                  {tooltipData.formattedComparisonValue}
+                </span>
               </div>
-
-              {tooltipData.comparisonLabel ? (
-                <div className="flex flex-row justify-between items-center text-sm">
-                  <span className="flex items-center mr-4">
-                    <div className="size-2 mr-2 rounded-full bg-gray-500"></div>
-                    <span>{tooltipData.comparisonLabel}</span>
-                  </span>
-                  <span className="font-bold">
-                    {tooltipData.formattedComparisonValue}
-                  </span>
-                </div>
-              ) : null}
-            </div>
-          ) : null}
+            ) : null}
+          </div>
 
           {['month', 'day'].includes(graphData.interval) && (
             <>

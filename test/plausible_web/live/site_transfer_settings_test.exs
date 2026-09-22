@@ -5,7 +5,7 @@ defmodule PlausibleWeb.Live.SiteTransferSettingsTest do
 
   import Phoenix.LiveViewTest
 
-  @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
+  @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
 
   setup [:create_user, :log_in, :create_site]
 
@@ -17,8 +17,8 @@ defmodule PlausibleWeb.Live.SiteTransferSettingsTest do
       {:ok, _lv, html} = get_liveview(conn, site)
 
       assert html =~ "Transfer site"
-      assert html =~ "Move this site to another team or Qusto account"
-      assert html =~ "Another Qusto account"
+      assert html =~ "Move this site to another team or Plausible account"
+      assert html =~ "Another Plausible account"
 
       assert element_exists?(html, ~s|input[name="form[destination]"][value="account"]|)
 
@@ -135,6 +135,13 @@ defmodule PlausibleWeb.Live.SiteTransferSettingsTest do
 
       assert text_of_element(html, "#site-transfer-form") =~
                "You don't have an active subscription"
+
+      assert text_of_element(html, "#site-transfer-form") =~ "Start a subscription"
+
+      assert element_exists?(
+               html,
+               ~s|#site-transfer-form a[href="/billing/choose-plan?__team=none"]|
+             )
     end
 
     test "Team destination is preselected when available", %{
@@ -487,7 +494,15 @@ defmodule PlausibleWeb.Live.SiteTransferSettingsTest do
           "form" => %{"destination" => "my_team", "my_team_available" => "true"}
         })
 
-      assert text_of_element(html, "#site-transfer-form") =~ "You don't have a subscription"
+      assert text_of_element(html, "#site-transfer-form") =~
+               "You don't have an active subscription for My personal sites."
+
+      assert text_of_element(html, "#site-transfer-form") =~ "Start a subscription"
+
+      assert element_exists?(
+               html,
+               ~s|#site-transfer-form a[href^="/billing/choose-plan?__team="]|
+             )
     end
 
     @tag :ee_only

@@ -53,10 +53,8 @@ defmodule PlausibleWeb.EmailTest do
         })
 
       refute email.html_body =~ "Hey John,"
-      refute email.html_body =~ plausible_link()
 
       refute email.text_body =~ "Hey John,"
-      refute email.text_body =~ plausible_url()
     end
   end
 
@@ -159,7 +157,7 @@ defmodule PlausibleWeb.EmailTest do
       %{html_body: html_body, subject: subject} =
         PlausibleWeb.Email.over_limit_email(user, team, usage, "100k")
 
-      assert subject == "[Action required] You have outgrown your Qusto subscription tier"
+      assert subject == "[Action required] You have outgrown your Plausible subscription tier"
 
       assert html_body =~ PlausibleWeb.TextHelpers.format_date_range(last_cycle)
       assert html_body =~ "We recommend you upgrade to the 100k pageviews/month plan"
@@ -180,9 +178,7 @@ defmodule PlausibleWeb.EmailTest do
              ) ==
                "account settings"
 
-      assert html_body =~
-               PlausibleWeb.Router.Helpers.billing_url(PlausibleWeb.Endpoint, :choose_plan) <>
-                 "?__team=#{team.identifier}"
+      assert html_body =~ url(~p"/billing/choose-plan?#{[__team: team.identifier]}")
     end
 
     test "asks enterprise level usage to contact us" do
@@ -220,7 +216,7 @@ defmodule PlausibleWeb.EmailTest do
       %{html_body: html_body, subject: subject} =
         PlausibleWeb.Email.dashboard_locked(user, team, usage, "100k")
 
-      assert subject == "[Action required] Your Qusto dashboard is now locked"
+      assert subject == "[Action required] Your Plausible dashboard is now locked"
 
       assert html_body =~ PlausibleWeb.TextHelpers.format_date_range(last_cycle)
       assert html_body =~ "We recommend you upgrade to the 100k pageviews/month plan"
@@ -241,9 +237,7 @@ defmodule PlausibleWeb.EmailTest do
              ) ==
                "account settings"
 
-      assert html_body =~
-               PlausibleWeb.Router.Helpers.billing_url(PlausibleWeb.Endpoint, :choose_plan) <>
-                 "?__team=#{team.identifier}"
+      assert html_body =~ url(~p"/billing/choose-plan?#{[__team: team.identifier]}")
     end
 
     test "asks enterprise level usage to contact us" do
@@ -266,32 +260,73 @@ defmodule PlausibleWeb.EmailTest do
     end
   end
 
-  describe "enterprise_over_limit_internal_email/4" do
+  describe "enterprise_over_limit_internal_email/2" do
     test "renders pageview usage by billing cycles + sites usage/limit" do
-      user = build(:user)
+      team = insert(:team, name: "Acme Inc", identifier: Ecto.UUID.generate())
+      owner = build(:user, email: "owner@acme.test")
+      billing_member = build(:user, email: "billing@acme.test")
       penultimate_cycle = Date.range(~D[2023-03-01], ~D[2023-03-31])
       last_cycle = Date.range(~D[2023-04-01], ~D[2023-04-30])
 
       pageview_usage = %{
-        penultimate_cycle: %{date_range: penultimate_cycle, total: 100_141_888},
-        last_cycle: %{date_range: last_cycle, total: 100_222_999}
+        penultimate_cycle: %{date_range: penultimate_cycle, total: 123_141_888},
+        last_cycle: %{date_range: last_cycle, total: 123_222_999}
       }
 
       %{html_body: html_body, subject: subject} =
-        PlausibleWeb.Email.enterprise_over_limit_internal_email(user, pageview_usage, 80, 50)
+        PlausibleWeb.Email.enterprise_over_limit_internal_email(team, %{
+          team_member_emails: [owner.email, billing_member.email],
+          exceeds_pageview_limit?: true,
+          pageview_usage: pageview_usage,
+          pageview_limit: 100_000_000,
+          exceeds_site_limit?: false,
+          site_usage: 50,
+          site_limit: 50
+        })
 
-      assert subject == "#{user.email} has outgrown their enterprise plan"
+      assert subject == "Acme Inc has outgrown their enterprise plan"
 
-      assert html_body =~
-               "Last billing cycle: #{PlausibleWeb.TextHelpers.format_date_range(last_cycle)}"
+      assert html_body =~ "Team name: Acme Inc"
+      assert html_body =~ "Team identifier: #{team.identifier}"
+      assert html_body =~ "Customer email(s): owner@acme.test, billing@acme.test"
+      assert html_body =~ "Monthly pageviews: EXCEEDED"
+      assert html_body =~ "Sites: OK"
 
-      assert html_body =~ "Last cycle pageview usage: 100,222,999 billable pageviews"
+      assert html_body =~ PlausibleWeb.TextHelpers.format_date_range(last_cycle)
+      assert html_body =~ "123,222,999"
+      assert html_body =~ "/ 100,000,000"
 
-      assert html_body =~
-               "Penultimate billing cycle: #{PlausibleWeb.TextHelpers.format_date_range(penultimate_cycle)}"
+      assert html_body =~ PlausibleWeb.TextHelpers.format_date_range(penultimate_cycle)
+      assert html_body =~ "123,141,888"
 
-      assert html_body =~ "Penultimate cycle pageview usage: 100,141,888 billable pageviews"
-      assert html_body =~ "Site usage: 80 / 50 allowed sites"
+      assert html_body =~ "50 / 50 allowed sites"
+    end
+
+    test "renders :unlimited pageview limit" do
+      team = insert(:team, name: "Acme Inc", identifier: Ecto.UUID.generate())
+      penultimate_cycle = Date.range(~D[2023-03-01], ~D[2023-03-31])
+      last_cycle = Date.range(~D[2023-04-01], ~D[2023-04-30])
+
+      pageview_usage = %{
+        penultimate_cycle: %{date_range: penultimate_cycle, total: 100},
+        last_cycle: %{date_range: last_cycle, total: 200}
+      }
+
+      %{html_body: html_body} =
+        PlausibleWeb.Email.enterprise_over_limit_internal_email(team, %{
+          team_member_emails: ["owner@acme.test"],
+          exceeds_pageview_limit?: false,
+          pageview_usage: pageview_usage,
+          pageview_limit: :unlimited,
+          exceeds_site_limit?: true,
+          site_usage: 51,
+          site_limit: 50
+        })
+
+      assert html_body =~ "200"
+      assert html_body =~ "/ unlimited"
+      assert html_body =~ "Monthly pageviews: OK"
+      assert html_body =~ "Sites: EXCEEDED"
     end
   end
 
@@ -312,12 +347,12 @@ defmodule PlausibleWeb.EmailTest do
       %{html_body: body, subject: subject} =
         PlausibleWeb.Email.approaching_accept_traffic_until(notification)
 
-      assert subject == "We'll stop counting your stats"
-      assert body =~ plausible_link(team: team, label: "login to your Plausible account")
+      assert subject == "Your stats stop collecting soon"
+      assert body =~ plausible_link(team: team, label: "start a Plausible subscription")
       assert body =~ "Hey John,"
 
       assert body =~
-               "We've noticed that you're still sending us stats so we're writing to inform you that we'll stop accepting stats from your sites next week."
+               "Your sites are still sending us data, but your account is no longer active. We'll stop counting new stats next week."
     end
 
     test "renders final warning" do
@@ -336,11 +371,155 @@ defmodule PlausibleWeb.EmailTest do
       %{html_body: body, subject: subject} =
         PlausibleWeb.Email.approaching_accept_traffic_until_tomorrow(notification)
 
-      assert subject == "A reminder that we'll stop counting your stats tomorrow"
-      assert body =~ plausible_link(team: team, label: "login to your Plausible account")
+      assert subject == "Your stats stop tomorrow"
+      assert body =~ plausible_link(team: team, label: "start a Plausible subscription")
 
       assert body =~
-               "We've noticed that you're still sending us stats so we're writing to inform you that we'll stop accepting stats from your sites tomorrow."
+               "Your sites are still sending us data, but your account is no longer active. We'll stop counting new stats tomorrow."
+    end
+
+    test "final warning does not mention deletion when no deletion_date is given" do
+      user = build(:user, id: 123, name: "John Doe")
+      team = build(:team, identifier: Ecto.UUID.generate())
+
+      notification = %{
+        id: user.id,
+        email: user.email,
+        deadline: Date.add(Date.utc_today(), 1),
+        site_ids: [1, 2, 3],
+        name: user.name,
+        team: team
+      }
+
+      %{html_body: body} =
+        PlausibleWeb.Email.approaching_accept_traffic_until_tomorrow(notification)
+
+      refute body =~ "permanently delete"
+    end
+
+    test "final warning mentions the deletion date when given" do
+      user = build(:user, id: 123, name: "John Doe")
+      team = build(:team, identifier: Ecto.UUID.generate())
+
+      notification = %{
+        id: user.id,
+        email: user.email,
+        deadline: Date.add(Date.utc_today(), 1),
+        site_ids: [1, 2, 3],
+        name: user.name,
+        team: team
+      }
+
+      deletion_date = ~D[2026-10-19]
+
+      %{html_body: body} =
+        PlausibleWeb.Email.approaching_accept_traffic_until_tomorrow(notification, deletion_date)
+
+      assert body =~
+               "If you don't subscribe, we'll permanently delete your Plausible dashboards and all their stats on #{PlausibleWeb.EmailView.date_format(deletion_date)}. This cannot be undone."
+
+      assert body =~ ~s|<a href="https://plausible.io/docs/export-stats">export your stats</a>|
+    end
+  end
+
+  describe "deletion_full_notice_email/4" do
+    test "renders trial copy for an expired_trial schedule" do
+      user = build(:user, id: 123, name: "John Doe")
+      team = build(:team, identifier: Ecto.UUID.generate(), name: "My Team")
+
+      schedule =
+        build(:team_deletion_schedule, category: :expired_trial, deletion_date: ~D[2026-10-19])
+
+      sites_summary = %{domains: ["a.example.com", "b.example.com"], more_count: 0}
+
+      %{html_body: body, subject: subject} =
+        PlausibleWeb.Email.deletion_full_notice_email(user, team, schedule, sites_summary)
+
+      assert body =~ PlausibleWeb.EmailView.choose_plan_url(team)
+      assert body =~ ~s|<a href="https://plausible.io/docs/export-stats">export your stats</a>|
+
+      body = text(body)
+
+      days = Plausible.Teams.DeletionSchedule.first_notice_before_deletion_days()
+      assert subject == "Your Plausible dashboards and stats will be deleted in #{days} days"
+      assert body =~ "Your Plausible trial ended a while ago"
+      refute body =~ "subscription lapsed"
+
+      assert body =~
+               "we'll permanently delete the Plausible dashboards and stats for your My Team team on 19 Oct 2026. This cannot be undone."
+
+      assert body =~ "This covers a.example.com, b.example.com."
+    end
+
+    test "renders subscription copy for a churned_subscription schedule" do
+      user = build(:user, id: 123, name: "John Doe")
+      team = build(:team, identifier: Ecto.UUID.generate())
+
+      schedule =
+        build(:team_deletion_schedule,
+          category: :churned_subscription,
+          deletion_date: ~D[2026-10-19]
+        )
+
+      sites_summary = %{domains: [], more_count: 0}
+
+      %{html_body: body} =
+        PlausibleWeb.Email.deletion_full_notice_email(user, team, schedule, sites_summary)
+
+      assert body =~ "Your Plausible subscription lapsed a while ago"
+      refute body =~ "trial ended"
+    end
+
+    test "caps the listed domains and mentions how many more there are" do
+      user = build(:user, id: 123, name: "John Doe")
+      team = build(:team, identifier: Ecto.UUID.generate())
+      schedule = build(:team_deletion_schedule, deletion_date: ~D[2026-10-19])
+      sites_summary = %{domains: ["a.example.com", "b.example.com"], more_count: 7}
+
+      %{html_body: body} =
+        PlausibleWeb.Email.deletion_full_notice_email(user, team, schedule, sites_summary)
+
+      assert body =~ "This covers a.example.com, b.example.com (and 7 more sites)."
+    end
+
+    test "omits the site list entirely when there are no domains to show" do
+      user = build(:user, id: 123, name: "John Doe")
+      team = build(:team, identifier: Ecto.UUID.generate())
+      schedule = build(:team_deletion_schedule, deletion_date: ~D[2026-10-19])
+      sites_summary = %{domains: [], more_count: 0}
+
+      %{html_body: body} =
+        PlausibleWeb.Email.deletion_full_notice_email(user, team, schedule, sites_summary)
+
+      refute body =~ "This covers"
+    end
+  end
+
+  describe "deletion_reminder_email/4" do
+    test "renders the deletion date, site list, and subscribe link" do
+      user = build(:user, id: 123, name: "John Doe")
+      team = build(:team, identifier: Ecto.UUID.generate(), name: "My Team")
+      schedule = build(:team_deletion_schedule, deletion_date: ~D[2026-10-19])
+      sites_summary = %{domains: ["a.example.com"], more_count: 3}
+
+      %{html_body: body, subject: subject} =
+        PlausibleWeb.Email.deletion_reminder_email(user, team, schedule, sites_summary)
+
+      assert body =~ PlausibleWeb.EmailView.choose_plan_url(team)
+      assert body =~ ~s|<a href="https://plausible.io/docs/export-stats">export your stats</a>|
+
+      body = text(body)
+
+      days = Plausible.Teams.DeletionSchedule.reminder_before_deletion_days()
+
+      assert subject ==
+               "Final notice: your Plausible dashboards and stats will be deleted in #{days} days"
+
+      assert body =~
+               "We'll permanently delete the Plausible dashboards and stats for your My Team team on 19 Oct 2026."
+
+      assert body =~ "This covers a.example.com (and 3 more sites)."
+      assert body =~ "This cannot be undone."
     end
   end
 
@@ -355,38 +534,67 @@ defmodule PlausibleWeb.EmailTest do
         PlausibleWeb.Email.site_setup_success(trial_user, site)
       ]
 
-      {:ok, emails: emails}
+      {:ok, emails: emails, user: trial_user, site: site}
     end
 
-    @trial_message "trial"
-    @reply_message "reply back"
+    test "create site email", %{user: user} do
+      email = PlausibleWeb.Email.create_site_email(user)
 
-    @tag :ee_only
-    test "has 'trial' and 'reply' blocks, correct product name", %{emails: emails} do
-      for email <- emails do
-        assert email.html_body =~ @trial_message
-        assert email.html_body =~ @reply_message
-        refute email.html_body =~ "Plausible CE"
-      end
-
-      assert Enum.any?(emails, fn email -> email.html_body =~ "Qusto Analytics" end)
+      assert email.html_body =~
+               "You’ve created your Plausible account but haven’t added a site yet."
     end
 
-    @tag :ce_build_only
-    test "no 'trial' or 'reply' blocks, correct product name", %{emails: emails} do
-      for email <- emails do
-        refute email.html_body =~ @trial_message
-        refute email.html_body =~ @reply_message
-        refute email.html_body =~ "Plausible Analytics"
+    test "site setup help email", %{user: user, site: site} do
+      email = PlausibleWeb.Email.site_setup_help(user, site.team, site)
+
+      assert email.html_body =~
+               "We haven't recorded any traffic for #{site.domain} yet."
+    end
+
+    test "site setup success email", %{user: user, site: site} do
+      email = PlausibleWeb.Email.site_setup_success(user, site)
+
+      assert email.html_body =~ "Your first visitor is now visible in Plausible."
+    end
+  end
+
+  describe "import emails" do
+    setup do
+      user = new_user()
+      site = new_site(owner: user)
+
+      {:ok, user: user, site: site}
+    end
+
+    for {source, success_phrase, failure_phrase} <- [
+          {:google_analytics_4, "Your Google Analytics import has completed successfully",
+           "Unfortunately, your Google Analytics import for"},
+          {:universal_analytics, "Your Google Analytics import has completed successfully",
+           "Unfortunately, your Google Analytics import for"},
+          {:csv, "Your CSV import has completed successfully",
+           "Unfortunately, your CSV import for"}
+        ] do
+      test "success email for #{source}", %{user: user, site: site} do
+        site_import = insert(:site_import, site: site, source: unquote(source))
+        PlausibleWeb.Email.import_success(site_import, user)
+
+        email = PlausibleWeb.Email.import_success(site_import, user)
+
+        assert email.text_body =~ unquote(success_phrase)
       end
 
-      assert Enum.any?(emails, fn email -> email.html_body =~ "Qusto CE" end)
+      test "failure email for #{source}", %{user: user, site: site} do
+        site_import = insert(:site_import, site: site, source: unquote(source))
+
+        email = PlausibleWeb.Email.import_failure(site_import, user)
+
+        assert email.text_body =~ unquote(failure_phrase)
+      end
     end
   end
 
   describe "text_body" do
-    @tag :ee_only
-    test "welcome_email (EE)" do
+    test "welcome email" do
       email =
         Email.base_email()
         |> Email.render("welcome_email.html", %{
@@ -394,67 +602,7 @@ defmodule PlausibleWeb.EmailTest do
           code: "123"
         })
 
-      assert email.text_body == """
-             Hey John,
-
-             We are building Qusto to provide a simple and ethical approach to tracking website visitors. We're super excited to have you on board!
-
-             Here's how to get the most out of your Qusto experience:
-
-             * Enable email reports (https://docs.qusto.io/email-reports) and notifications for traffic spikes (https://docs.qusto.io/traffic-spikes)
-             * Integrate with Search Console (https://docs.qusto.io/google-search-console-integration) to get keyword phrases people find your site with
-             * Invite team members and other collaborators (https://docs.qusto.io/users-roles)
-             * Set up easy goals including form submissions (https://docs.qusto.io/form-submissions-tracking), 404 error pages (https://docs.qusto.io/error-pages-tracking-404), file downloads (https://docs.qusto.io/file-downloads-tracking) and outbound link clicks (https://docs.qusto.io/outbound-link-click-tracking)
-             * Opt out from counting your own visits (https://docs.qusto.io/excluding)
-             * If you're concerned about adblockers, set up a proxy to bypass them (https://docs.qusto.io/proxy/introduction)
-
-
-             Then you're ready to start exploring your fast loading, ethical and actionable dashboard (https://qusto.io/sites).
-
-             Have a question, feedback or need some guidance? Do reply back to this email.
-
-             Regards,
-             The Qusto Team 💌
-
-             --
-
-             http://localhost:8000
-             {{{ pm:unsubscribe }}}\
-             """
-    end
-
-    @tag :ce_build_only
-    test "welcome_email (CE)" do
-      email =
-        Email.base_email()
-        |> Email.render("welcome_email.html", %{
-          user: build(:user, name: "John Doe"),
-          code: "123"
-        })
-
-      assert email.text_body == """
-             Hey John,
-
-             We are building Qusto to provide a simple and ethical approach to tracking website visitors. We're super excited to have you on board!
-
-             Here's how to get the most out of your Qusto experience:
-
-             * Enable email reports (https://docs.qusto.io/email-reports) and notifications for traffic spikes (https://docs.qusto.io/traffic-spikes)
-             * Integrate with Search Console (https://docs.qusto.io/google-search-console-integration) to get keyword phrases people find your site with
-             * Invite team members and other collaborators (https://docs.qusto.io/users-roles)
-             * Set up easy goals including form submissions (https://docs.qusto.io/form-submissions-tracking), 404 error pages (https://docs.qusto.io/error-pages-tracking-404), file downloads (https://docs.qusto.io/file-downloads-tracking) and outbound link clicks (https://docs.qusto.io/outbound-link-click-tracking)
-             * Opt out from counting your own visits (https://docs.qusto.io/excluding)
-             * If you're concerned about adblockers, set up a proxy to bypass them (https://docs.qusto.io/proxy/introduction)
-
-
-             Then you're ready to start exploring your fast loading, ethical and actionable dashboard (https://qusto.io/sites).
-
-             Have a question, feedback or need some guidance? Do reply back to this email.
-
-             --
-
-             http://localhost:8000
-             """
+      assert email.text_body =~ "Welcome to Plausible."
     end
   end
 

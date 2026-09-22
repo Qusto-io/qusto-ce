@@ -1,7 +1,22 @@
 defmodule Plausible.OpenTelemetry do
   @moduledoc false
 
-  require OpenTelemetry.Tracer, as: Tracer
+  alias OpenTelemetry.Tracer
+
+  @doc """
+  Current trace ID as a 32-character lowercase hex string, or nil outside a span.
+
+  Reads the SDK's precomputed fixed-width field.
+  """
+  def current_trace_id do
+    case Tracer.current_span_ctx() do
+      :undefined ->
+        nil
+
+      span_ctx ->
+        OpenTelemetry.Span.hex_trace_id(span_ctx)
+    end
+  end
 
   def current_trace_id do
     case OpenTelemetry.Tracer.current_span_ctx() do
@@ -55,8 +70,6 @@ defmodule Plausible.OpenTelemetry do
     [
       {"service.name", "analytics"},
       {"service.namespace", "plausible"},
-      {"service.instance.app_host", runtime_metadata[:app_host]},
-      {"service.instance.id", runtime_metadata[:host]},
       {"service.version", runtime_metadata[:version]}
     ]
   end

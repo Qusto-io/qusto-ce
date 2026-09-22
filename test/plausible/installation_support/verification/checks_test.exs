@@ -13,58 +13,62 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
     @expected_domain "example.com"
     @url_to_verify "https://#{@expected_domain}"
-    @verifier_artifact_path "priv/tracker/installation_support/verifier.js"
+    @verify_manually_url "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+    @verify_manually_inline_link %{
+      text: "verify your installation manually",
+      href: @verify_manually_url
+    }
 
     describe "URL check" do
       test "returns error when DNS check fails with domain not found error, offers custom URL input" do
-        stub_lookup_a_records(@expected_domain, [])
+        expect_dns_unresolvable(@expected_domain)
 
         assert_matches %Result{
                          ok?: false,
                          data: %{offer_custom_url_input: true},
                          errors: [
-                           ^any(:string, ~r/We couldn't find your website at #{@url_to_verify}$/)
+                           ^any(:string, ~r/We couldn't reach #{@url_to_verify}$/)
                          ],
                          recommendations: [
                            %{
                              text:
-                               "Please check that the domain you entered is correct and reachable publicly. If it's intentionally private, you'll need to verify that Plausible works manually",
-                             url:
-                               "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                               "Check that the URL is correct and publicly accessible. If your site is intentionally private, you'll need to verify your installation manually",
+                             inline_links: [^@verify_manually_inline_link]
                            }
                          ]
                        } =
                          Checks.run(@url_to_verify, @expected_domain, "manual",
                            report_to: nil,
                            async?: false,
-                           slowdown: 0
+                           slowdown: 0,
+                           launch_delay: 0
                          )
                          |> Checks.interpret_diagnostics()
       end
 
       test "returns error when DNS check fails with invalid URL error, offers custom URL input" do
         url_to_verify = "file://#{@expected_domain}"
-        stub_lookup_a_records(@expected_domain, [])
+        expect_dns_unresolvable(@expected_domain)
 
         assert_matches %Result{
                          ok?: false,
                          data: %{offer_custom_url_input: true},
                          errors: [
-                           ^any(:string, ~r/We couldn't find your website at #{url_to_verify}$/)
+                           ^any(:string, ~r/We couldn't reach #{url_to_verify}$/)
                          ],
                          recommendations: [
                            %{
                              text:
-                               "Please check that the domain you entered is correct and reachable publicly. If it's intentionally private, you'll need to verify that Plausible works manually",
-                             url:
-                               "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                               "Check that the URL is correct and publicly accessible. If your site is intentionally private, you'll need to verify your installation manually",
+                             inline_links: [^@verify_manually_inline_link]
                            }
                          ]
                        } =
                          Checks.run(url_to_verify, @expected_domain, "manual",
                            report_to: nil,
                            async?: false,
-                           slowdown: 0
+                           slowdown: 0,
+                           launch_delay: 0
                          )
                          |> Checks.interpret_diagnostics()
       end
@@ -77,8 +81,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
             json_response_verification_stub(%{
               "completed" => true,
               "trackerIsInHtml" => true,
-              "qustoIsOnWindow" => true,
-              "qustoIsInitialized" => true,
+              "plausibleIsOnWindow" => true,
+              "plausibleIsInitialized" => true,
               "testEvent" => %{
                 "normalizedBody" => %{
                   "domain" => @expected_domain
@@ -95,21 +99,21 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
       for {installation_type, expected_recommendation} <- [
             {"wordpress",
-             "Please check that you've installed the WordPress plugin correctly, or verify your installation manually"},
+             "Check you've installed the WordPress plugin correctly, or verify your installation manually"},
             {"gtm",
-             "Please check that you've entered the ID in the GTM template correctly, or verify your installation manually"},
+             "Check you've entered the ID in the GTM template correctly, or verify your installation manually"},
             {"npm",
-             "Please check that you've initialized Qusto with the correct domain, or verify your installation manually"},
+             "Check you've initialized Plausible with the correct domain, or verify your installation manually"},
             {"manual",
-             "Please check that the snippet on your site matches the installation instructions exactly, or verify your installation manually"}
+             "Check that the snippet on your site matches the one shown in the installation instructions, or verify your installation manually"}
           ] do
         test "returns error when test event domain doesn't match the expected domain, with recommendation for installation type: #{installation_type}" do
           verification_stub =
             json_response_verification_stub(%{
               "completed" => true,
               "trackerIsInHtml" => true,
-              "qustoIsOnWindow" => true,
-              "qustoIsInitialized" => true,
+              "plausibleIsOnWindow" => true,
+              "plausibleIsInitialized" => true,
               "testEvent" => %{
                 "normalizedBody" => %{
                   "domain" => "wrong-domain.com"
@@ -120,12 +124,11 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
           assert_matches %Result{
                            ok?: false,
-                           errors: ["Qusto test event is not for this site"],
+                           errors: ["Your Plausible snippet is configured for a different domain"],
                            recommendations: [
                              %{
                                text: unquote(expected_recommendation),
-                               url:
-                                 "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                               inline_links: [^@verify_manually_inline_link]
                              }
                            ]
                          } =
@@ -142,8 +145,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
           json_response_verification_stub(%{
             "completed" => true,
             "trackerIsInHtml" => true,
-            "qustoIsOnWindow" => true,
-            "qustoIsInitialized" => true,
+            "plausibleIsOnWindow" => true,
+            "plausibleIsInitialized" => true,
             "testEvent" => %{
               "requestUrl" => "https://proxy.example.com/event",
               "normalizedBody" => %{
@@ -155,11 +158,16 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
         assert_matches %Result{
                          ok?: false,
-                         errors: [^any(:string, ~r/.*proxy.*/)],
+                         errors: [^any(:string, ~r/.*proxied.*/)],
                          recommendations: [
                            %{
                              text: ^any(:string, ~r/.*proxied.*/),
-                             url: "https://plausible.io/docs/proxy/introduction"
+                             inline_links: [
+                               %{
+                                 text: "Learn more",
+                                 href: "https://plausible.io/docs/proxy/introduction"
+                               }
+                             ]
                            }
                          ]
                        } =
@@ -172,8 +180,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
           json_response_verification_stub(%{
             "completed" => true,
             "trackerIsInHtml" => true,
-            "qustoIsOnWindow" => true,
-            "qustoIsInitialized" => true,
+            "plausibleIsOnWindow" => true,
+            "plausibleIsInitialized" => true,
             "testEvent" => %{
               "requestUrl" => PlausibleWeb.Endpoint.url() <> "/api/event",
               "normalizedBody" => %{
@@ -188,9 +196,9 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
                          errors: [^any(:string, ~r/.*couldn't verify.*/)],
                          recommendations: [
                            %{
-                             text: ^any(:string, ~r/.*try verifying again.*/),
-                             url:
-                               "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                             text:
+                               "Please try verifying again in a few minutes, or verify your installation manually",
+                             inline_links: [^@verify_manually_inline_link]
                            }
                          ]
                        } =
@@ -203,20 +211,19 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
           json_response_verification_stub(%{
             "completed" => true,
             "trackerIsInHtml" => false,
-            "qustoIsOnWindow" => nil,
-            "qustoIsInitialized" => nil,
+            "plausibleIsOnWindow" => nil,
+            "plausibleIsInitialized" => nil,
             "disallowedByCsp" => true
           })
 
         assert_matches %Result{
                          ok?: false,
-                         errors: ["We couldn't detect Qusto on your site"],
+                         errors: ["We couldn't detect Plausible on your site"],
                          recommendations: [
                            %{
                              text:
-                               "Please make sure you've copied the snippet to the head of your site, or verify your installation manually",
-                             url:
-                               "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                               "Make sure you've copied the snippet to the head of your site, or verify your installation manually",
+                             inline_links: [^@verify_manually_inline_link]
                            }
                          ]
                        } =
@@ -229,22 +236,27 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
           json_response_verification_stub(%{
             "completed" => true,
             "trackerIsInHtml" => true,
-            "qustoIsOnWindow" => nil,
-            "qustoIsInitialized" => nil,
+            "plausibleIsOnWindow" => nil,
+            "plausibleIsInitialized" => nil,
             "disallowedByCsp" => true
           })
 
         assert_matches %Result{
                          ok?: false,
                          errors: [
-                           "We encountered an issue with your site's Content Security Policy (CSP)"
+                           "Your site's Content Security Policy (CSP) is blocking Plausible"
                          ],
                          recommendations: [
                            %{
                              text:
-                               "Please add plausible.io domain specifically to the allowed list of domains in your site's CSP",
-                             url:
-                               "https://plausible.io/docs/troubleshoot-integration#does-your-site-use-a-content-security-policy-csp"
+                               "Add plausible.io to the list of allowed domains in your site's Content Security Policy to allow Plausible to collect analytics. Learn more",
+                             inline_links: [
+                               %{
+                                 text: "Learn more",
+                                 href:
+                                   "https://plausible.io/docs/troubleshoot-integration#does-your-site-use-a-content-security-policy-csp"
+                               }
+                             ]
                            }
                          ]
                        } =
@@ -262,15 +274,12 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
         assert_matches %Result{
                          ok?: false,
                          data: %{offer_custom_url_input: true},
-                         errors: [
-                           "We couldn't verify your website at https://example.com"
-                         ],
+                         errors: ["We couldn't verify https://example.com"],
                          recommendations: [
                            %{
                              text:
-                               "Accessing the website resulted in a network error. Please verify your installation manually",
-                             url:
-                               "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                               "We encountered a network error while trying to access your website. You can verify your installation manually",
+                             inline_links: [^@verify_manually_inline_link]
                            }
                          ]
                        } =
@@ -284,23 +293,20 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
             "completed" => true,
             "responseStatus" => 403,
             "trackerIsInHtml" => nil,
-            "qustoIsOnWindow" => nil,
-            "qustoIsInitialized" => nil,
+            "plausibleIsOnWindow" => nil,
+            "plausibleIsInitialized" => nil,
             "testEvent" => %{"error" => "Timed out"}
           })
 
         assert_matches %Result{
                          ok?: false,
                          data: %{offer_custom_url_input: true},
-                         errors: [
-                           "We couldn't verify your website at https://example.com"
-                         ],
+                         errors: ["We couldn't verify https://example.com"],
                          recommendations: [
                            %{
                              text:
-                               "Accessing the website resulted in an unexpected status code 403. Please check for anything that might be blocking us from reaching your site, like a firewall, authentication requirements, or CDN rules. If you'd prefer, you can skip this and verify your installation manually",
-                             url:
-                               "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                               "Accessing your website returned an unexpected status code (403). Check for anything that might be blocking our access to your site, such as a firewall, authentication requirements, or CDN rules. You can also verify your installation manually",
+                             inline_links: [^@verify_manually_inline_link]
                            }
                          ]
                        } =
@@ -310,33 +316,32 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
       for {installation_type, expected_recommendation} <- [
             {"wordpress",
-             "Please make sure you've enabled the plugin, or verify your installation manually"},
+             "Make sure you've enabled the WordPress plugin, or verify your installation manually"},
             {"gtm",
-             "Please make sure you've configured the GTM template correctly, or verify your installation manually"},
+             "Make sure you've configured the GTM template correctly, or verify your installation manually"},
             {"npm",
-             "Please make sure you've initialized Qusto on your site, or verify your installation manually"},
+             "Make sure you've initialized Plausible on your site, or verify your installation manually"},
             {"manual",
-             "Please make sure you've copied the snippet to the head of your site, or verify your installation manually"}
+             "Make sure you've copied the snippet to the head of your site, or verify your installation manually"}
           ] do
-        test "returns error \"We couldn't detect Qusto on your site\" when plausible_is_on_window is false (with best guess recommendation for installation type: #{installation_type})" do
+        test "returns error \"We couldn't detect Plausible on your site\" when plausible_is_on_window is false (with best guess recommendation for installation type: #{installation_type})" do
           verification_stub =
             json_response_verification_stub(%{
               "completed" => true,
               "responseStatus" => 200,
               "trackerIsInHtml" => false,
-              "qustoIsOnWindow" => false,
-              "qustoIsInitialized" => false,
+              "plausibleIsOnWindow" => false,
+              "plausibleIsInitialized" => false,
               "testEvent" => %{"error" => "Timed out"}
             })
 
           assert_matches %Result{
                            ok?: false,
-                           errors: ["We couldn't detect Qusto on your site"],
+                           errors: ["We couldn't detect Plausible on your site"],
                            recommendations: [
                              %{
                                text: unquote(expected_recommendation),
-                               url:
-                                 "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                               inline_links: [^@verify_manually_inline_link]
                              }
                            ]
                          } =
@@ -347,25 +352,24 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
                            |> Checks.interpret_diagnostics()
         end
 
-        test "falls back to error \"We couldn't detect Qusto on your site\" when no other case matches (with best guess recommendation for installation type: #{installation_type}), sends diagnostics to Sentry" do
+        test "falls back to error \"We couldn't detect Plausible on your site\" when no other case matches (with best guess recommendation for installation type: #{installation_type}), sends diagnostics to Sentry" do
           verification_stub =
             json_response_verification_stub(%{
               "completed" => true,
               "responseStatus" => nil,
               "trackerIsInHtml" => nil,
-              "qustoIsOnWindow" => nil,
-              "qustoIsInitialized" => nil,
+              "plausibleIsOnWindow" => nil,
+              "plausibleIsInitialized" => nil,
               "testEvent" => nil
             })
 
           assert_matches %Result{
                            ok?: false,
-                           errors: ["We couldn't detect Qusto on your site"],
+                           errors: ["We couldn't detect Plausible on your site"],
                            recommendations: [
                              %{
                                text: unquote(expected_recommendation),
-                               url:
-                                 "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                               inline_links: [^@verify_manually_inline_link]
                              }
                            ]
                          } =
@@ -395,8 +399,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
               %{
                 "completed" => true,
                 "trackerIsInHtml" => false,
-                "qustoIsOnWindow" => false,
-                "qustoIsInitialized" => false
+                "plausibleIsOnWindow" => false,
+                "plausibleIsInitialized" => false
               }
             else
               assert [_, "plausible_verification" <> _] =
@@ -405,8 +409,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
               %{
                 "completed" => true,
                 "trackerIsInHtml" => true,
-                "qustoIsOnWindow" => true,
-                "qustoIsInitialized" => true,
+                "plausibleIsOnWindow" => true,
+                "plausibleIsInitialized" => true,
                 "testEvent" => %{
                   "normalizedBody" => %{
                     "domain" => "example.com"
@@ -427,8 +431,13 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
                          recommendations: [
                            %{
                              text: ^any(:string, ~r/.*cache.*/),
-                             url:
-                               "https://plausible.io/docs/troubleshoot-integration#have-you-cleared-the-cache-of-your-site"
+                             inline_links: [
+                               %{
+                                 text: "Learn more",
+                                 href:
+                                   "https://plausible.io/docs/troubleshoot-integration#have-you-cleared-the-cache-of-your-site"
+                               }
+                             ]
                            }
                          ]
                        } = run_checks(verification_stub) |> Checks.interpret_diagnostics()
@@ -445,8 +454,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
               %{
                 "completed" => true,
                 "trackerIsInHtml" => false,
-                "qustoIsOnWindow" => false,
-                "qustoIsInitialized" => false
+                "plausibleIsOnWindow" => false,
+                "plausibleIsInitialized" => false
               }
 
             conn
@@ -485,12 +494,12 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
         assert_matches %Result{
                          ok?: false,
-                         errors: [^any(:string, ~r/.*temporary service error.*/)],
+                         errors: [^any(:string, ~r/.*temporarily unavailable.*/)],
                          recommendations: [
                            %{
-                             text: ^any(:string, ~r/.*in a few minutes.*/),
-                             url:
-                               "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                             text:
+                               "Please try again in a few minutes or verify your installation manually",
+                             inline_links: [^@verify_manually_inline_link]
                            }
                          ]
                        } = Checks.interpret_diagnostics(state)
@@ -515,34 +524,16 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
           assert_matches %Result{
                            ok?: false,
-                           errors: [^any(:string, ~r/.*temporary service error.*/)],
+                           errors: [^any(:string, ~r/.*temporarily unavailable.*/)],
                            recommendations: [
                              %{
-                               text: ^any(:string, ~r/.*in a few minutes.*/),
-                               url:
-                                 "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+                               text:
+                                 "Please try again in a few minutes or verify your installation manually",
+                               inline_links: [^@verify_manually_inline_link]
                              }
                            ]
                          } = Checks.interpret_diagnostics(state)
         end
-      end
-    end
-
-    describe "bundled verifier contract" do
-      test "the wrapper calls the global function the bundled verifier exposes" do
-        verifier_code = File.read!(Application.app_dir(:plausible, @verifier_artifact_path))
-
-        global =
-          Plausible.InstallationSupport.Checks.VerifyInstallation.verifier_global_function()
-
-        assert verifier_code =~ "window.#{global}"
-      end
-
-      test "the bundled verifier emits the diagnostic keys the check reads" do
-        verifier_code = File.read!(Application.app_dir(:plausible, @verifier_artifact_path))
-
-        assert verifier_code =~ "qustoIsOnWindow"
-        assert verifier_code =~ "qustoIsInitialized"
       end
     end
 
@@ -558,7 +549,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
       installation_type = Keyword.get(opts, :installation_type, "manual")
       expected_req_count = Keyword.get(opts, :expected_req_count)
 
-      stub_lookup_a_records(@expected_domain)
+      stub_dns()
 
       if is_integer(expected_req_count) do
         counter = :atomics.new(1, [])
@@ -572,7 +563,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
           Checks.run(@url_to_verify, @expected_domain, installation_type,
             report_to: nil,
             async?: false,
-            slowdown: 0
+            slowdown: 0,
+            launch_delay: 0
           )
 
         assert expected_req_count == :atomics.get(counter, 1)
@@ -584,7 +576,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
         Checks.run(@url_to_verify, @expected_domain, installation_type,
           report_to: nil,
           async?: false,
-          slowdown: 0
+          slowdown: 0,
+          launch_delay: 0
         )
       end
     end

@@ -109,6 +109,15 @@ defmodule PlausibleWeb.Router do
     forward "/sent-emails-api", Bamboo.SentEmailApiPlug
   end
 
+  # OAuth 2.1 discovery documents
+  scope "/.well-known", PlausibleWeb do
+    pipe_through :external_api
+
+    get "/oauth-protected-resource/mcp", OAuth.MetadataController, :mcp_protected_resource
+
+    get "/oauth-authorization-server", OAuth.MetadataController, :authorization_server
+  end
+
   on_ee do
     live_session :customer_support,
       on_mount: PlausibleWeb.Live.SuperAdminLiveAuth do
@@ -117,6 +126,10 @@ defmodule PlausibleWeb.Router do
         pipe_through [:browser, :csrf, :app_layout, :flags]
 
         live "/cs", CustomerSupport, :index, as: :customer_support
+
+        live "/cs/trial-prospects", CustomerSupport.TrialProspects, :index,
+          as: :customer_support_trial_prospects
+
         live "/cs/teams/team/:id", CustomerSupport.Team, :show, as: :customer_support_team
         live "/cs/users/user/:id", CustomerSupport.User, :show, as: :customer_support_user
         live "/cs/sites/site/:id", CustomerSupport.Site, :show, as: :customer_support_site
@@ -176,6 +189,7 @@ defmodule PlausibleWeb.Router do
         post "/stats", E2EController, :populate_stats
         post "/funnel", E2EController, :create_funnel
         post "/goal", E2EController, :create_goal
+        put "/verification", E2EController, :put_verification_scenario
       end
     end
   end
@@ -303,6 +317,14 @@ defmodule PlausibleWeb.Router do
       delete "/:segment_id", SegmentsController, :delete
       get "/:segment_id/shared-links", SegmentsController, :get_related_shared_links
     end
+
+    scope "/:domain/annotations", PlausibleWeb.Api.Internal,
+      private: %{allow_consolidated_views: true} do
+      get "/", AnnotationsController, :index
+      post "/", AnnotationsController, :create
+      patch "/:annotation_id", AnnotationsController, :update
+      delete "/:annotation_id", AnnotationsController, :delete
+    end
   end
 
   scope "/api/v1/stats", PlausibleWeb.Api,
@@ -399,10 +421,16 @@ defmodule PlausibleWeb.Router do
 
     scope [] do
       pipe_through :api
+
+      on_ee do
+        post "/postmark/webhook", Api.PostmarkController, :webhook
+      end
+
       post "/paddle/webhook", Api.PaddleController, :webhook
       get "/paddle/currency", Api.PaddleController, :currency
 
       put "/:domain/disable-feature", Api.InternalController, :disable_feature
+      put "/:domain/complete-onboarding", Api.InternalController, :complete_onboarding
 
       get "/sites", Api.InternalController, :sites
     end
@@ -414,20 +442,26 @@ defmodule PlausibleWeb.Router do
     scope alias: Live, assigns: %{connect_live_socket: true} do
       pipe_through [PlausibleWeb.RequireLoggedOutPlug, :app_layout]
 
-      scope assigns: %{disable_registration_for: [:invite_only, true]} do
+      scope assigns: %{registration_context: :default} do
         pipe_through PlausibleWeb.Plugs.MaybeDisableRegistration
 
-        live "/register", RegisterForm, :register_form, as: :auth
+        live_session :default, on_mount: PlausibleWeb.Live.RegistrationContext do
+          live "/register", RegisterForm, :register_form, as: :auth
+        end
       end
 
       scope assigns: %{
-              disable_registration_for: true,
+              registration_context: :invitation,
               dogfood_page_path: "/register/invitation/:invitation_id"
             } do
         pipe_through PlausibleWeb.Plugs.MaybeDisableRegistration
 
-        live "/register/invitation/:invitation_id", RegisterForm, :register_from_invitation_form,
-          as: :auth
+        live_session :invitation,
+          on_mount: {PlausibleWeb.Live.RegistrationContext, :invitation} do
+          live "/register/invitation/:invitation_id",
+               RegisterForm,
+               :register_from_invitation_form, as: :auth
+        end
       end
     end
 
@@ -436,6 +470,12 @@ defmodule PlausibleWeb.Router do
     post "/activate", AuthController, :activate
     get "/login", AuthController, :login_form
     post "/login", AuthController, :login
+
+    get "/invitation-expired", AuthController, :invitation_expired
+
+    get "/login/oauth/authorize", OAuth.AuthorizeController, :authorize_form
+    post "/login/oauth/authorize", OAuth.AuthorizeController, :authorize
+
     get "/password/request-reset", AuthController, :password_reset_request_form
     post "/password/request-reset", AuthController, :password_reset_request
     get "/2fa/setup/force-initiate", AuthController, :force_initiate_2fa_setup
@@ -454,11 +494,24 @@ defmodule PlausibleWeb.Router do
     post "/error_report", ErrorReportController, :submit_error_report
   end
 
+  scope "/login/oauth", PlausibleWeb do
+    pipe_through :external_api
+    post "/token", OAuth.TokenController, :token
+  end
+
+  scope "/", PlausibleWeb do
+    pipe_through :external_api
+
+    post "/mcp", MCP.MCPController, :handle
+    get "/mcp", MCP.MCPController, :not_supported
+    delete "/mcp", MCP.MCPController, :not_supported
+  end
+
   scope "/", PlausibleWeb do
     pipe_through [:shared_link]
 
-    get "/share/:domain/*path", StatsController, :shared_link
     post "/share/:slug/authenticate", StatsController, :authenticate_shared_link
+    get "/share/:domain/*path", StatsController, :shared_link, warn_on_verify: true
   end
 
   scope "/settings", PlausibleWeb do
@@ -586,18 +639,15 @@ defmodule PlausibleWeb.Router do
       pipe_through [:app_layout, PlausibleWeb.RequireAccountPlug]
 
       scope assigns: %{
-              dogfood_page_path: "/:website/installation"
+              dogfood_page_path: "/:website/installation",
+              bg_class: "bg-white dark:bg-gray-950",
+              legacy_layout?: false
             } do
-        live "/:domain/installation", Installation, :installation, as: :site
-      end
-
-      scope assigns: %{
-              dogfood_page_path: "/:website/verification"
-            } do
-        live "/:domain/verification",
-             on_ee(do: Verification, else: AwaitingPageviews),
-             :verification,
-             as: :site
+        live "/:domain/installation",
+             Installation,
+             :installation,
+             as: :site,
+             container: {:div, class: "h-full"}
       end
 
       scope assigns: %{
@@ -623,7 +673,7 @@ defmodule PlausibleWeb.Router do
     put "/:domain/settings/google", SiteController, :update_google_auth
     delete "/:domain/settings/google-search", SiteController, :delete_google_auth
     delete "/:domain/settings/google-import", SiteController, :delete_google_auth
-    delete "/:domain", SiteController, :delete_site
+    delete "/:domain", SiteController, :delete_site, warn_on_verify: true
     delete "/:domain/stats", SiteController, :reset_stats
 
     get "/:domain/import/google-analytics/property",
@@ -696,8 +746,8 @@ defmodule PlausibleWeb.Router do
 
       put "/:domain/settings", SiteController, :update_settings
 
-      get "/:domain", StatsController, :stats
-      get "/:domain/*path", StatsController, :stats
+      get "/:domain", StatsController, :stats, warn_on_verify: true
+      get "/:domain/*path", StatsController, :stats, warn_on_verify: true
     end
   end
 end

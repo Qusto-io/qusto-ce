@@ -67,7 +67,7 @@ defmodule Mix.Tasks.DownloadCountryDatabase do
     fetch_url(url, 1)
   end
 
-  defp fetch_url(url, attempt) when attempt > @max_attempts do
+  defp fetch_url(_url, attempt) when attempt > @max_attempts do
     {:error, :max_attempts_exceeded}
   end
 

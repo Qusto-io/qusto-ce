@@ -798,7 +798,7 @@ defmodule PlausibleWeb.AuthControllerTest do
         assert html_response(conn, 200)
 
         assert_email_delivered_with(
-          subject: "Plausible password reset",
+          subject: "Qusto password reset",
           to: [nil: user.email]
         )
       end
@@ -817,7 +817,7 @@ defmodule PlausibleWeb.AuthControllerTest do
         assert html_response(conn, 200)
 
         refute_email_delivered_with(
-          subject: "Plausible password reset",
+          subject: "Qusto password reset",
           to: [nil: user.email]
         )
       end
@@ -878,7 +878,7 @@ defmodule PlausibleWeb.AuthControllerTest do
 
       {:ok, %{conn: conn}} = PlausibleWeb.FirstLaunchPlug.Test.skip(%{conn: recycle(conn)})
       conn = get(conn, location)
-      assert html_response(conn, 200) =~ "Welcome to Plausible!"
+      assert html_response(conn, 200) =~ "Privacy-First Web Analytics"
     end
 
     test "redirects user to `redirect` param when provided", %{conn: conn} do

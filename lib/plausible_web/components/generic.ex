@@ -165,12 +165,12 @@ defmodule PlausibleWeb.Components.Generic do
           <span>Learn more</span>
         </:tooltip_content>
         <a
-          href={"https://plausible.io/docs/#{@slug}"}
+          href={"https://docs.qusto.io/#{@slug}"}
           rel="noopener noreferrer"
           target="_blank"
           class="inline-block"
         >
-          <Heroicons.information_circle class="text-gray-400 dark:text-indigo-500 size-5 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors duration-150" />
+          <Heroicons.information_circle class="text-gray-400 dark:text-[var(--color-dark-primary)] size-5 hover:text-blue-600 dark:hover:text-[var(--color-dark-primary-hover)] transition-colors duration-150" />
         </a>
       </.tooltip>
     </div>

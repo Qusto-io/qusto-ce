@@ -4,11 +4,11 @@ defmodule PlausibleWeb.Components.Billing do
   use PlausibleWeb, :component
   use Plausible
 
+  require Plausible.Billing
+
   import PlausibleWeb.Components.Icons
 
-  alias Plausible.Billing.{Plan, Plans, EnterprisePlan, Subscription, Subscriptions}
-
-  require Plausible.Billing.Subscription.Status
+  alias Plausible.Billing.{Plan, Plans, EnterprisePlan}
 
   attr :site, Plausible.Site, required: false, default: nil
   attr :current_user, Plausible.Auth.User, required: true
@@ -25,7 +25,7 @@ defmodule PlausibleWeb.Components.Billing do
     <div
       :if={@locked?}
       id="feature-gate-overlay"
-      class="absolute backdrop-blur-[8px] bg-white/70 dark:bg-[var(--color-dark-bg-elevated)]/50 inset-0 flex justify-center items-center"
+      class="absolute backdrop-blur-[8px] bg-white/70 dark:bg-gray-800/50 inset-0 flex justify-center items-center"
     >
       <div class="px-6 flex flex-col items-center gap-y-3">
         <div class="flex-shrink-0 bg-white dark:bg-gray-700 max-w-max rounded-md p-2 border border-gray-200 dark:border-gray-600 text-indigo-500">
@@ -202,66 +202,6 @@ defmodule PlausibleWeb.Components.Billing do
           </div>
         </div>
       </div>
-    </div>
-    """
-  end
-
-  slot(:inner_block, required: true)
-  attr(:rest, :global)
-
-  def usage_and_limits_table(assigns) do
-    ~H"""
-    <table class="min-w-full text-gray-900 dark:text-gray-100" {@rest}>
-      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-        {render_slot(@inner_block)}
-      </tbody>
-    </table>
-    """
-  end
-
-  attr(:title, :string, required: true)
-  attr(:usage, :integer, required: true)
-  attr(:limit, :integer, default: nil)
-  attr(:pad, :boolean, default: false)
-  attr(:rest, :global)
-
-  def usage_and_limits_row(assigns) do
-    ~H"""
-    <tr {@rest}>
-      <td class={["text-sm py-4 pr-1 sm:whitespace-nowrap text-left", @pad && "pl-6"]}>
-        {@title}
-      </td>
-      <td class="text-sm py-4 sm:whitespace-nowrap text-right">
-        {PlausibleWeb.TextHelpers.number_format(@usage)}
-        {if is_number(@limit), do: "/ #{PlausibleWeb.TextHelpers.number_format(@limit)}"}
-      </td>
-    </tr>
-    """
-  end
-
-  attr :subscription, :any, required: true
-  attr :team, :any, required: true
-
-  def monthly_quota_box(assigns) do
-    ~H"""
-    <div
-      id="monthly-quota-box"
-      class="w-full flex-1 h-32 px-2 py-4 text-center bg-gray-100 rounded-sm dark:bg-[var(--color-dark-bg-elevated)] w-max-md"
-    >
-      <h4 class="font-black dark:text-gray-100">Monthly quota</h4>
-      <div class="py-2 text-xl font-medium dark:text-gray-100">
-        {PlausibleWeb.AuthView.subscription_quota(@subscription, format: :long)}
-      </div>
-      <.styled_link
-        :if={
-          not (Plausible.Teams.Billing.enterprise_configured?(@team) &&
-                 Subscriptions.halted?(@subscription))
-        }
-        id="#upgrade-or-change-plan-link"
-        href={Routes.billing_path(PlausibleWeb.Endpoint, :choose_plan)}
-      >
-        {change_plan_or_upgrade_text(@subscription)}
-      </.styled_link>
     </div>
     """
   end
@@ -450,14 +390,6 @@ defmodule PlausibleWeb.Components.Billing do
     end
   end
 
-  defp change_plan_or_upgrade_text(subscription) do
-    cond do
-      is_nil(subscription) -> "Upgrade"
-      subscription.status == Subscription.Status.deleted() -> "Upgrade"
-      true -> "Change plan"
-    end
-  end
-
   attr :link_class, :string, default: ""
   attr :current_team, :any, required: true
   attr :current_user, :atom, required: true
@@ -493,7 +425,7 @@ defmodule PlausibleWeb.Components.Billing do
       end
 
     cond do
-      not is_nil(current_role) and current_role not in [:owner, :billing] ->
+      not is_nil(current_role) and current_role not in Plausible.Billing.allowed_roles() ->
         ~H"ask your team owner to upgrade their subscription."
 
       upgrade_assistance_required? ->

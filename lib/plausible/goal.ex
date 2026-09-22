@@ -1,9 +1,20 @@
 defmodule Plausible.Goal do
+  @moduledoc """
+  Goal schema.
+  """
+
   use Plausible
   use Ecto.Schema
+
   import Ecto.Changeset
 
   @type t() :: %__MODULE__{}
+
+  on_ee do
+    @journey_end_event Plausible.Stats.Exploration.Journey.Step.journey_end_event()
+  else
+    @journey_end_event nil
+  end
 
   schema "goals" do
     field :event_name, :string
@@ -27,8 +38,6 @@ defmodule Plausible.Goal do
   end
 
   @fields [
-            :id,
-            :site_id,
             :event_name,
             :page_path,
             :scroll_threshold,
@@ -45,11 +54,26 @@ defmodule Plausible.Goal do
 
   def max_custom_props_per_goal(), do: @max_custom_props_per_goal
 
+  @special_goals [
+    "404",
+    "Outbound Link: Click",
+    "Cloaked Link: Click",
+    "File Download",
+    "Form: Submission",
+    "WP Search Queries",
+    "WP Form Completions"
+  ]
+
+  def special_goals(), do: @special_goals
+
+  @spec special_goal?(t() | String.t() | nil) :: boolean()
+  def special_goal?(%__MODULE__{event_name: event_name}), do: special_goal?(event_name)
+  def special_goal?(event_name) when is_binary(event_name), do: event_name in @special_goals
+  def special_goal?(_), do: false
+
   def changeset(goal, attrs \\ %{}) do
     goal
     |> cast(attrs, @fields)
-    |> validate_required([:site_id])
-    |> cast_assoc(:site)
     |> update_leading_slash()
     |> validate_event_name_and_page_path()
     |> validate_page_path_for_scroll_goal()
@@ -72,6 +96,7 @@ defmodule Plausible.Goal do
     )
     |> maybe_drop_currency()
     |> prevent_currency_change()
+    |> prevent_special_goal_renames()
   end
 
   @spec display_name(t()) :: String.t()
@@ -153,6 +178,10 @@ defmodule Plausible.Goal do
       value == "engagement" ->
         {:error, "The event name 'engagement' is reserved and cannot be used as a goal"}
 
+      journey_end_event?(value) ->
+        {:error,
+         "The event name '#{@journey_end_event}' is reserved and cannot be used as a goal"}
+
       value && String.match?(value, ~r/^.+/) ->
         :ok
 
@@ -222,6 +251,43 @@ defmodule Plausible.Goal do
       true ->
         []
     end
+  end
+
+  defp prevent_special_goal_renames(changeset) do
+    if changeset.data.id && special_goal?(changeset.data.event_name) do
+      changeset
+      |> reject_special_goal_field_change(:event_name)
+      |> reject_special_goal_field_change(:display_name)
+    else
+      changeset
+    end
+  end
+
+  defp reject_special_goal_field_change(changeset, :event_name) do
+    if Map.has_key?(changeset.changes, :event_name) do
+      add_error(changeset, :event_name, "cannot be changed for an automated goal")
+    else
+      changeset
+    end
+  end
+
+  defp reject_special_goal_field_change(changeset, :display_name) do
+    new_value = get_change(changeset, :display_name)
+    canonical = changeset.data.event_name
+
+    if new_value && new_value != canonical do
+      add_error(changeset, :display_name, "cannot be changed for an automated goal")
+    else
+      changeset
+    end
+  end
+
+  on_ee do
+    defp journey_end_event?(name) do
+      name == @journey_end_event
+    end
+  else
+    defp journey_end_event?(_name), do: always(false)
   end
 end
 

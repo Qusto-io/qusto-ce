@@ -42,7 +42,7 @@ defmodule PlausibleWeb.StatsControllerTest do
                |> find("meta[name=x-api-version]")
                |> text_of_attr("content")
 
-      assert text_of_element(resp, "title") == "Plausible · #{site.domain}"
+      assert text_of_element(resp, "title") == "Qusto · #{site.domain}"
     end
 
     test "public site - all segments (personal or site) are stuffed into dataset, without their owner_id and owner_name",

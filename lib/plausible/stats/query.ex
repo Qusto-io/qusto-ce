@@ -24,7 +24,6 @@ defmodule Plausible.Stats.Query do
             # Revenue metric specific metadata
             revenue_currencies: %{},
             revenue_warning: nil,
-            remove_unavailable_revenue_metrics: false,
             site_id: nil,
             consolidated_site_ids: nil,
             site_native_stats_start_at: nil,
@@ -51,16 +50,16 @@ defmodule Plausible.Stats.Query do
   def parse_and_build(
         %Plausible.Site{domain: domain} = site,
         %{"site_id" => domain} = params,
-        debug_metadata \\ %{}
+        opts \\ []
       ) do
     with {:ok, %ParsedQueryParams{} = parsed_query_params} <-
-           ApiQueryParser.parse(params) do
-      QueryBuilder.build(site, parsed_query_params, debug_metadata)
+           ApiQueryParser.parse(params, opts) do
+      QueryBuilder.build(site, parsed_query_params, Keyword.get(opts, :debug_metadata, %{}))
     end
   end
 
-  def parse_and_build!(site, params, debug_metadata \\ %{}) do
-    case parse_and_build(site, params, debug_metadata) do
+  def parse_and_build!(site, params, opts \\ []) do
+    case parse_and_build(site, params, opts) do
       {:ok, query} ->
         query
 
@@ -73,8 +72,13 @@ defmodule Plausible.Stats.Query do
   Builds query from old-style stats APIv1 params. New code should use `Query.parse_and_build`
   or `QueryBuilder.build` with already parsed params.
   """
-  def from(site, params, debug_metadata \\ %{}, now \\ nil) do
-    Legacy.QueryBuilder.from(site, params, debug_metadata, now)
+  def from(site, params, opts \\ []) do
+    Legacy.QueryBuilder.from(
+      site,
+      params,
+      Keyword.get(opts, :debug_metadata, %{}),
+      Keyword.get(opts, :now)
+    )
   end
 
   def date_range(query, options \\ []) do
@@ -146,7 +150,9 @@ defmodule Plausible.Stats.Query do
     requested? = query.include.imports
 
     query =
-      if site do
+      if site && Imported.schema_supports_interval?(query) do
+        site = Plausible.Repo.preload(site, :completed_imports)
+
         struct!(query,
           imports_exist: Plausible.Imported.any_completed_imports?(site),
           imports_in_range: get_imports_in_range(site, query)
@@ -183,17 +189,17 @@ defmodule Plausible.Stats.Query do
   end
 
   @spec get_skip_imported_reason(t()) ::
-          nil | :no_imported_data | :out_of_range | :unsupported_query
+          nil | :no_imported_data | :out_of_range | :unsupported_interval | :unsupported_query
   def get_skip_imported_reason(query) do
     cond do
+      not Imported.schema_supports_interval?(query) ->
+        :unsupported_interval
+
       not query.imports_exist ->
         :no_imported_data
 
       query.imports_in_range == [] ->
         :out_of_range
-
-      "time:minute" in query.dimensions or "time:hour" in query.dimensions ->
-        :unsupported_interval
 
       not Imported.schema_supports_query?(query) ->
         :unsupported_query

@@ -5,7 +5,7 @@ import * as metrics from '../reports/metrics'
 import { hasConversionGoalFilter } from '../../util/filters'
 import ListReport from '../reports/list'
 import ImportedQueryUnsupportedWarning from '../../stats/imported-query-unsupported-warning'
-import { useQueryContext } from '../../query-context'
+import { useDashboardStateContext } from '../../dashboard-state-context'
 import { useSiteContext } from '../../site-context'
 import { referrersDrilldownRoute } from '../../router'
 import { SourceFavicon } from './source-favicon'
@@ -18,7 +18,7 @@ import { MoreLinkState } from '../more-link-state'
 const NO_REFERRER = 'Direct / None'
 
 export default function Referrers({ source }) {
-  const { query } = useQueryContext()
+  const { dashboardState } = useDashboardStateContext()
   const site = useSiteContext()
   const [skipImportedReason, setSkipImportedReason] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -27,12 +27,12 @@ export default function Referrers({ source }) {
   useEffect(() => {
     setLoading(true)
     setMoreLinkState(MoreLinkState.LOADING)
-  }, [query])
+  }, [dashboardState])
 
   function fetchReferrers() {
     return api.get(
       url.apiPath(site, `/referrers/${encodeURIComponent(source)}`),
-      query,
+      dashboardState,
       { limit: 9 }
     )
   }
@@ -77,12 +77,12 @@ export default function Referrers({ source }) {
   function chooseMetrics() {
     return [
       metrics.createVisitors({ meta: { plot: true } }),
-      hasConversionGoalFilter(query) && metrics.createConversionRate()
+      hasConversionGoalFilter(dashboardState) && metrics.createConversionRate()
     ].filter((metric) => !!metric)
   }
 
   return (
-    <ReportLayout className="overflow-x-hidden">
+    <ReportLayout testId="report-referrers" className="overflow-x-hidden">
       <ReportHeader>
         <div className="flex gap-x-3">
           <TabWrapper>

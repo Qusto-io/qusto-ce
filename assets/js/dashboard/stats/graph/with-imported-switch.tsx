@@ -1,7 +1,7 @@
 import React from 'react'
 import { BarsArrowUpIcon } from '@heroicons/react/20/solid'
 import classNames from 'classnames'
-import { useQueryContext } from '../../query-context'
+import { useDashboardStateContext } from '../../dashboard-state-context'
 import { AppNavigationLink } from '../../navigation/use-app-navigate'
 import { Tooltip } from '../../util/tooltip'
 
@@ -12,8 +12,8 @@ export default function WithImportedSwitch({
   tooltipMessage: string
   disabled?: boolean
 }) {
-  const { query } = useQueryContext()
-  const importsSwitchedOn = query.with_imported
+  const { dashboardState } = useDashboardStateContext()
+  const importsSwitchedOn = dashboardState.with_imported
 
   const iconClass = classNames('size-4', {
     'dark:text-gray-300 text-gray-700': importsSwitchedOn,
@@ -33,7 +33,7 @@ export default function WithImportedSwitch({
         }
         className="flex items-center justify-center"
       >
-        <BarsArrowUpIcon className={iconClass} />
+        <BarsArrowUpIcon data-testid="import-switch" className={iconClass} />
       </AppNavigationLink>
     </Tooltip>
   )

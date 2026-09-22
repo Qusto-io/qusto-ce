@@ -3527,6 +3527,34 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryTest do
                %{"dimensions" => ["/"], "metrics" => [2, 2, 2, 2, 50, 300]}
              ]
     end
+
+    test "views_per_visit in a time:week dimension query", %{
+      conn: conn,
+      site: site
+    } do
+      populate_stats(site, [
+        build(:pageview, user_id: 1, timestamp: ~N[2021-01-04 00:00:00]),
+        build(:pageview, user_id: 1, timestamp: ~N[2021-01-04 00:05:00]),
+        build(:pageview, user_id: 2, timestamp: ~N[2021-01-18 00:00:00]),
+        build(:pageview, user_id: 2, timestamp: ~N[2021-01-18 00:05:00]),
+        build(:pageview, user_id: 2, timestamp: ~N[2021-01-18 00:10:00])
+      ])
+
+      conn =
+        post(conn, "/api/v2/query", %{
+          "site_id" => site.domain,
+          "metrics" => ["views_per_visit"],
+          "date_range" => ["2021-01-01", "2021-01-28"],
+          "dimensions" => ["time:week"]
+        })
+
+      %{"results" => results} = json_response(conn, 200)
+
+      assert results == [
+               %{"dimensions" => ["2021-01-04"], "metrics" => [2.0]},
+               %{"dimensions" => ["2021-01-18"], "metrics" => [3.0]}
+             ]
+    end
   end
 
   test "filtering by custom event property", %{conn: conn, site: site} do
@@ -3663,6 +3691,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryTest do
         "site_id" => site.domain,
         "date_range" => "all",
         "metrics" => ["pageviews"],
+        "order_by" => [["pageviews", "desc"], ["visit:country_name", "asc"]],
         "filters" => [
           ["is", "visit:country_name", ["Estonia", "United Kingdom"]],
           ["is_not", "visit:region_name", ["Tartumaa"]],
@@ -4794,6 +4823,70 @@ defmodule PlausibleWeb.Api.ExternalStatsController.QueryTest do
              ]
 
       assert "metric_warnings" not in json_response(conn, 200)["meta"]
+    end
+
+    test "breakdown by session dimension (entry page)", %{conn: conn, site: site} do
+      insert(:goal, site: site, event_name: "Purchase", currency: "USD")
+
+      populate_stats(site, [
+        build(:pageview, user_id: 1, pathname: "/blog"),
+        build(:event,
+          name: "Purchase",
+          user_id: 1,
+          revenue_reporting_amount: Decimal.new("100.00"),
+          revenue_reporting_currency: "USD"
+        ),
+        build(:pageview, user_id: 2, pathname: "/blog"),
+        build(:event,
+          name: "Purchase",
+          user_id: 2,
+          revenue_reporting_amount: Decimal.new("50.00"),
+          revenue_reporting_currency: "USD"
+        ),
+        build(:pageview, user_id: 3, pathname: "/home"),
+        build(:event,
+          name: "Purchase",
+          user_id: 3,
+          revenue_reporting_amount: Decimal.new("20.00"),
+          revenue_reporting_currency: "USD"
+        )
+      ])
+
+      conn =
+        post(conn, "/api/v2/query", %{
+          "site_id" => site.domain,
+          "date_range" => "all",
+          "metrics" => ["total_revenue", "average_revenue"],
+          "dimensions" => ["visit:entry_page"],
+          "filters" => [["is", "event:goal", ["Purchase"]]]
+        })
+
+      assert json_response(conn, 200)["results"] == [
+               %{
+                 "dimensions" => ["/blog"],
+                 "metrics" => [
+                   %{
+                     "currency" => "USD",
+                     "long" => "$150.00",
+                     "short" => "$150.0",
+                     "value" => 150.0
+                   },
+                   %{"currency" => "USD", "long" => "$75.00", "short" => "$75.0", "value" => 75.0}
+                 ]
+               },
+               %{
+                 "dimensions" => ["/home"],
+                 "metrics" => [
+                   %{
+                     "currency" => "USD",
+                     "long" => "$20.00",
+                     "short" => "$20.0",
+                     "value" => 20.0
+                   },
+                   %{"currency" => "USD", "long" => "$20.00", "short" => "$20.0", "value" => 20.0}
+                 ]
+               }
+             ]
     end
   end
 

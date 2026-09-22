@@ -35,10 +35,10 @@ npx playwright test e2e/ce-dashboard.spec.ts --config=e2e/playwright.config.ts
 
 ## Test Coverage
 
-| Test | Description |
-|------|-------------|
-| CE Landing Page | Root, registration, web analytics messaging |
-| CE Marketing Pages | /product, /pricing, /about |
-| CE Color Scheme | Light: blue headers; Dark: cream headers |
+| Test                 | Description                                      |
+| -------------------- | ------------------------------------------------ |
+| CE Landing Page      | Root, registration, web analytics messaging      |
+| CE Marketing Pages   | /product, /pricing, /about                       |
+| CE Color Scheme      | Light: blue headers; Dark: cream headers         |
 | CE Responsive Design | Mobile (375px), tablet (768px), desktop (1280px) |
-| CE Dashboard UI | Auth redirect for /sites |
+| CE Dashboard UI      | Auth redirect for /sites                         |

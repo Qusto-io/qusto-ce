@@ -36,6 +36,7 @@ defmodule Plausible.Stats.SQL.QueryBuilder do
       from(
         e in "events_v2",
         where: ^SQL.WhereBuilder.build(:events, events_query),
+        where: ^SQL.WhereBuilder.derived_name_filter(events_query),
         select: ^select_event_metrics(events_query)
       )
 
@@ -110,6 +111,7 @@ defmodule Plausible.Stats.SQL.QueryBuilder do
       events_q =
         from(e in "events_v2",
           where: ^SQL.WhereBuilder.build(:events, query),
+          where: ^SQL.WhereBuilder.derived_name_filter(query),
           select: %{
             session_id: fragment("DISTINCT ?", e.session_id),
             _sample_factor: fragment("_sample_factor")
@@ -171,15 +173,27 @@ defmodule Plausible.Stats.SQL.QueryBuilder do
   defp dimension_group_by(q, :events, query, "event:goal" = dimension) do
     goal_join_data = Plausible.Stats.Goals.goal_join_data(query)
 
-    from(e in q,
-      join: goal in Expression.event_goal_join(goal_join_data),
-      hints: "ARRAY",
-      on: true,
-      select_merge: %{
-        ^shortname(query, dimension) => fragment("?", goal)
-      },
-      group_by: goal
-    )
+    if Enum.all?(goal_join_data.custom_props_keys, &Enum.empty?/1) do
+      from(e in q,
+        join: goal in Expression.event_goal_join_no_props(goal_join_data),
+        hints: "ARRAY",
+        on: true,
+        select_merge: %{
+          ^shortname(query, dimension) => fragment("?", goal)
+        },
+        group_by: goal
+      )
+    else
+      from(e in q,
+        join: goal in Expression.event_goal_join(goal_join_data),
+        hints: "ARRAY",
+        on: true,
+        select_merge: %{
+          ^shortname(query, dimension) => fragment("?", goal)
+        },
+        group_by: goal
+      )
+    end
   end
 
   defp dimension_group_by(q, table, query, dimension) do

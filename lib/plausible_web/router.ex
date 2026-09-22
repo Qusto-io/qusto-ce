@@ -103,8 +103,9 @@ defmodule PlausibleWeb.Router do
     end
   end
 
-  if Mix.env() in [:dev, :ce_dev] do
+  if Mix.env() in [:dev, :ce_dev, :e2e_test] do
     forward "/sent-emails", Bamboo.SentEmailViewerPlug
+    forward "/sent-emails-api", Bamboo.SentEmailApiPlug
   end
 
   on_ee do
@@ -127,7 +128,7 @@ defmodule PlausibleWeb.Router do
   end
 
   on_ee do
-    if Mix.env() in [:dev, :test] do
+    if Mix.env() in [:dev, :test, :e2e_test] do
       scope "/dev", PlausibleWeb do
         pipe_through :browser
 
@@ -143,7 +144,7 @@ defmodule PlausibleWeb.Router do
   end
 
   # Routes for plug integration testing
-  if Mix.env() in [:test, :ce_test] do
+  if Mix.env() in [:test, :ce_test, :e2e_test] do
     scope "/plug-tests", PlausibleWeb do
       scope [] do
         pipe_through :browser
@@ -158,6 +159,19 @@ defmodule PlausibleWeb.Router do
 
         get("/api-basic", TestController, :api_basic)
         get("/:domain/api-with-domain", TestController, :api_basic)
+      end
+    end
+  end
+
+  # Routes for E2E testing
+  on_ee do
+    if Mix.env() == :e2e_test do
+      scope "/e2e-tests", PlausibleWeb do
+        pipe_through :api
+
+        post "/stats", E2EController, :populate_stats
+        post "/funnel", E2EController, :create_funnel
+        post "/goal", E2EController, :create_goal
       end
     end
   end
@@ -259,6 +273,7 @@ defmodule PlausibleWeb.Router do
       end
 
       scope private: %{allow_consolidated_views: true} do
+        post "/:domain/query", StatsController, :query
         get "/:domain/current-visitors", StatsController, :current_visitors
         get "/:domain/main-graph", StatsController, :main_graph
         get "/:domain/top-stats", StatsController, :top_stats
@@ -452,12 +467,17 @@ defmodule PlausibleWeb.Router do
   scope "/", PlausibleWeb do
     pipe_through [:shared_link]
 
-    get "/share/:domain", StatsController, :shared_link
+    get "/share/:domain/*path", StatsController, :shared_link
     post "/share/:slug/authenticate", StatsController, :authenticate_shared_link
   end
 
   scope "/settings", PlausibleWeb do
-    pipe_through [:browser, :csrf, PlausibleWeb.RequireAccountPlug]
+    pipe_through [
+      :browser,
+      :csrf,
+      PlausibleWeb.RequireAccountPlug,
+      PlausibleWeb.Plugs.CurrentPath
+    ]
 
     get "/", SettingsController, :index
     get "/preferences", SettingsController, :preferences
@@ -472,8 +492,13 @@ defmodule PlausibleWeb.Router do
     post "/security/email", SettingsController, :update_email
     post "/security/password", SettingsController, :update_password
 
-    get "/billing/subscription", SettingsController, :subscription
-    get "/billing/invoices", SettingsController, :invoices
+    live_session :settings, on_mount: PlausibleWeb.Live.SettingsContext do
+      scope alias: Live, assigns: %{connect_live_socket: true} do
+        live "/billing/subscription", SubscriptionSettings, :subscription, as: :settings
+      end
+    end
+
+    get "/billing/invoices", SettingsController, :redirect_invoices
     get "/api-keys", SettingsController, :api_keys
 
     get "/api-keys/new", SettingsController, :new_api_key
@@ -709,10 +734,7 @@ defmodule PlausibleWeb.Router do
       put "/:domain/settings", SiteController, :update_settings
 
       get "/:domain/export", StatsController, :csv_export
-
-      scope assigns: %{live_socket_disable_push_state: true} do
-        get "/:domain/*path", StatsController, :stats
-      end
+      get "/:domain/*path", StatsController, :stats
     end
   end
 end

@@ -113,7 +113,9 @@ test.describe('CE Responsive Design', () => {
 })
 
 test.describe('CE Dashboard UI (requires auth)', () => {
-  test('sites page redirects to login when unauthenticated', async ({ page }) => {
+  test('sites page redirects to login when unauthenticated', async ({
+    page
+  }) => {
     const res = await page.goto(`${BASE}/sites`)
     // Should redirect to login or register
     await expect(page).toHaveURL(/\/(login|register|auth)/)

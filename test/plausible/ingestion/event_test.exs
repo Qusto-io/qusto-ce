@@ -167,7 +167,8 @@ defmodule Plausible.Ingestion.EventTest do
 
     # When the sites cache is enabled, warmers can serve a stale entry without the
     # threshold we just wrote. Refresh the domain entry from the DB before asserting.
-    assert %Plausible.Site{ingest_rate_limit_threshold: 1} = fresh =
+    assert %Plausible.Site{ingest_rate_limit_threshold: 1} =
+             fresh =
              Plausible.Site.Cache.get_from_source(site.domain)
 
     Plausible.Site.Cache.put(site.domain, fresh)

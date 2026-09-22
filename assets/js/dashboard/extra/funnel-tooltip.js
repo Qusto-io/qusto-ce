@@ -1,6 +1,3 @@
-// Goal and funnel-step labels are user-supplied, so they must not be
-// interpolated into innerHTML unescaped. Ported from plausible/analytics
-// 7cb4f44441 ("Escape goal name in the funnel tooltip to prevent XSS", #6181).
 function escapeHTML(str) {
   const div = document.createElement('div')
   div.appendChild(document.createTextNode(str))

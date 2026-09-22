@@ -68,15 +68,14 @@ defmodule Plausible.Ingestion.Persistor.Remote do
                                        %{attributes: persistor_span_attributes(headers)} do
           result =
             Req.new(
-              finch: [name: Plausible.Finch],
+              finch: Plausible.Finch,
               body: encode_payload(event, session_attrs),
               headers: headers,
               retry: &handle_transient_error/2,
-              max_retries: @max_transient_retries,
-              compressed: true
+              max_retries: @max_transient_retries
             )
             |> OpentelemetryReq.attach(propagate_trace_headers: true)
-            |> Req.post(url: url, span_name: "persistor.remote.post")
+            |> Req.post(url: url, span_name: "persistor.remote.post", compressed: true)
 
           trace_result(result)
           result

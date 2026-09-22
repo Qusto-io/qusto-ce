@@ -54,13 +54,15 @@ defmodule Plausible.Ingestion.Event do
 
   @spec build_and_buffer(Request.t(), Keyword.t()) :: {:ok, %{buffered: [t()], dropped: [t()]}}
   def build_and_buffer(%Request{domains: domains} = request, context \\ []) do
+    gate_keeper_opts = Keyword.get(context, :gate_keeper_opts, [])
+
     processed_events =
       if spam_referrer?(request) do
         for domain <- domains, do: drop(new(domain, request), :spam_referrer)
       else
         Enum.reduce(domains, [], fn domain, acc ->
           # credo:disable-for-next-line Credo.Check.Refactor.Nesting
-          case GateKeeper.check(domain) do
+          case GateKeeper.check(domain, gate_keeper_opts) do
             {:allow, site} ->
               processed =
                 domain

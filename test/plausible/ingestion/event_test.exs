@@ -165,6 +165,20 @@ defmodule Plausible.Ingestion.EventTest do
   test "selectively drops an event when rate-limited" do
     site = new_site(ingest_rate_limit_threshold: 1)
 
+    # When the sites cache is enabled, warmers can serve a stale entry without the
+    # threshold we just wrote. Refresh the domain entry from the DB before asserting.
+    assert %Plausible.Site{ingest_rate_limit_threshold: 1} =
+             fresh =
+             Plausible.Site.Cache.get_from_source(site.domain)
+
+    Plausible.Site.Cache.put(site.domain, fresh)
+
+    context = [
+      gate_keeper_opts: [
+        key: "test:#{System.unique_integer([:positive])}"
+      ]
+    ]
+
     payload = %{
       name: "pageview",
       url: "http://dummy.site",
@@ -174,8 +188,8 @@ defmodule Plausible.Ingestion.EventTest do
     conn = build_conn(:post, "/api/events", payload)
     assert {:ok, request, _conn} = Request.build(conn)
 
-    assert {:ok, %{buffered: [_], dropped: []}} = Event.build_and_buffer(request)
-    assert {:ok, %{buffered: [], dropped: [dropped]}} = Event.build_and_buffer(request)
+    assert {:ok, %{buffered: [_], dropped: []}} = Event.build_and_buffer(request, context)
+    assert {:ok, %{buffered: [], dropped: [dropped]}} = Event.build_and_buffer(request, context)
     assert dropped.drop_reason == :throttle
   end
 

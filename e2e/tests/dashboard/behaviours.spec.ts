@@ -19,7 +19,8 @@ import {
   detailsLink,
   modal,
   closeModalButton,
-  searchInput
+  searchInput,
+  expectDropdownClosed
 } from '../test-utils'
 
 const getReport = (page: Page) => page.getByTestId('report-behaviours')
@@ -651,6 +652,7 @@ test('props breakdown', async ({ page, request }) => {
   })
 
   await test.step('loading more', async () => {
+    await expectDropdownClosed(report)
     await propsTabButton.click()
     const showMoreButton = dropdown(report).getByRole('button', {
       name: 'Show 1 more'
@@ -662,7 +664,9 @@ test('props breakdown', async ({ page, request }) => {
 
   await test.step('searching', async () => {
     await searchInput(report).fill('prop1')
-    await expect(dropdown(report).getByRole('button')).toHaveCount(2)
+    await expect
+      .poll(async () => dropdown(report).getByRole('button').count())
+      .toBe(2)
   })
 
   await test.step('props modal', async () => {

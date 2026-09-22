@@ -159,16 +159,14 @@ test('sources breakdown', async ({ page, request }) => {
     await expectHeaders(report, ['Channel', 'Visitors'])
 
     await expectRows(report, [
-      'Referral',
-      'Direct',
       'Organic Search',
+      'Referral',
       'Organic Social',
       'Paid Search'
     ])
 
+    await expectMetricValues(report, 'Organic Search', ['2', '33.3%'])
     await expectMetricValues(report, 'Referral', ['2', '33.3%'])
-    await expectMetricValues(report, 'Direct', ['1', '16.7%'])
-    await expectMetricValues(report, 'Organic Search', ['1', '16.7%'])
     await expectMetricValues(report, 'Organic Social', ['1', '16.7%'])
     await expectMetricValues(report, 'Paid Search', ['1', '16.7%'])
   })
@@ -177,7 +175,7 @@ test('sources breakdown', async ({ page, request }) => {
     await detailsLink(report).click()
 
     await expect(
-      modal(page).getByRole('heading', { name: 'Top acquisition channels' })
+      modal(page).getByRole('heading', { name: 'Acquisition channels' })
     ).toBeVisible()
 
     await expectHeaders(modal(page), [
@@ -188,9 +186,8 @@ test('sources breakdown', async ({ page, request }) => {
     ])
 
     await expectRows(modal(page), [
-      'Referral',
-      'Direct',
       'Organic Search',
+      'Referral',
       'Organic Social',
       'Paid Search'
     ])

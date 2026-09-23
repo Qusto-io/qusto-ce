@@ -2,8 +2,6 @@ name: Elixir CI
 
 on:
   pull_request:
-  push:
-    branches: [master, stable]
   merge_group:
 
 concurrency:
@@ -11,6 +9,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  # The `refs/heads/main-` fallback caches are saved by elixir-cache-warm.yml; keep
+  # CACHE_VERSION and each job's cache `path` list in sync with it.
   CACHE_VERSION: v17
   PERSISTENT_CACHE_DIR: cached
 
@@ -94,7 +94,14 @@ jobs:
       - run: npm run deploy --prefix ./tracker
         if: steps.changes.outputs.tracker == 'true' || env.HAS_BUILT_TRACKER == 'false'
 
-      - run: mix deps.get --only $MIX_ENV
+      - name: mix deps.get (with retry)
+        run: |
+          for i in 1 2 3; do
+            mix deps.get --only $MIX_ENV && exit 0
+            echo "::warning::mix deps.get attempt ${i}/3 failed"
+            [ "${i}" -lt 3 ] && sleep $((i * 15))
+          done
+          exit 1
       - run: mix compile --warnings-as-errors --all-warnings
       - run: mix do ecto.create, ecto.migrate
       - run: mix run -e "Tzdata.ReleaseUpdater.poll_for_update"
@@ -175,7 +182,7 @@ jobs:
           key: e2e-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
             e2e-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-
-            e2e-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-refs/heads/master-
+            e2e-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-refs/heads/main-
 
       - name: Cache E2E dependencies and Playwright browsers
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -199,7 +206,14 @@ jobs:
 
       - run: npm install --prefix ./tracker
       - run: npm run deploy --prefix ./tracker
-      - run: mix deps.get --only $MIX_ENV
+      - name: mix deps.get (with retry)
+        run: |
+          for i in 1 2 3; do
+            mix deps.get --only $MIX_ENV && exit 0
+            echo "::warning::mix deps.get attempt ${i}/3 failed"
+            [ "${i}" -lt 3 ] && sleep $((i * 15))
+          done
+          exit 1
       - run: mix compile --warnings-as-errors --all-warnings
       - run: npm install --prefix ./assets
       - run: mix assets.deploy
@@ -287,7 +301,14 @@ jobs:
             static-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-
             static-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-refs/heads/main-
 
-      - run: mix deps.get
+      - name: mix deps.get (with retry)
+        run: |
+          for i in 1 2 3; do
+            mix deps.get && exit 0
+            echo "::warning::mix deps.get attempt ${i}/3 failed"
+            [ "${i}" -lt 3 ] && sleep $((i * 15))
+          done
+          exit 1
       - run: mix compile --warnings-as-errors --all-warnings
       - run: mix format --check-formatted
       - run: mix deps.unlock --check-unused
@@ -321,7 +342,14 @@ jobs:
             security-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-
             security-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-refs/heads/main-
 
-      - run: mix deps.get
+      - name: mix deps.get (with retry)
+        run: |
+          for i in 1 2 3; do
+            mix deps.get && exit 0
+            echo "::warning::mix deps.get attempt ${i}/3 failed"
+            [ "${i}" -lt 3 ] && sleep $((i * 15))
+          done
+          exit 1
       - run: mix compile --warnings-as-errors --all-warnings
       - name: Check for dependency vulnerabilities
         run: |

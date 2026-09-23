@@ -70,7 +70,7 @@ defmodule PlausibleWeb.Live.TrackingSettingsTest do
       assert html =~ "Hashed page paths"
       assert html =~ "Custom properties"
       assert html =~ "Ecommerce revenue"
-      assert html =~ "https://plausible.io/docs/ecommerce-revenue-tracking"
+      assert html =~ "https://docs.qusto.io/ecommerce-revenue-tracking"
     end
 
     test "links to the installation review flow", %{conn: conn, site: site} do
@@ -108,7 +108,7 @@ defmodule PlausibleWeb.Live.TrackingSettingsTest do
 
       assert html =~ "Installation instructions"
       refute html =~ "Site installation"
-      assert html =~ "https://plausible.io/docs/plausible-script"
+      assert html =~ "https://docs.qusto.io/plausible-script"
       assert html =~ "Review"
     end
   end

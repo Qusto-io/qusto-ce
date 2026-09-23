@@ -5,7 +5,10 @@ on:
     branches: [master, stable]
     tags: ['r*']
   pull_request:
-    types: [synchronize, labeled]
+    # `build` is a required check on main. Without `opened`, a PR created with a
+    # single push and no labels never gets a `build` result and cannot merge.
+    # Non-preview PRs skip the job below (no runner, no image build).
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -14,7 +17,9 @@ concurrency:
 jobs:
   build:
     if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'preview') }}
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    # Blacksmith runners are not installed for the Qusto-io org; jobs pinned to
+    # them queue forever.
+    runs-on: ubuntu-latest
 
     permissions:
       contents: read
@@ -27,17 +32,15 @@ jobs:
         env:
           DOCKER_METADATA_PR_HEAD_SHA: true
         with:
-          images: ghcr.io/plausible/analytics/ee
+          images: ghcr.io/qusto-io/qusto-ce
           tags: |
             type=ref,event=pr
             type=ref,event=branch
             type=ref,event=tag
             type=sha
 
-      - name: Setup Blacksmith Builder
-        uses: useblacksmith/setup-docker-builder@19215110ab936351210feebdfa5b440b4493e184 # v2.2.0
-        with:
-          cache-key: plausible/analytics/ee
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
@@ -48,9 +51,10 @@ jobs:
 
       - name: Build and push
         id: docker_build
-        uses: useblacksmith/build-push-action@64b79e0c77e4b7390fa8ff0ed8a528bd3fb6b7eb # v2
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          push: true
+          push: ${{ github.event_name == 'push' }}
+          load: ${{ github.event_name == 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |

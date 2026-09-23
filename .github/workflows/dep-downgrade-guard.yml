@@ -1,0 +1,36 @@
+name: Dep Downgrade Guard
+
+# Fails a PR that lowers the mix.lock version of a security-pinned package
+# (scripts/ci/check-dep-downgrades.sh holds the list). Upstream slice merges that
+# intentionally take an older version need the `allow-dep-downgrade` label.
+# See docs/UPSTREAM_MERGE_PLAYBOOK.md.
+
+on:
+  pull_request:
+    branches: [main]
+    # labeled/unlabeled so adding the escape-hatch label re-evaluates the check.
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  dep-downgrade-guard:
+    name: dep-downgrade-guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Check security-pinned deps are not downgraded
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: bash scripts/ci/check-dep-downgrades.sh "${BASE_SHA}" "${HEAD_SHA}"

@@ -6,9 +6,10 @@ defmodule Plausible.Billing do
   """
   use Plausible
   use Plausible.Repo
-  require Plausible.Billing.Subscription.Status
+
   alias Plausible.Auth
   alias Plausible.Billing.Subscription
+  alias Plausible.TeamDeletionSchedules
   alias Plausible.Teams
 
   defmacro allowed_roles(), do: [:owner, :billing]
@@ -148,6 +149,7 @@ defmodule Plausible.Billing do
         |> Repo.preload(:team)
 
       Plausible.Teams.update_accept_traffic_until(subscription.team)
+      TeamDeletionSchedules.cancel_for_team(subscription.team)
 
       subscription
     end
@@ -253,6 +255,7 @@ defmodule Plausible.Billing do
     |> Plausible.Teams.remove_grace_period()
     |> Plausible.Teams.maybe_reset_next_upgrade_override()
     |> tap(&Plausible.Billing.SiteLocker.update_for/1)
+    |> tap(&TeamDeletionSchedules.cancel_for_team/1)
     |> maybe_adjust_api_key_limits()
   end
 
@@ -305,10 +308,10 @@ defmodule Plausible.Billing do
   end
 
   def dashboard_locked_notice_title(), do: "Dashboard locked"
-  def active_grace_period_notice_title(), do: "You have outgrown your Plausible subscription tier"
+  def upgrade_ineligible_notice_title(), do: "No sites owned"
+  def active_grace_period_notice_title(), do: "You have outgrown your Qusto subscription tier"
   def subscription_cancelled_notice_title(), do: "Subscription cancelled"
   def subscription_past_due_notice_title(), do: "Payment failed"
   def subscription_paused_notice_title(), do: "Subscription paused"
-  def upgrade_ineligible_notice_title(), do: "No sites owned"
   def pending_site_ownerships_notice_title(), do: "Pending ownership transfers"
 end

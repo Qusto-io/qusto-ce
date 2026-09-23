@@ -48,9 +48,9 @@
     }
   >
     <%= if Map.get(assigns, :legacy_layout?, true) do %>
-      <Layouts.legacy {assigns}>
+      <PlausibleWeb.Layouts.legacy {assigns}>
         {@inner_content}
-      </Layouts.legacy>
+      </PlausibleWeb.Layouts.legacy>
     <% else %>
       {@inner_content}
     <% end %>

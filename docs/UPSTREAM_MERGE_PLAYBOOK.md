@@ -86,6 +86,41 @@ A change can pass one and fail the other; that has happened more than once. If
   git diff <pre-merge-main> HEAD -- mix.lock assets/package.json tracker/package.json
   ```
 
+- **Enforced for `mix.lock` by the `dep-downgrade-guard` check**
+  (`.github/workflows/dep-downgrade-guard.yml` →
+  `scripts/ci/check-dep-downgrades.sh`). It fails a PR that lowers the version of
+  any package on its security-pin list (`cowboy cowlib plug_cowboy req mint
+  phoenix finch`), comparing `mix.lock` at the PR base and head. Run it locally
+  before opening the slice PR:
+
+  ```sh
+  scripts/ci/check-dep-downgrades.sh origin/main HEAD
+  ```
+
+  If a downgrade is genuinely intended, add the **`allow-dep-downgrade`** label
+  and write the reason in the PR description; the check then passes with a
+  warning. Add a package to `SECURITY_PINS` in the script whenever we bump it
+  ahead of upstream for a security reason. npm lockfiles are not covered — diff
+  them by hand as above.
+
+## Workflows: runner labels and triggers
+
+Upstream runs CI on **`blacksmith-*` runners, which do not exist in the Qusto-io
+org**. A job pinned to one queues forever, and `enforce-all-checks` then waits on
+it until it times out. Slice 2026-06-30 (83973663d5) imported them into
+`node.yml`, `tracker.yml`, `build-private-images-ghcr.yml` and
+`tracker-script-update.yml`. Every PR from 2026-09-22 onward had a stuck NPM CI
+run until #174 moved them back to `ubuntu-latest`. On every slice:
+
+- `grep -rn 'blacksmith\|useblacksmith' .github/workflows/` must be empty.
+  Replace `useblacksmith/*` actions with the `docker/*` equivalents.
+- `build-private-images-ghcr.yml` must keep `pull_request.types` including
+  `opened`. Its `build` job is a **required check**, and upstream's
+  `[synchronize, labeled]` never reports on a PR opened with a single push.
+- `tracker-script-update.yml` is upstream-only (Plausible bot token, `master`
+  branch). It was removed in #33, re-imported by the slice, and removed again in
+  #174. Keep it deleted.
+
 ## Divergence: what to retire, and what to leave alone (Phase 2)
 
 Measured on the 2026-09-21 trial merge: **103 conflicts, 60 branding / 43 not**.

@@ -1,0 +1,127 @@
+name: Elixir CI cache warm
+
+# Saves the deps/_build caches that elixir.yml PR jobs fall back to
+# (`<prefix><MIX_ENV>-<CACHE_VERSION>-refs/heads/main-`), without running the test
+# suite on every merge. PR-scoped caches are not shared between PRs, so without a
+# main-scoped cache every new PR branch git-clones all github.com deps in every job.
+#
+# A cache only restores if BOTH the key and the `path` list match, so each matrix
+# entry below must mirror the corresponding elixir.yml job exactly (same paths, same
+# order, same CACHE_VERSION). Change them together.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CACHE_VERSION: v17
+  PERSISTENT_CACHE_DIR: cached
+
+permissions:
+  contents: read
+
+jobs:
+  warm:
+    name: "warm-cache (${{ matrix.prefix }}${{ matrix.mix_env }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # elixir.yml `build` matrix
+          - prefix: ""
+            mix_env: test
+            deps_only: true
+            tracker: true
+            paths: |
+              deps
+              _build
+              tracker/node_modules
+              priv/tracker/js
+              priv/tracker/installation_support
+              cached
+          - prefix: ""
+            mix_env: ce_test
+            deps_only: true
+            tracker: true
+            paths: |
+              deps
+              _build
+              tracker/node_modules
+              priv/tracker/js
+              priv/tracker/installation_support
+              cached
+          # elixir.yml `e2e`
+          - prefix: "e2e-"
+            mix_env: e2e_test
+            deps_only: true
+            tracker: true
+            paths: |
+              deps
+              _build
+              assets/node_modules
+              tracker/node_modules
+              priv/tracker/js
+              priv/tracker/installation_support
+              priv/geodb/dbip-country.mmdb.gz
+              cached
+          # elixir.yml `static`
+          - prefix: "static-"
+            mix_env: test
+            deps_only: false
+            tracker: false
+            paths: |
+              deps
+              _build
+              priv/plts
+          # elixir.yml `security`
+          - prefix: "security-"
+            mix_env: test
+            deps_only: false
+            tracker: false
+            paths: |
+              deps
+              _build
+    env:
+      MIX_ENV: ${{ matrix.mix_env }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: marocchino/tool-versions-action@4219f2e6bfdb4cce482b78f71ad9663e64f4d247 # v2.0.0
+        id: versions
+      - uses: erlef/setup-beam@ee09b1e59bb240681c382eb1f0abc6a04af72764 # v1.23.0
+        with:
+          elixir-version: ${{ steps.versions.outputs.elixir }}
+          otp-version: ${{ steps.versions.outputs.erlang }}
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ matrix.paths }}
+          key: ${{ matrix.prefix }}${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ matrix.prefix }}${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-
+
+      - name: Build tracker
+        if: ${{ matrix.tracker }}
+        run: |
+          npm install --prefix ./tracker
+          npm run deploy --prefix ./tracker
+
+      - name: mix deps.get (with retry)
+        env:
+          DEPS_ONLY: ${{ matrix.deps_only && format('--only {0}', matrix.mix_env) || '' }}
+        run: |
+          for i in 1 2 3; do
+            mix deps.get ${DEPS_ONLY} && exit 0
+            echo "::warning::mix deps.get attempt ${i}/3 failed"
+            [ "${i}" -lt 3 ] && sleep $((i * 15))
+          done
+          exit 1
+
+      - run: mix compile

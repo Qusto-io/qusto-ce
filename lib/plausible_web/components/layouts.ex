@@ -165,5 +165,4 @@ defmodule PlausibleWeb.Layouts do
     </.app>
     """
   end
-
 end

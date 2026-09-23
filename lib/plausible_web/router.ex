@@ -460,7 +460,8 @@ defmodule PlausibleWeb.Router do
           on_mount: {PlausibleWeb.Live.RegistrationContext, :invitation} do
           live "/register/invitation/:invitation_id",
                RegisterForm,
-               :register_from_invitation_form, as: :auth
+               :register_from_invitation_form,
+               as: :auth
         end
       end
     end

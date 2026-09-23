@@ -1,4 +1,6 @@
 defmodule Plausible.TestUtils do
+  @moduledoc false
+
   use Plausible.Repo
   use Plausible
   alias Plausible.Factory
@@ -115,7 +117,9 @@ defmodule Plausible.TestUtils do
       team = Plausible.Teams.complete_setup(team)
       integration = SSO.initiate_saml_integration(team)
 
-      {:ok, sso_domain} = SSO.Domains.add(integration, ctx[:domain] || "example.com")
+      {:ok, sso_domain} =
+        SSO.Domains.add(integration, ctx[:domain] || "example.com", skip_checks?: true)
+
       _sso_domain = SSO.Domains.verify(sso_domain, skip_checks?: true)
 
       {:ok, team: team, sso_integration: integration, sso_domain: sso_domain}
@@ -238,19 +242,6 @@ defmodule Plausible.TestUtils do
     NaiveDateTime.new!(date, ~T[00:00:00])
   end
 
-  @doc """
-  Retries `expectation` until it returns `{true, result}`.
-
-  Note the backoff is **linear, not constant**: attempt N sleeps
-  `wait_time_ms * N`. So the total budget is
-
-      wait_time_ms * retries * (retries + 1) / 2
-
-  which grows quadratically in `retries`. `eventually(fun, 50, 10)` waits 2.8s,
-  but `eventually(fun, 50, 50)` waits **63.8s** - past ExUnit's 60s default
-  timeout, so the test dies with an opaque `ExUnit.TimeoutError` instead of a
-  useful assertion failure. Keep the budget well under the test timeout.
-  """
   def eventually(expectation, wait_time_ms \\ 50, retries \\ 10) do
     Enum.reduce_while(1..retries, nil, fn attempt, _acc ->
       case expectation.() do
@@ -276,6 +267,18 @@ defmodule Plausible.TestUtils do
     )
   end
 
+  def get_entries_from_query_log(site_domain) do
+    Plausible.IngestRepo.query!("SYSTEM FLUSH LOGS")
+
+    %{rows: rows} =
+      Plausible.ClickhouseRepo.query!(
+        "FROM system.query_log SELECT log_comment WHERE JSONExtractString(log_comment, 'site_domain') = {$0:String}",
+        [site_domain]
+      )
+
+    rows
+  end
+
   def random_ip() do
     Enum.map_join(1..4, ".", fn _ -> Enum.random(1..254) end)
   end
@@ -290,8 +293,6 @@ defmodule Plausible.TestUtils do
 
     case Finch.request(healthcheck_req, Plausible.Finch) do
       {:ok, %Finch.Response{}} -> true
-      # Finch 0.21+ wraps a refused connection in its own struct rather than
-      # surfacing Mint's directly, but preserves the underlying reason atom.
       {:error, %Finch.TransportError{reason: :econnrefused}} -> false
     end
   end

@@ -1,15 +1,13 @@
 # Architecture
 
-This document describes the design goals informing the architecture of the Qusto tracker script codebase as well as a map
+This document describes the design goals informing the architecture of the Plausible tracker script codebase as well as a map
 to how the code is laid out.
-
-> **Note:** The tracker is based on the Qusto Analytics open-source project. This document preserves the original architecture documentation with Qusto-specific updates.
 
 ## Installation Support
 
 The tracker subdirectory also includes site verification and pre-installation checks that are run in headless browser, via
-browserless.io. These files live under the `/tracker/installation-support/` director and are meant to provide Qusto
-installation support - checking the site for what technologies to recommend and verifying whether Qusto has been
+browserless.io. These files live under the `/tracker/installation-support/` directory and are meant to provide Plausible
+installation support - checking the site for what technologies to recommend and verifying whether Plausible has been
 installed correctly. Please see `lib/plausible/installation_support/checks/installation.ex` for the Elixir context and how
 this JS code ends up being used.
 
@@ -29,9 +27,9 @@ We minify our scripts using the speedy `@swc/core` library and track script size
 
 ### 2. Many targets, single codebase
 
-Qusto provides a web 'snippet' users can include on their site, tooling for wordpress and other plugins as well as an npm package.
+Plausible provides a web 'snippet' users can include on their site, tooling for wordpress and other plugins as well as an npm package.
 
-As Qusto doesn't have the workforce to maintain multiple code bases, everything is built from the same underlying source code.
+As Plausible doesn't have the workforce to maintain multiple code bases, everything is built from the same underlying source code.
 
 This is achieved by:
 
@@ -42,17 +40,17 @@ This is achieved by:
 
 ### 3. Flexible user configuration
 
-Rather than capturing everything, we want to provide configurability allowing Qusto users to toggle tracking features on/off.
+Rather than capturing everything, we want to provide configurability allowing Plausible users to toggle tracking features on/off.
 
 To make life simpler for these users, we want to allow changing configuration on web without users needing to change their integration code or deploying.
 
-Qusto tracker endpoints dynamically interpolate site-specific configuration into the minified plausible.js. For integrations such as the wordpress plugin, we provide tooling like the plugins API.
+Plausible tracker endpoints dynamically interpolate site-specific configuration into the minified plausible.js. For integrations such as the wordpress plugin, we provide tooling like the plugins API.
 
 ### 4. Legacy support
 
 We want to avoid intentionally breaking existing installations of the script.
 
-In a previous version of the script, Qusto allowed toggling features by changing their script extension. We still generate and serve each of these legacy variants.
+In a previous version of the script, Plausible allowed toggling features by changing their script extension. We still generate and serve each of these legacy variants.
 
 ### 5. Great development experience
 
@@ -73,7 +71,7 @@ Contains tracker code itself which is to be compiled. `plausible.js` is the entr
 
 ### `tracker/installation_support/`
 
-Contains source code to verify that the tracker script is installed correctly with Qusto.InstallationSupport modules. There are multiple entrypoints, see variants.json for details.
+Contains source code to verify that the tracker script is installed correctly with Plausible.InstallationSupport modules. There are multiple entrypoints, see variants.json for details.
 
 ### `tracker/compiler/variants.json`
 

@@ -37,6 +37,7 @@ export const DEFAULT_SITE: PlausibleSite = {
   explorationMaxJourneySteps: 0,
   propsAvailable: false,
   siteSegmentsAvailable: false,
+  siteAnnotationsAvailable: false,
   conversionsOptedOut: false,
   funnelsOptedOut: false,
   propsOptedOut: false,
@@ -49,7 +50,8 @@ export const DEFAULT_SITE: PlausibleSite = {
   isDbip: false,
   flags: {},
   shared: false,
-  isConsolidatedView: false
+  isConsolidatedView: false,
+  showEmailReportsCta: false
 }
 
 export const TestContextProviders = ({

@@ -102,23 +102,23 @@ defmodule PlausibleWeb.Live.TrackingSettings do
           >
             <.measurement label="Custom event tracking">
               <:icon><Heroicons.check_circle class="size-4.5" /></:icon>
-              <.learn_more href="https://plausible.io/docs/custom-event-goals" />
+              <.learn_more href="https://docs.qusto.io/custom-event-goals" />
             </.measurement>
             <.measurement label="404 error pages">
               <:icon><Icons.error_page_icon class="size-4.5" /></:icon>
-              <.learn_more href="https://plausible.io/docs/error-pages-tracking-404" />
+              <.learn_more href="https://docs.qusto.io/error-pages-tracking-404" />
             </.measurement>
             <.measurement label="Hashed page paths">
               <:icon><Heroicons.hashtag class="size-4.5" /></:icon>
-              <.learn_more href="https://plausible.io/docs/hash-based-routing" />
+              <.learn_more href="https://docs.qusto.io/hash-based-routing" />
             </.measurement>
             <.measurement label="Custom properties">
               <:icon><Icons.tag_icon class="size-4.5" /></:icon>
-              <.learn_more href="https://plausible.io/docs/custom-props/introduction" />
+              <.learn_more href="https://docs.qusto.io/custom-props/introduction" />
             </.measurement>
             <.measurement label="Ecommerce revenue">
               <:icon><Heroicons.shopping_cart class="size-4.5" /></:icon>
-              <.learn_more href="https://plausible.io/docs/ecommerce-revenue-tracking" />
+              <.learn_more href="https://docs.qusto.io/ecommerce-revenue-tracking" />
             </.measurement>
           </.settings_section>
         </.settings_rows>

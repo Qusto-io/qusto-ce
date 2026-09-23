@@ -125,7 +125,7 @@ defmodule Plausible.MixProject do
       {:nanoid, "~> 2.1.0"},
       {:nimble_publisher, "~> 1.1"},
       {:nimble_totp, "~> 1.0"},
-      {:oban, "~> 2.20.1"},
+      {:oban, "~> 2.24.1"},
       {:observer_cli, "~> 1.7"},
       {:opentelemetry, "~> 1.7"},
       {:opentelemetry_api, "~> 1.5"},
@@ -142,7 +142,7 @@ defmodule Plausible.MixProject do
        sparse: "apps/opentelemetry_experimental",
        override: true},
       {:opentelemetry_phoenix, "~> 2.0.1"},
-      {:opentelemetry_oban, "~> 1.1"},
+      {:opentelemetry_oban, "~> 1.2"},
       {:opentelemetry_cowboy, "~> 1.0"},
       # # https://github.com/open-telemetry/opentelemetry-erlang-contrib/issues/428
       {:opentelemetry_semantic_conventions, "~> 1.27", override: true},

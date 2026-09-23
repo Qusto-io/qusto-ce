@@ -6,7 +6,8 @@ export type Options = {
   captureOnLocalhost: boolean
   autoCapturePageviews: boolean
   customProperties:
-    Record<string, unknown> | ((eventName: string) => Record<string, unknown>)
+    | Record<string, unknown>
+    | ((eventName: string) => Record<string, unknown>)
   transformRequest: (payload: unknown) => unknown
   logging: boolean
 }

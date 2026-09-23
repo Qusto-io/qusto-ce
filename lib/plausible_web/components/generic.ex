@@ -14,6 +14,18 @@ defmodule PlausibleWeb.Components.Generic do
       title_text: "text-sm text-gray-900 dark:text-gray-100",
       body_text: "text-sm text-gray-800 dark:text-gray-200 leading-5"
     },
+    indigo: %{
+      bg: "bg-indigo-100/60 dark:bg-indigo-900/40",
+      icon: "text-indigo-500",
+      title_text: "text-sm text-gray-900 dark:text-gray-100",
+      body_text: "text-sm text-gray-600 dark:text-gray-100/60 leading-5"
+    },
+    green: %{
+      bg: "bg-green-100/60 dark:bg-green-900/40",
+      icon: "text-green-500",
+      title_text: "text-sm text-gray-900 dark:text-gray-100",
+      body_text: "text-sm text-gray-600 dark:text-gray-100/60 leading-5"
+    },
     yellow: %{
       bg: "bg-yellow-100/60 dark:bg-yellow-900/40",
       icon: "text-yellow-500",

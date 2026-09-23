@@ -166,9 +166,4 @@ defmodule PlausibleWeb.Layouts do
     """
   end
 
-  defdelegate feedback_link(user), to: PlausibleWeb.LayoutView
-  defdelegate home_dest(conn), to: PlausibleWeb.LayoutView
-  defdelegate logo_path(filename), to: PlausibleWeb.LayoutView
-  defdelegate trial_notification(team), to: PlausibleWeb.LayoutView
-  defdelegate team_switcher(assigns), to: PlausibleWeb.LayoutView
 end

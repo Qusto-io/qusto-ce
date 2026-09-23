@@ -37,19 +37,15 @@ defmodule PlausibleWeb.LayoutView do
     end
   end
 
-  def home_dest(conn) do
-    if conn.assigns[:current_user] do
-      "/sites"
-    else
-      "/"
-    end
+  def home_dest(current_user) do
+    if current_user, do: "/sites", else: "/"
   end
 
   def logo_path(filename) do
     if ee?() do
-      Path.join("/images/ee/", filename)
+      ~p"/images/ee/#{filename}"
     else
-      Path.join("/images/ce/", filename)
+      ~p"/images/ce/#{filename}"
     end
   end
 
@@ -162,7 +158,6 @@ defmodule PlausibleWeb.LayoutView do
     end
   end
 
-  attr :conn, :map, required: true
   attr :teams, :list, required: true
   attr :my_team, :any, default: nil
   attr :current_team, :any, default: nil
@@ -170,7 +165,7 @@ defmodule PlausibleWeb.LayoutView do
   def team_switcher(assigns) do
     teams = assigns[:teams]
 
-    if teams && length(teams) > 0 do
+    if teams && teams != [] do
       current_team = assigns[:current_team]
       my_team = assigns[:my_team]
       current_included? = current_team && Enum.any?(teams, &(&1.id == current_team.id))
@@ -204,7 +199,7 @@ defmodule PlausibleWeb.LayoutView do
       </.dropdown_item>
       <.dropdown_item
         :if={@pinned_team}
-        href={Routes.site_path(@conn, :index, __team: @pinned_team.identifier)}
+        href={~p"/sites?#{[__team: @pinned_team.identifier]}"}
       >
         <div class="flex items-center justify-between gap-2" role="none">
           <p class="font-semibold truncate min-w-0 text-gray-900 dark:text-gray-100">
@@ -216,7 +211,7 @@ defmodule PlausibleWeb.LayoutView do
       <div class="max-h-[200px] overflow-y-auto">
         <.dropdown_item
           :for={team <- @other_teams}
-          href={Routes.site_path(@conn, :index, __team: team.identifier)}
+          href={~p"/sites?#{[__team: team.identifier]}"}
         >
           <p
             class="font-medium truncate text-gray-900 dark:text-gray-100 pr-4"

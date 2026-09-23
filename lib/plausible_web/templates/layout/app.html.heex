@@ -18,7 +18,7 @@
       content={Plausible.InternalStatsApiVersion.api_version()}
     />
 
-    <PlausibleWeb.Components.Layout.favicon conn={@conn} />
+    <PlausibleWeb.Components.Layout.favicon />
 
     <title>
       {assigns[:title] ||
@@ -30,48 +30,29 @@
       href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href={Routes.static_path(@conn, "/css/app.css")} />
+    <link rel="stylesheet" href={~p"/css/app.css"} />
     <PlausibleWeb.Components.Layout.theme_script {Map.take(assigns, [:current_user, :theme])} />
     {render("_tracking.html", assigns)}
   </head>
   <body
     class={[
-      "flex flex-col",
-      if !assigns[:embedded] do
-        "h-full"
-      end
+      if(!assigns[:embedded], do: "h-full"),
+      assigns[:bg_class]
     ]}
     style={
-      if assigns[:background],
-        do: "background-color: #{assigns[:background]}",
-        else: "background-color: var(--qusto-background)"
+      cond do
+        assigns[:background] -> "background-color: #{assigns[:background]}"
+        !assigns[:bg_class] -> "background-color: var(--qusto-background)"
+        true -> nil
+      end
     }
   >
-    <%= if !assigns[:embedded] && !assigns[:hide_header?] do %>
-      {render("_header.html", assigns)}
-
-      <%= if !assigns[:disable_global_notices?] do %>
-        {render("_notice.html", assigns)}
-      <% end %>
-    <% end %>
-
-    <main class="flex-1">
-      {Map.get(assigns, :inner_layout) || @inner_content}
-    </main>
-
-    <%= if assigns[:embedded] do %>
-      <div data-iframe-height></div>
-      <script type="text/javascript" src={Routes.static_path(@conn, "/js/embed.content.js")}>
-      </script>
-    <% end %>
-    <%= if !assigns[:hide_footer?] do %>
-      {render("_footer.html", assigns)}
-    <% end %>
-    <script type="text/javascript" src={Routes.static_path(@conn, "/js/app.js")}>
-    </script>
-    <%= if assigns[:load_dashboard_js] do %>
-      <script type="text/javascript" src={Routes.static_path(@conn, "/js/dashboard.js")}>
-      </script>
+    <%= if Map.get(assigns, :legacy_layout?, true) do %>
+      <Layouts.legacy {assigns}>
+        {@inner_content}
+      </Layouts.legacy>
+    <% else %>
+      {@inner_content}
     <% end %>
   </body>
 </html>

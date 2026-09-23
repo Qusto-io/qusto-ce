@@ -10,13 +10,13 @@ defmodule PlausibleWeb.Components.Layout do
     <img
       src={logo_path("logo_dark.svg")}
       class={[@class, "hidden dark:inline"]}
-      alt="Plausible logo"
+      alt="Qusto logo"
       loading="lazy"
     />
     <img
       src={logo_path("logo_light.svg")}
       class={[@class, "inline dark:hidden"]}
-      alt="Plausible logo"
+      alt="Qusto logo"
       loading="lazy"
     />
     """
@@ -27,13 +27,13 @@ defmodule PlausibleWeb.Components.Layout do
     <link
       rel="icon"
       type="image/svg+xml"
-      href={PlausibleWeb.Router.Helpers.static_path(@conn, logo_path("qusto_icon.svg"))}
+      href={logo_path("qusto_icon.svg")}
       media="(prefers-color-scheme: light)"
     />
     <link
       rel="icon"
       type="image/svg+xml"
-      href={PlausibleWeb.Router.Helpers.static_path(@conn, logo_path("qusto_icon_dark.svg"))}
+      href={logo_path("qusto_icon_dark.svg")}
       media="(prefers-color-scheme: dark)"
     />
     <link

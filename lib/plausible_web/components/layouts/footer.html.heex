@@ -4,23 +4,13 @@
       <div class="my-8 xl:my-0">
         <h4 class="font-semibold tracking-wider leading-5">
           <img
-            src={
-              PlausibleWeb.Router.Helpers.static_path(
-                @conn,
-                logo_path("logo_light.svg")
-              )
-            }
+            src={PlausibleWeb.LayoutView.logo_path("logo_light.svg")}
             class="inline-block w-40 dark:hidden"
             alt="Qusto logo"
             loading="lazy"
           />
           <img
-            src={
-              PlausibleWeb.Router.Helpers.static_path(
-                @conn,
-                logo_path("logo_dark.svg")
-              )
-            }
+            src={PlausibleWeb.LayoutView.logo_path("logo_dark.svg")}
             class="hidden dark:inline-block w-40"
             alt="Qusto logo"
             loading="lazy"

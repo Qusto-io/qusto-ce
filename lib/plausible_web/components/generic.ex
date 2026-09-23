@@ -222,6 +222,7 @@ defmodule PlausibleWeb.Components.Generic do
   attr(:show_icon, :boolean, default: true)
   attr(:class, :string, default: "")
   attr(:icon_class, :string, default: "")
+  attr(:title_class, :string, default: "")
   attr(:rest, :global)
   slot(:inner_block)
   slot(:actions)
@@ -253,7 +254,14 @@ defmodule PlausibleWeb.Components.Generic do
               <% end %>
             </div>
             <div class="flex-1 flex flex-col gap-y-1.5">
-              <h3 :if={@title} class={"font-medium #{@theme.title_text}"}>
+              <h3
+                :if={@title}
+                class={[
+                  @title_class == "" && "text-sm font-medium",
+                  @theme.title_text,
+                  @title_class
+                ]}
+              >
                 {@title}
               </h3>
               <div class={"#{@theme.body_text}"}>

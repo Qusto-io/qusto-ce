@@ -2,12 +2,12 @@
 
 ## Supported Versions
 
-Qusto Community Edition (CE) is a fork of [Plausible Analytics](https://github.com/plausible/analytics). We release security updates on the active `qusto/v2.x` branch. Self-hosters should pull the latest CE image or rebuild from the current branch tag.
+Qusto Community Edition (CE) is a fork of [Plausible Analytics](https://github.com/plausible/analytics). We release security updates on `main`, which is what we deploy. Self-hosters should pull the latest CE image or rebuild from the latest `main`.
 
-| Version   | Supported          |
-| --------- | ------------------ |
-| qusto/v2.x | :white_check_mark: |
-| older     | :x:                |
+| Version        | Supported          |
+| -------------- | ------------------ |
+| latest `main`  | :white_check_mark: |
+| older          | :x:                |
 
 ## Reporting a Vulnerability
 

@@ -251,6 +251,15 @@ jobs:
                 curl -sf http://127.0.0.1:8000/api/health
                 echo ""
                 echo "==> CE analytics healthy (${IMAGE})"
+                # Smoke migrates a throwaway DB only (must not touch prod). The
+                # analytics entrypoint is `run` = start the app — it never applies
+                # schema. Without this step, new columns (e.g. users.totp_secret_fallback)
+                # ship in the image while prod Postgres lags, and every Stats API
+                # request that preloads User returns HTML 500 to the EE dashboard.
+                echo "==> Applying production CE migrations (Postgres + ClickHouse)"
+                docker compose exec -T analytics \
+                  /app/bin/plausible eval 'Plausible.Release.interweave_migrate()'
+                echo "==> Production migrations complete"
                 # State the build variant explicitly. Production builds with the
                 # Dockerfile default MIX_ENV=ce, which excludes extra/lib (see
                 # elixirc_paths(:ce) in mix.exs), so EE-only modules are absent.

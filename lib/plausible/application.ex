@@ -4,6 +4,8 @@ defmodule Plausible.Application do
   use Application
   use Plausible
 
+  require Logger
+
   on_ee do
     @start_verification_mock_scenarios? Mix.env() in [:dev, :e2e_test, :test]
   end
@@ -367,7 +369,7 @@ defmodule Plausible.Application do
   end
 
   def setup_sentry() do
-    LoggerBackends.add(Sentry.LoggerBackend)
+    Logger.add_backend(Sentry.LoggerBackend)
 
     :telemetry.attach_many(
       "oban-errors",

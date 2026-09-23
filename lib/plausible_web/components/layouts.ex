@@ -6,6 +6,7 @@ defmodule PlausibleWeb.Layouts do
 
   require Plausible.Billing
 
+  alias PlausibleWeb.Components.Billing.Notice
   alias PlausibleWeb.Components.Layout
 
   embed_templates "layouts/*.html"

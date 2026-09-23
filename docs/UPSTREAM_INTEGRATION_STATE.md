@@ -1,6 +1,6 @@
-integrated_upstream_tip: 5e2f1036dab9b88f31dfd14b01ffb5d81e5ffe25
-integrated_through_date: 2026-06-30
-slice: 2
+integrated_upstream_tip: 0f362bd84eaae98821a0c5472c51cdbde6f2d4ca
+integrated_through_date: 2026-09-21
+slice: 3
 
 # Upstream integration state (DRIFT-01)
 
@@ -14,4 +14,5 @@ Update the tip at the end of each Phase 3 slice PR.
 | Slice | Upstream tip | PR |
 |-------|----------------|-----|
 | 1 | `7b18ffcab4` (2026-03-31) | #161 |
-| 2 | `5e2f1036da` (2026-06-30) | (this branch) |
+| 2 | `5e2f1036da` (2026-06-30) | #163 |
+| 3 | `0f362bd84e` (2026-09-21) | #164 |

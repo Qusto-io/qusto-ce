@@ -3,6 +3,7 @@ defmodule PlausibleWeb.Components.Generic do
   Generic reusable components
   """
   use Phoenix.Component, global_prefixes: ~w(x-)
+  use PlausibleWeb.VerifiedRoutes
 
   import PlausibleWeb.Components.Icons
 
@@ -12,6 +13,18 @@ defmodule PlausibleWeb.Components.Generic do
       icon: "text-gray-600 dark:text-gray-300",
       title_text: "text-sm text-gray-900 dark:text-gray-100",
       body_text: "text-sm text-gray-800 dark:text-gray-200 leading-5"
+    },
+    indigo: %{
+      bg: "bg-indigo-100/60 dark:bg-indigo-900/40",
+      icon: "text-indigo-500",
+      title_text: "text-sm text-gray-900 dark:text-gray-100",
+      body_text: "text-sm text-gray-600 dark:text-gray-100/60 leading-5"
+    },
+    green: %{
+      bg: "bg-green-100/60 dark:bg-green-900/40",
+      icon: "text-green-500",
+      title_text: "text-sm text-gray-900 dark:text-gray-100",
+      body_text: "text-sm text-gray-600 dark:text-gray-100/60 leading-5"
     },
     yellow: %{
       bg: "bg-yellow-100/60 dark:bg-yellow-900/40",
@@ -48,9 +61,21 @@ defmodule PlausibleWeb.Components.Generic do
   @button_base_class "btn-base"
 
   @button_sizes %{
+    "xs" => "btn-xs",
     "sm" => "btn-sm",
     "md" => "btn-md"
   }
+
+  attr(:class, :string, default: "")
+  slot(:inner_block, required: true)
+
+  def auth_container(assigns) do
+    ~H"""
+    <div class={["w-full max-w-md mx-auto mt-10 pb-16 px-4", @class]}>
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
 
   attr(:type, :string, default: "button")
   attr(:theme, :string, default: "primary")
@@ -209,6 +234,7 @@ defmodule PlausibleWeb.Components.Generic do
   attr(:show_icon, :boolean, default: true)
   attr(:class, :string, default: "")
   attr(:icon_class, :string, default: "")
+  attr(:title_class, :string, default: "")
   attr(:rest, :global)
   slot(:inner_block)
   slot(:actions)
@@ -240,7 +266,14 @@ defmodule PlausibleWeb.Components.Generic do
               <% end %>
             </div>
             <div class="flex-1 flex flex-col gap-y-1.5">
-              <h3 :if={@title} class={"font-medium #{@theme.title_text}"}>
+              <h3
+                :if={@title}
+                class={[
+                  @title_class == "" && "text-sm font-medium",
+                  @theme.title_text,
+                  @title_class
+                ]}
+              >
                 {@title}
               </h3>
               <div class={"#{@theme.body_text}"}>
@@ -269,6 +302,7 @@ defmodule PlausibleWeb.Components.Generic do
 
   attr(:href, :string, default: "#")
   attr(:new_tab, :boolean, default: false)
+  attr(:external_icon, :boolean, default: true)
   attr(:class, :string, default: "")
   attr(:rest, :global, include: ~w(patch))
   attr(:method, :string, default: "get")
@@ -278,6 +312,7 @@ defmodule PlausibleWeb.Components.Generic do
     ~H"""
     <.unstyled_link
       new_tab={@new_tab}
+      external_icon={@external_icon}
       href={@href}
       method={@method}
       class={"text-indigo-600 hover:text-indigo-700 dark:text-indigo-500 dark:hover:text-indigo-400 transition-colors duration-150 " <> @class}
@@ -343,6 +378,7 @@ defmodule PlausibleWeb.Components.Generic do
   attr(:class, :string, default: "")
   attr(:id, :string, default: nil)
   attr(:new_tab, :boolean, default: false)
+  attr(:external_icon, :boolean, default: true)
   attr(:disabled, :boolean, default: false)
   attr(:rest, :global, include: ~w(method))
   slot(:inner_block, required: true)
@@ -365,6 +401,7 @@ defmodule PlausibleWeb.Components.Generic do
         id={@id}
         class={@class}
         new_tab={@new_tab}
+        external_icon={@external_icon}
         href={@href}
         x-on:click="close()"
         data-ui-state={@state}
@@ -393,6 +430,7 @@ defmodule PlausibleWeb.Components.Generic do
 
   attr(:href, :string, required: true)
   attr(:new_tab, :boolean, default: false)
+  attr(:external_icon, :boolean, default: true)
   attr(:class, :string, default: "")
   attr(:rest, :global)
   attr(:method, :string, default: "get")
@@ -418,7 +456,7 @@ defmodule PlausibleWeb.Components.Generic do
       ~H"""
       <.link
         class={[
-          "inline-flex items-center gap-x-1",
+          @external_icon && "inline-flex items-center gap-x-1",
           @class
         ]}
         href={@href}
@@ -428,7 +466,7 @@ defmodule PlausibleWeb.Components.Generic do
         {@rest}
       >
         {render_slot(@inner_block)}
-        <.external_link_icon class={[@icon_class]} />
+        <.external_link_icon :if={@external_icon} class={[@icon_class]} />
       </.link>
       """
     else
@@ -659,6 +697,7 @@ defmodule PlausibleWeb.Components.Generic do
   attr(:sticky?, :boolean, default: true)
   attr(:enabled?, :boolean, default: true)
   attr(:centered?, :boolean, default: false)
+  attr(:interactive?, :boolean, default: true)
   attr(:testid, :string, default: nil)
   slot(:inner_block, required: true)
   slot(:tooltip_content, required: true)
@@ -676,7 +715,8 @@ defmodule PlausibleWeb.Components.Generic do
       "-translate-y-full",
       "z-[1000]",
       "sm:max-w-64",
-      "w-max"
+      "w-max",
+      if(!assigns.interactive?, do: "pointer-events-none")
     ]
 
     tooltip_position_classes =
@@ -699,7 +739,7 @@ defmodule PlausibleWeb.Components.Generic do
         x-data={@wrapper_data}
         x-on:mouseenter="hovered = true"
         x-on:mouseleave="hovered = false"
-        class={["w-max relative z-[1000]"]}
+        class="w-max relative"
       >
         <div
           x-cloak
@@ -1312,6 +1352,25 @@ defmodule PlausibleWeb.Components.Generic do
     >
       {render_slot(@inner_block)}
     </span>
+    """
+  end
+
+  attr(:plan, :string, required: true)
+  attr(:color, :atom, default: :indigo, values: [:gray, :indigo, :yellow, :green, :red])
+  attr(:rest, :global)
+
+  def upgrade_pill(assigns) do
+    ~H"""
+    <.link
+      href={~p"/billing/choose-plan"}
+      class="inline-block"
+      {@rest}
+    >
+      <.pill color={@color} class="gap-x-1">
+        <.diamond_icon class="size-3.5 [&_path]:stroke-2" />
+        {@plan}
+      </.pill>
+    </.link>
     """
   end
 

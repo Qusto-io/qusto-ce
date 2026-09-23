@@ -81,8 +81,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
             json_response_verification_stub(%{
               "completed" => true,
               "trackerIsInHtml" => true,
-              "plausibleIsOnWindow" => true,
-              "plausibleIsInitialized" => true,
+              "qustoIsOnWindow" => true,
+              "qustoIsInitialized" => true,
               "testEvent" => %{
                 "normalizedBody" => %{
                   "domain" => @expected_domain
@@ -112,8 +112,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
             json_response_verification_stub(%{
               "completed" => true,
               "trackerIsInHtml" => true,
-              "plausibleIsOnWindow" => true,
-              "plausibleIsInitialized" => true,
+              "qustoIsOnWindow" => true,
+              "qustoIsInitialized" => true,
               "testEvent" => %{
                 "normalizedBody" => %{
                   "domain" => "wrong-domain.com"
@@ -145,8 +145,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
           json_response_verification_stub(%{
             "completed" => true,
             "trackerIsInHtml" => true,
-            "plausibleIsOnWindow" => true,
-            "plausibleIsInitialized" => true,
+            "qustoIsOnWindow" => true,
+            "qustoIsInitialized" => true,
             "testEvent" => %{
               "requestUrl" => "https://proxy.example.com/event",
               "normalizedBody" => %{
@@ -180,8 +180,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
           json_response_verification_stub(%{
             "completed" => true,
             "trackerIsInHtml" => true,
-            "plausibleIsOnWindow" => true,
-            "plausibleIsInitialized" => true,
+            "qustoIsOnWindow" => true,
+            "qustoIsInitialized" => true,
             "testEvent" => %{
               "requestUrl" => PlausibleWeb.Endpoint.url() <> "/api/event",
               "normalizedBody" => %{
@@ -211,8 +211,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
           json_response_verification_stub(%{
             "completed" => true,
             "trackerIsInHtml" => false,
-            "plausibleIsOnWindow" => nil,
-            "plausibleIsInitialized" => nil,
+            "qustoIsOnWindow" => nil,
+            "qustoIsInitialized" => nil,
             "disallowedByCsp" => true
           })
 
@@ -236,8 +236,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
           json_response_verification_stub(%{
             "completed" => true,
             "trackerIsInHtml" => true,
-            "plausibleIsOnWindow" => nil,
-            "plausibleIsInitialized" => nil,
+            "qustoIsOnWindow" => nil,
+            "qustoIsInitialized" => nil,
             "disallowedByCsp" => true
           })
 
@@ -293,8 +293,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
             "completed" => true,
             "responseStatus" => 403,
             "trackerIsInHtml" => nil,
-            "plausibleIsOnWindow" => nil,
-            "plausibleIsInitialized" => nil,
+            "qustoIsOnWindow" => nil,
+            "qustoIsInitialized" => nil,
             "testEvent" => %{"error" => "Timed out"}
           })
 
@@ -330,8 +330,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
               "completed" => true,
               "responseStatus" => 200,
               "trackerIsInHtml" => false,
-              "plausibleIsOnWindow" => false,
-              "plausibleIsInitialized" => false,
+              "qustoIsOnWindow" => false,
+              "qustoIsInitialized" => false,
               "testEvent" => %{"error" => "Timed out"}
             })
 
@@ -358,8 +358,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
               "completed" => true,
               "responseStatus" => nil,
               "trackerIsInHtml" => nil,
-              "plausibleIsOnWindow" => nil,
-              "plausibleIsInitialized" => nil,
+              "qustoIsOnWindow" => nil,
+              "qustoIsInitialized" => nil,
               "testEvent" => nil
             })
 
@@ -399,8 +399,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
               %{
                 "completed" => true,
                 "trackerIsInHtml" => false,
-                "plausibleIsOnWindow" => false,
-                "plausibleIsInitialized" => false
+                "qustoIsOnWindow" => false,
+                "qustoIsInitialized" => false
               }
             else
               assert [_, "plausible_verification" <> _] =
@@ -409,8 +409,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
               %{
                 "completed" => true,
                 "trackerIsInHtml" => true,
-                "plausibleIsOnWindow" => true,
-                "plausibleIsInitialized" => true,
+                "qustoIsOnWindow" => true,
+                "qustoIsInitialized" => true,
                 "testEvent" => %{
                   "normalizedBody" => %{
                     "domain" => "example.com"
@@ -454,8 +454,8 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
               %{
                 "completed" => true,
                 "trackerIsInHtml" => false,
-                "plausibleIsOnWindow" => false,
-                "plausibleIsInitialized" => false
+                "qustoIsOnWindow" => false,
+                "qustoIsInitialized" => false
               }
 
             conn

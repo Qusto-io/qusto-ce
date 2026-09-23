@@ -74,8 +74,8 @@ defmodule PlausibleWeb.Live.VerificationTest do
       # `@offer_custom_url_input? = true` in the verification banner
       stub_verification_result(%{
         "completed" => true,
-        "plausibleIsOnWindow" => false,
-        "plausibleIsInitialized" => false,
+        "qustoIsOnWindow" => false,
+        "qustoIsInitialized" => false,
         "responseStatus" => 404
       })
 
@@ -118,8 +118,8 @@ defmodule PlausibleWeb.Live.VerificationTest do
       stub_verification_result(%{
         "completed" => true,
         "trackerIsInHtml" => true,
-        "plausibleIsOnWindow" => true,
-        "plausibleIsInitialized" => true,
+        "qustoIsOnWindow" => true,
+        "qustoIsInitialized" => true,
         "testEvent" => %{
           "normalizedBody" => %{
             "domain" => site.domain
@@ -148,8 +148,8 @@ defmodule PlausibleWeb.Live.VerificationTest do
         stub_verification_result(%{
           "completed" => true,
           "trackerIsInHtml" => true,
-          "plausibleIsOnWindow" => true,
-          "plausibleIsInitialized" => true,
+          "qustoIsOnWindow" => true,
+          "qustoIsInitialized" => true,
           "testEvent" => %{
             "normalizedBody" => %{
               "domain" => site.domain
@@ -177,8 +177,8 @@ defmodule PlausibleWeb.Live.VerificationTest do
       stub_verification_result(%{
         "completed" => true,
         "trackerIsInHtml" => true,
-        "plausibleIsOnWindow" => true,
-        "plausibleIsInitialized" => true,
+        "qustoIsOnWindow" => true,
+        "qustoIsInitialized" => true,
         "testEvent" => %{
           "normalizedBody" => %{
             "domain" => site.domain
@@ -208,8 +208,8 @@ defmodule PlausibleWeb.Live.VerificationTest do
         stub_verification_result(%{
           "completed" => true,
           "trackerIsInHtml" => true,
-          "plausibleIsOnWindow" => true,
-          "plausibleIsInitialized" => true,
+          "qustoIsOnWindow" => true,
+          "qustoIsInitialized" => true,
           "testEvent" => %{
             "normalizedBody" => %{
               "domain" => site.domain
@@ -243,8 +243,8 @@ defmodule PlausibleWeb.Live.VerificationTest do
       stub_verification_result(%{
         "completed" => true,
         "trackerIsInHtml" => true,
-        "plausibleIsOnWindow" => true,
-        "plausibleIsInitialized" => true,
+        "qustoIsOnWindow" => true,
+        "qustoIsInitialized" => true,
         "testEvent" => %{
           "normalizedBody" => %{
             "domain" => site.domain
@@ -273,8 +273,8 @@ defmodule PlausibleWeb.Live.VerificationTest do
       stub_verification_result(%{
         "completed" => true,
         "trackerIsInHtml" => false,
-        "plausibleIsOnWindow" => false,
-        "plausibleIsInitialized" => false
+        "qustoIsOnWindow" => false,
+        "qustoIsInitialized" => false
       })
 
       {:ok, lv} = kick_off_live_verification(conn, site)
@@ -299,8 +299,8 @@ defmodule PlausibleWeb.Live.VerificationTest do
       stub_verification_result(%{
         "completed" => true,
         "trackerIsInHtml" => true,
-        "plausibleIsOnWindow" => true,
-        "plausibleIsInitialized" => true,
+        "qustoIsOnWindow" => true,
+        "qustoIsInitialized" => true,
         "testEvent" => %{
           "normalizedBody" => %{
             "domain" => site.domain
@@ -377,8 +377,8 @@ defmodule PlausibleWeb.Live.VerificationTest do
         stub_verification_result(%{
           "completed" => true,
           "trackerIsInHtml" => false,
-          "plausibleIsOnWindow" => false,
-          "plausibleIsInitialized" => false
+          "qustoIsOnWindow" => false,
+          "qustoIsInitialized" => false
         })
 
         if unquote(saved_installation_type) do

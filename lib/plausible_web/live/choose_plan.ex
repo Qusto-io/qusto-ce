@@ -7,8 +7,8 @@ defmodule PlausibleWeb.Live.ChoosePlan do
   alias PlausibleWeb.Components.Billing.{PlanBox, Notice, PageviewSlider}
   alias Plausible.Billing.{Plans, Quota, PlanBenefits}
 
-  @contact_link "https://plausible.io/contact"
-  @billing_faq_link "https://plausible.io/docs/billing"
+  @contact_link "https://qusto.io/contact"
+  @billing_faq_link "https://docs.qusto.io/billing"
 
   def mount(_params, %{"remote_ip" => remote_ip}, socket) do
     socket =
@@ -142,7 +142,7 @@ defmodule PlausibleWeb.Live.ChoosePlan do
         <div class="mt-6 w-full md:flex">
           <a
             href={~p"/settings/billing/subscription"}
-            class="hidden md:flex md:w-1/6 h-max md:mt-2 text-indigo-600 hover:text-indigo-700 dark:text-indigo-500 dark:hover:text-indigo-400 text-sm font-semibold gap-1 items-center transition-colors duration-150"
+            class="hidden md:flex md:w-1/6 h-max md:mt-2 text-[var(--qusto-primary)] hover:text-[var(--qusto-brand-blue)] dark:text-[var(--color-dark-primary)] dark:hover:text-[var(--color-dark-primary-hover)] text-sm font-semibold gap-1 items-center transition-colors duration-150"
           >
             <span>←</span>
             <p>Back to settings</p>
@@ -161,7 +161,7 @@ defmodule PlausibleWeb.Live.ChoosePlan do
         <div class="md:hidden mt-6 max-w-md mx-auto">
           <a
             href={~p"/settings/billing/subscription"}
-            class="text-indigo-600 hover:text-indigo-700 dark:text-indigo-500 dark:hover:text-indigo-600 text-sm font-semibold"
+            class="text-[var(--qusto-primary)] hover:text-[var(--qusto-brand-blue)] dark:text-[var(--color-dark-primary)] dark:hover:text-[var(--color-dark-primary-hover)] text-sm font-semibold"
           >
             ← Back to settings
           </a>
@@ -254,8 +254,8 @@ defmodule PlausibleWeb.Live.ChoosePlan do
     </span>
     Please see your full usage report (including sites and team members) under the
     <a
-      class="inline font-medium text-indigo-600 dark:text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400 transition-colors duration-150"
       href={~p"/settings/billing/subscription"}
+      class="inline font-medium text-[var(--qusto-primary)] dark:text-[var(--color-dark-primary)] hover:text-[var(--qusto-brand-blue)] dark:hover:text-[var(--color-dark-primary-hover)] transition-colors duration-150"
     >
       "Subscription" section
     </a>
@@ -324,7 +324,7 @@ defmodule PlausibleWeb.Live.ChoosePlan do
         <.two_months_free />
         <fieldset class="grid grid-cols-2 gap-x-1 rounded-full bg-white dark:bg-gray-700 p-1 text-center text-sm font-semibold leading-5 shadow-sm dark:ring-gray-600">
           <label
-            class={"cursor-pointer rounded-full px-2.5 py-1 text-gray-900 dark:text-white #{if @selected_interval == :monthly, do: "bg-indigo-600 text-white"}"}
+            class={"cursor-pointer rounded-full px-2.5 py-1 text-gray-900 dark:text-white #{if @selected_interval == :monthly, do: "bg-[var(--qusto-primary)] dark:bg-[var(--color-dark-primary)] text-white"}"}
             phx-click="set_interval"
             phx-value-interval="monthly"
           >
@@ -332,7 +332,7 @@ defmodule PlausibleWeb.Live.ChoosePlan do
             <span>Monthly</span>
           </label>
           <label
-            class={"cursor-pointer rounded-full px-2.5 py-1 text-gray-900 dark:text-white #{if @selected_interval == :yearly, do: "bg-indigo-600 text-white"}"}
+            class={"cursor-pointer rounded-full px-2.5 py-1 text-gray-900 dark:text-white #{if @selected_interval == :yearly, do: "bg-[var(--qusto-primary)] dark:bg-[var(--color-dark-primary)] text-white"}"}
             phx-click="set_interval"
             phx-value-interval="yearly"
           >
@@ -358,14 +358,14 @@ defmodule PlausibleWeb.Live.ChoosePlan do
     <div class="mt-16 -mb-16 text-center">
       Any other questions?
       <a
-        class="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-500 dark:hover:text-indigo-400 transition-colors duration-150"
+        class="font-medium text-[var(--qusto-primary)] hover:text-[var(--qusto-brand-blue)] dark:text-[var(--color-dark-primary)] dark:hover:text-[var(--color-dark-primary-hover)] transition-colors duration-150"
         href={contact_link()}
       >
         Contact us
       </a>
       or see
       <a
-        class="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-500 dark:hover:text-indigo-400 transition-colors duration-150"
+        class="font-medium text-[var(--qusto-primary)] hover:text-[var(--qusto-brand-blue)] dark:text-[var(--color-dark-primary)] dark:hover:text-[var(--color-dark-primary-hover)] transition-colors duration-150"
         href={billing_faq_link()}
       >
         billing FAQ

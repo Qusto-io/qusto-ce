@@ -15,6 +15,7 @@ export function parseSiteFromDataset(dataset: DOMStringMap): PlausibleSite {
       10
     ),
     siteSegmentsAvailable: dataset.siteSegmentsAvailable === 'true',
+    siteAnnotationsAvailable: dataset.siteAnnotationsAvailable === 'true',
     conversionsOptedOut: dataset.conversionsOptedOut === 'true',
     funnelsOptedOut: dataset.funnelsOptedOut === 'true',
     propsOptedOut: dataset.propsOptedOut === 'true',
@@ -27,7 +28,8 @@ export function parseSiteFromDataset(dataset: DOMStringMap): PlausibleSite {
     isDbip: dataset.isDbip === 'true',
     flags: JSON.parse(dataset.flags!),
     shared: !!dataset.sharedLinkAuth,
-    isConsolidatedView: dataset.isConsolidatedView === 'true'
+    isConsolidatedView: dataset.isConsolidatedView === 'true',
+    showEmailReportsCta: dataset.showEmailReportsCta === 'true'
   }
 }
 
@@ -46,6 +48,7 @@ export const siteContextDefaultValue = {
   explorationMaxJourneySteps: 0,
   propsAvailable: false,
   siteSegmentsAvailable: false,
+  siteAnnotationsAvailable: false,
   conversionsOptedOut: false,
   funnelsOptedOut: false,
   propsOptedOut: false,
@@ -60,7 +63,8 @@ export const siteContextDefaultValue = {
   isDbip: false,
   flags: {} as FeatureFlags,
   shared: false,
-  isConsolidatedView: false
+  isConsolidatedView: false,
+  showEmailReportsCta: false
 }
 
 export type PlausibleSite = typeof siteContextDefaultValue

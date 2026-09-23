@@ -3,36 +3,53 @@ defmodule PlausibleWeb.Components.Layout do
 
   use Phoenix.Component
 
+  attr :class, :string, default: "w-24 sm:w-28"
+
+  def logo(assigns) do
+    ~H"""
+    <img
+      src={logo_path("logo_dark.svg")}
+      class={[@class, "hidden dark:inline"]}
+      alt="Qusto logo"
+      loading="lazy"
+    />
+    <img
+      src={logo_path("logo_light.svg")}
+      class={[@class, "inline dark:hidden"]}
+      alt="Qusto logo"
+      loading="lazy"
+    />
+    """
+  end
+
   def favicon(assigns) do
     ~H"""
     <link
       rel="icon"
       type="image/svg+xml"
-      href={PlausibleWeb.Router.Helpers.static_path(@conn, logo_path("qusto_icon.svg"))}
+      href={logo_path("qusto_icon.svg")}
       media="(prefers-color-scheme: light)"
     />
     <link
       rel="icon"
       type="image/svg+xml"
-      href={PlausibleWeb.Router.Helpers.static_path(@conn, logo_path("qusto_icon_dark.svg"))}
+      href={logo_path("qusto_icon_dark.svg")}
       media="(prefers-color-scheme: dark)"
     />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href={PlausibleWeb.Router.Helpers.static_path(@conn, logo_path("apple-touch-icon.png"))}
+      href={logo_path("apple-touch-icon.png")}
     />
     <link
       rel="icon"
-      type="image/png"
       sizes="32x32"
-      href={PlausibleWeb.Router.Helpers.static_path(@conn, logo_path("favicon-32x32.png"))}
+      href={logo_path("favicon.ico")}
     />
     <link
       rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href={PlausibleWeb.Router.Helpers.static_path(@conn, logo_path("favicon-16x16.png"))}
+      type="image/svg+xml"
+      href={logo_path("favicon.svg")}
     />
     """
   end
@@ -45,16 +62,13 @@ defmodule PlausibleWeb.Components.Layout do
         function reapplyTheme() {
           var darkMediaPref = window.matchMedia('(prefers-color-scheme: dark)').matches;
           var htmlRef = document.querySelector('html');
-          var hcaptchaRefs = Array.from(document.getElementsByClassName('h-captcha'));
 
           var isDark = themePref === 'dark' || (themePref === 'system' && darkMediaPref);
 
           if (isDark) {
               htmlRef.classList.add('dark')
-              hcaptchaRefs.forEach(function(ref) { ref.dataset.theme = "dark"; });
           } else {
               htmlRef.classList.remove('dark');
-              hcaptchaRefs.forEach(function(ref) { ref.dataset.theme = "light"; });
           }
         }
 

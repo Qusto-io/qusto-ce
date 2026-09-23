@@ -86,7 +86,7 @@ defmodule PlausibleWeb.Live.GoalSettings.List do
                   </:tooltip_content>
                   <.styled_link
                     class="w-max flex items-center text-sm"
-                    href={Routes.billing_path(PlausibleWeb.Endpoint, :choose_plan)}
+                    href={~p"/billing/choose-plan"}
                     data-test-id="feature-unavailable-cta"
                   >
                     <Heroicons.lock_closed class="size-3.5 mr-1 stroke-2" /> Upgrade
@@ -163,7 +163,7 @@ defmodule PlausibleWeb.Live.GoalSettings.List do
       </h3>
       <p class="text-center text-sm mt-1 text-gray-500 dark:text-gray-400 leading-5 text-pretty">
         Define actions that you want your users to take, like visiting a certain page, submitting a form, etc.
-        <.styled_link href="https://docs.qusto.io/goal-conversions" target="_blank">
+        <.styled_link href="https://plausible.io/docs/goal-conversions" target="_blank">
           Learn more
         </.styled_link>
       </p>

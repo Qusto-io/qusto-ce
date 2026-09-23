@@ -6,6 +6,10 @@ defmodule Plausible.Application do
 
   require Logger
 
+  on_ee do
+    @start_verification_mock_scenarios? Mix.env() in [:dev, :e2e_test, :test]
+  end
+
   def start(_type, _args) do
     on_ee(do: Plausible.License.ensure_valid_license())
     on_ce(do: :inet_db.set_tcp_module(:happy_tcp))
@@ -42,7 +46,7 @@ defmodule Plausible.Application do
         Plausible.ClickhouseRepo,
         Plausible.IngestRepo,
         Plausible.AsyncInsertRepo,
-        Plausible.ImportDeletionRepo,
+        Plausible.DeletionRepo,
         Plausible.Cache.Adapter.child_spec(:customer_currency, :cache_customer_currency,
           ttl_check_interval: :timer.minutes(5),
           n_lock_partitions: 1,
@@ -196,6 +200,11 @@ defmodule Plausible.Application do
         end,
         Plausible.Ingestion.Counters,
         Plausible.Session.Salts,
+        on_ee do
+          if always(@start_verification_mock_scenarios?) do
+            Plausible.InstallationSupport.Verification.MockScenarios
+          end
+        end,
         Supervisor.child_spec(Plausible.Event.WriteBuffer, id: Plausible.Event.WriteBuffer),
         Supervisor.child_spec(Plausible.Session.WriteBuffer, id: Plausible.Session.WriteBuffer),
         ReferrerBlocklist,

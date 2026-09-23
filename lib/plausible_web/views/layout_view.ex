@@ -3,7 +3,6 @@ defmodule PlausibleWeb.LayoutView do
   use Plausible
 
   alias Plausible.Teams
-  alias PlausibleWeb.Components.Billing.Notice
   alias PlausibleWeb.Components.Layout
 
   require Plausible.Billing

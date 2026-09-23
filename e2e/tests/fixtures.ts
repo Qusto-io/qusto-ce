@@ -87,14 +87,13 @@ export async function register({
   await page.getByLabel('Full name').fill(user.name)
   await page.getByLabel('Email').fill(user.email)
   await page.getByLabel('Password', { exact: true }).fill(user.password)
-  await page.getByLabel('Confirm password', { exact: true }).fill(user.password)
   await expect(
     page.getByRole('button', { name: 'Start my free trial' })
   ).toBeEnabled()
   await page.getByRole('button', { name: 'Start my free trial' }).click()
 
   await expect(
-    page.getByRole('heading', { name: 'Activate your account' })
+    page.getByRole('heading', { name: 'Check your email' })
   ).toBeVisible()
 
   const response = await request.get('/sent-emails-api/emails.json')
@@ -116,19 +115,17 @@ export async function register({
 
   await page.getByRole('button', { name: 'Activate' }).click()
 
-  await expect(
-    page.getByRole('button', { name: 'Install Qusto' })
-  ).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Add site' })).toBeVisible()
 }
 
 export async function login({ page, user }: { page: Page; user: User }) {
   await page.goto('/login', { waitUntil: 'commit' })
 
-  await expect(page.getByRole('button', { name: 'Log in' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible()
 
   await page.getByLabel('Email').fill(user.email)
   await page.getByLabel('Password').fill(user.password)
-  await page.getByRole('button', { name: 'Log in' }).click()
+  await page.getByRole('button', { name: 'Sign in' }).click()
 
   await expect(page.getByRole('button', { name: user.name })).toBeVisible()
 }
@@ -136,7 +133,7 @@ export async function login({ page, user }: { page: Page; user: User }) {
 export async function logout(page: Page) {
   await page.goto('/logout?redirect=/login', { waitUntil: 'commit' })
 
-  await expect(page.getByRole('button', { name: 'Log in' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible()
 }
 
 export async function addSite({
@@ -148,16 +145,17 @@ export async function addSite({
 }) {
   await page.goto('/sites/new', { waitUntil: 'commit' })
 
-  await expect(
-    page.getByRole('button', { name: 'Install Qusto' })
-  ).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Add site' })).toBeVisible()
 
   await page.getByLabel('Domain').fill(domain)
-  await page.getByLabel('Reporting timezone').selectOption('Etc/UTC')
 
-  await page.getByRole('button', { name: 'Install Qusto' }).click()
+  await page.getByRole('button', { name: 'Add site' }).click()
 
   await expect(page).toHaveURL(/\/installation/)
+
+  await expect(
+    page.getByRole('button', { name: "I've installed it" })
+  ).toBeVisible()
 }
 
 export async function makeSitePublic({
@@ -168,8 +166,6 @@ export async function makeSitePublic({
   domain: string
 }) {
   await page.goto(`/${domain}/settings/visibility`, { waitUntil: 'commit' })
-
-  await expectLiveViewConnected(page)
 
   await page
     .getByRole('form', { name: 'Make stats publicly available' })
@@ -194,8 +190,6 @@ export async function createSharedLink({
   const table = page.locator('#shared-links-table')
 
   await page.goto(`/${domain}/settings/visibility`, { waitUntil: 'commit' })
-
-  await expectLiveViewConnected(page)
 
   await page.getByRole('button', { name: 'Add shared link' }).click()
 
@@ -526,13 +520,15 @@ export async function addFunnel({
 export async function setupSite({
   user,
   page,
-  request
+  request,
+  ...opts
 }: {
   user?: User
   page: Page
   request: APIRequestContext
+  domain?: string
 }): Promise<{ domain: string; user: User }> {
-  const domain = `${randomID()}.example.com`
+  const domain = opts.domain ?? `${randomID()}.example.com`
 
   if (!user) {
     const userID = randomID()

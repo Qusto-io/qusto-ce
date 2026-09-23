@@ -11,14 +11,14 @@
         </p>
         <div class="flex gap-4 flex-wrap">
           <.styled_link
-            href={Routes.auth_path(@conn, :register_form)}
+            href={~p"/register"}
             class="inline-flex items-center px-8 py-4 text-lg font-semibold !text-white rounded-lg shadow-lg dark:shadow-revenue transition-all hover:shadow-xl dark:hover:shadow-revenue hover:-translate-y-0.5 dark:hover:scale-[1.02]"
             style="background: linear-gradient(135deg, #c55130 0%, #a33f22 100%);"
           >
             Get Started Free →
           </.styled_link>
           <.unstyled_link
-            href={Routes.auth_path(@conn, :login)}
+            href={~p"/login"}
             class="btn-secondary-ce inline-flex items-center px-8 py-4 text-lg font-semibold rounded-lg transition-all"
           >
             View Demo
@@ -189,7 +189,7 @@
     </p>
     <div class="flex justify-center gap-4 flex-wrap">
       <.styled_link
-        href={Routes.auth_path(@conn, :register_form)}
+        href={~p"/register"}
         class="inline-flex items-center px-8 py-4 text-lg font-semibold !text-white rounded-lg shadow-lg dark:shadow-revenue hover:shadow-xl dark:hover:shadow-revenue dark:hover:scale-[1.02] transition-all"
         style="background: linear-gradient(135deg, #c55130 0%, #a33f22 100%);"
       >
@@ -216,7 +216,7 @@
       Open-source. No credit card. Self-host or use Qusto Cloud.
     </p>
     <.styled_link
-      href={Routes.auth_path(@conn, :register_form)}
+      href={~p"/register"}
       class="btn-cta-section inline-flex items-center px-8 py-4 text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transition-all"
     >
       Get Started Free →

@@ -74,6 +74,17 @@ A change can pass one and fail the other; that has happened more than once. If
 - `assets/` and `tracker/` `package-lock.json` — **must be generated on Linux /
   Node 24**. npm on macOS drops the Linux-only optional `@emnapi/*` packages and
   CI then fails `npm ci` with `EUSAGE`.
+- **Before committing a slice, diff every lockfile and manifest against
+  pre-merge `main`** — `mix.lock`, `assets/package.json`, `tracker/package.json`
+  (and their `package-lock.json`). Any version that is *newer* than upstream's
+  because of a security fix must be kept (`mix deps.update <pkg>` /
+  `npm install <pkg>@<ver>`), not regenerated back to upstream's pin. No alert
+  will fire if you get this wrong: slice 3 (#164) silently reverted #138's
+  cowboy 2.19.0 / cowlib 2.20.0 / plug_cowboy 2.9.0 (HTTP splitting).
+
+  ```sh
+  git diff <pre-merge-main> HEAD -- mix.lock assets/package.json tracker/package.json
+  ```
 
 ## Divergence: what to retire, and what to leave alone (Phase 2)
 

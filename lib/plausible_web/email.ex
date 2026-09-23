@@ -206,7 +206,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(user)
     |> tag("dashboard-locked")
-    |> subject("[Action required] Your Plausible dashboard is now locked")
+    |> subject("[Action required] Your Qusto dashboard is now locked")
     |> render("dashboard_locked.html", %{
       user: user,
       team: team,
@@ -221,7 +221,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(owner)
     |> tag("yearly-renewal")
-    |> subject("Your Plausible subscription is up for renewal")
+    |> subject("Your Qusto subscription is up for renewal")
     |> render("yearly_renewal_notification.html", %{
       user: owner,
       team: team,
@@ -242,7 +242,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(owner)
     |> tag("yearly-expiration")
-    |> subject("Your Plausible subscription is about to expire")
+    |> subject("Your Qusto subscription is about to expire")
     |> render("yearly_expiration_notification.html", %{
       user: owner,
       team: team,

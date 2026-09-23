@@ -431,26 +431,6 @@ defmodule PlausibleWeb.Api.Internal.SegmentsControllerTest do
       assert reloaded.site_id == site.id
       assert reloaded.site_id != other_site.id
     end
-
-    test "cannot move segment to another site by passing site_id param", %{
-      conn: conn,
-      user: user,
-      site: site
-    } do
-      victim_site = new_site()
-      segment = insert(:segment, site: site, owner: user, type: :personal, name: "test segment")
-
-      patch(conn, "/api/#{site.domain}/segments/#{segment.id}", %{
-        "name" => "updated name",
-        "type" => "personal",
-        "segment_data" => %{"filters" => [["is", "visit:entry_page", ["/blog"]]], "labels" => %{}},
-        "site_id" => victim_site.id
-      })
-
-      reloaded = Repo.reload!(segment)
-      assert reloaded.site_id == site.id
-      assert reloaded.site_id != victim_site.id
-    end
   end
 
   describe "DELETE /api/:domain/segments/:segment_id" do

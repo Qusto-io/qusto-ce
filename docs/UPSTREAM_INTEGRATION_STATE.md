@@ -1,5 +1,5 @@
-integrated_upstream_tip: 5e2f1036dab9b88f31dfd14b01ffb5d81e5ffe25
-integrated_through_date: 2026-06-30
+integrated_upstream_tip: 0f362bd84eaae98821a0c5472c51cdbde6f2d4ca
+integrated_through_date: 2026-09-21
 slice: 3
 
 # Upstream integration state (DRIFT-01)

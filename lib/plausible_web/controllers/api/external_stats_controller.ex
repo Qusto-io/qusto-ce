@@ -46,6 +46,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
       %{results: results, meta: meta} =
         Legacy.Breakdown.breakdown(site, query, metrics, {limit, page})
 
+      results = add_geo_names(results, params["property"])
       payload = maybe_add_warning(%{results: results}, meta)
 
       json(conn, payload)
@@ -54,18 +55,47 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
     end
   end
 
+  # Qusto: visit:city and visit:region breakdowns return opaque codes — a
+  # GeoNames id ("2950159") and an ISO 3166-2 code ("DE-BE"). The internal
+  # dashboard API resolves both to names; this public API did not, so API
+  # consumers (the Qusto e-commerce dashboard among them) showed numeric city
+  # ids next to billing-address city names (demo data review F1, 2026-09-19).
+  # Additive: each row gains `name` when the code resolves. An unknown code
+  # gets no `name` (not "N/A"), so a consumer can fall back to the code.
+  defp add_geo_names(results, "visit:city") do
+    Enum.map(results, fn row ->
+      case Location.get_city(row_code(row, :city)) do
+        %{name: name} when is_binary(name) and name != "" -> Map.put(row, :name, name)
+        _ -> row
+      end
+    end)
+  end
+
+  defp add_geo_names(results, "visit:region") do
+    Enum.map(results, fn row ->
+      case Location.get_subdivision(row_code(row, :region)) do
+        %{name: name} when is_binary(name) and name != "" -> Map.put(row, :name, name)
+        _ -> row
+      end
+    end)
+  end
+
+  defp add_geo_names(results, _property), do: results
+
+  defp row_code(row, key), do: Map.get(row, key) || Map.get(row, Atom.to_string(key))
+
   defp validate_property(%{"property" => property}) do
     cond do
       property == "event:hostname" ->
         {:error,
-         "Property 'event:hostname' is currently not supported for breakdowns.  Please provide a valid property for the breakdown endpoint: https://plausible.io/docs/stats-api#properties"}
+         "Property 'event:hostname' is currently not supported for breakdowns.  Please provide a valid property for the breakdown endpoint: https://docs.qusto.io/stats-api#properties"}
 
       Plausible.Stats.Legacy.Dimensions.valid?(property) ->
         :ok
 
       true ->
         {:error,
-         "Invalid property '#{property}'. Please provide a valid property for the breakdown endpoint: https://plausible.io/docs/stats-api#properties"}
+         "Invalid property '#{property}'. Please provide a valid property for the breakdown endpoint: https://docs.qusto.io/stats-api#properties"}
     end
   end
 
@@ -210,7 +240,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
 
   defp validate_metric(metric, _) do
     {:error,
-     "The metric `#{metric}` is not recognized. Find valid metrics from the documentation: https://plausible.io/docs/stats-api#metrics"}
+     "The metric `#{metric}` is not recognized. Find valid metrics from the documentation: https://docs.qusto.io/stats-api#metrics"}
   end
 
   defp validate_session_metric(metric, query) do
@@ -283,11 +313,11 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
     else
       :error ->
         {:error,
-         "The `date` parameter is required when using a custom period. See https://plausible.io/docs/stats-api#time-periods"}
+         "The `date` parameter is required when using a custom period. See https://docs.qusto.io/stats-api#time-periods"}
 
       _ ->
         {:error,
-         "Invalid format for `date` parameter. When using a custom period, please include two ISO-8601 formatted dates joined by a comma. See https://plausible.io/docs/stats-api#time-periods"}
+         "Invalid format for `date` parameter. When using a custom period, please include two ISO-8601 formatted dates joined by a comma. See https://docs.qusto.io/stats-api#time-periods"}
     end
   end
 
@@ -309,7 +339,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
       :ok
     else
       {:error,
-       "Error parsing `period` parameter: invalid period `#{period}`. Please find accepted values in our docs: https://plausible.io/docs/stats-api#time-periods"}
+       "Error parsing `period` parameter: invalid period `#{period}`. Please find accepted values in our docs: https://docs.qusto.io/stats-api#time-periods"}
     end
   end
 
@@ -378,7 +408,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
       :ok
     else
       {:error,
-       "Invalid filter property '#{property}'. Please provide a valid filter property: https://plausible.io/docs/stats-api#properties"}
+       "Invalid filter property '#{property}'. Please provide a valid filter property: https://docs.qusto.io/stats-api#properties"}
     end
   end
 

@@ -24,8 +24,9 @@
     data-props-available={
       to_string(Plausible.Billing.Feature.Props.check_availability(@site.team) == :ok)
     }
-    data-site-segments-available={
-      to_string(Plausible.Billing.Feature.SiteSegments.check_availability(@site.team) == :ok)
+    data-site-segments-available={to_string(Plausible.Segments.site_segments_available?(@site))}
+    data-site-annotations-available={
+      to_string(Plausible.Annotations.site_annotations_available?(@site))
     }
     data-revenue-goals={Jason.encode!(@revenue_goals)}
     data-funnels={Jason.encode!(@funnels)}
@@ -52,8 +53,15 @@
     data-exploration-max-journey-steps={@exploration_max_journey_steps}
     data-team-identifier={@team_identifier}
     data-limited-to-segment-id={Jason.encode!(@limited_to_segment_id)}
+    data-show-email-reports-cta={to_string(@show_email_reports_cta?)}
   >
   </div>
+  <%= if @verify_installation? do %>
+    {live_render(@conn, PlausibleWeb.Live.Verification,
+      id: "live-verification",
+      session: @verification_session
+    )}
+  <% end %>
   <div id="modal_root"></div>
   <%= if ee?() && !@conn.assigns[:current_user] && @conn.assigns[:demo] do %>
     <div class="py-12 lg:py-16 lg:flex lg:items-center lg:justify-between">

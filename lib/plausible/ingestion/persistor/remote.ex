@@ -75,7 +75,7 @@ defmodule Plausible.Ingestion.Persistor.Remote do
               max_retries: @max_transient_retries
             )
             |> OpentelemetryReq.attach(propagate_trace_headers: true)
-            |> Req.post(url: url, span_name: "persistor.remote.post")
+            |> Req.post(url: url, span_name: "persistor.remote.post", compressed: true)
 
           trace_result(result)
           result

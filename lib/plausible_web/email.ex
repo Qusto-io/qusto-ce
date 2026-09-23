@@ -17,7 +17,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(user)
     |> tag("activation-email")
-    |> subject("#{code} is your Plausible email verification code")
+    |> subject("#{code} is your Qusto email verification code")
     |> render("activation_email.html", user: user, code: code)
   end
 
@@ -33,7 +33,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("create-site-email")
-    |> subject("Add your first site to start tracking")
+    |> subject("Your Qusto setup: Add your website details")
     |> render("create_site_email.html", user: user)
   end
 
@@ -41,7 +41,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("help-email")
-    |> subject("No traffic recorded yet")
+    |> subject("Your Qusto setup: Waiting for the first page views")
     |> render("site_setup_help_email.html",
       user: user,
       site: site,
@@ -53,10 +53,11 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("setup-success-email")
-    |> subject("Your first visitor just showed up")
+    |> subject("Qusto is now tracking your website stats")
     |> render("site_setup_success_email.html",
       user: user,
-      site: site
+      site: site,
+      site_team: site.team
     )
   end
 
@@ -64,7 +65,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user)
     |> tag("check-stats-email")
-    |> subject("How Plausible is different")
+    |> subject("Check your Qusto website stats")
     |> render("check_stats_email.html", user: user)
   end
 
@@ -80,7 +81,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(user)
     |> tag("two-factor-enabled-email")
-    |> subject("Plausible Two-Factor Authentication enabled")
+    |> subject("Qusto Two-Factor Authentication enabled")
     |> render("two_factor_enabled_email.html", user: user)
   end
 
@@ -88,7 +89,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(user)
     |> tag("two-factor-disabled-email")
-    |> subject("Plausible Two-Factor Authentication disabled")
+    |> subject("Qusto Two-Factor Authentication disabled")
     |> render("two_factor_disabled_email.html", user: user)
   end
 
@@ -183,7 +184,7 @@ defmodule PlausibleWeb.Email do
     priority_email()
     |> to(user)
     |> tag("over-limit")
-    |> subject("[Action required] You have outgrown your Plausible subscription tier")
+    |> subject("[Action required] You have outgrown your Qusto subscription tier")
     |> render("over_limit.html", %{
       user: user,
       team: team,
@@ -255,7 +256,7 @@ defmodule PlausibleWeb.Email do
     base_email()
     |> to(user.email)
     |> tag("cancelled-email")
-    |> subject("Where did Plausible fall short?")
+    |> subject("Mind sharing your thoughts on Qusto?")
     |> render("cancellation_email.html", user: user)
   end
 

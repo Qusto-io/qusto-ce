@@ -58,13 +58,13 @@ defmodule Plausible.Shield.PageRuleCacheTest do
       assert eventually(fn ->
                case PageRuleCache.get(site.domain, cache_opts) do
                  %{page_path_pattern: regex} ->
-                   Regex.source(regex) == "^\/hello\/.*\/world$"
+                   {Regex.source(regex) == "^\/hello\/.*\/world$", regex}
 
                  [%{page_path_pattern: regex}] ->
-                   Regex.source(regex) == "^\/hello\/.*\/world$"
+                   {Regex.source(regex) == "^\/hello\/.*\/world$", regex}
 
                  _ ->
-                   false
+                   {false, nil}
                end
              end)
     end
@@ -106,10 +106,10 @@ defmodule Plausible.Shield.PageRuleCacheTest do
       assert eventually(fn ->
                case PageRuleCache.get(domain, cache_opts) do
                  %{page_path_pattern: path_pattern} ->
-                   Regex.source(path_pattern) == "^\/test\/2$"
+                   {Regex.source(path_pattern) == "^\/test\/2$", path_pattern}
 
                  _ ->
-                   false
+                   {false, nil}
                end
              end)
 

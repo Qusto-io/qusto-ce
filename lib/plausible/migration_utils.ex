@@ -44,6 +44,42 @@ defmodule Plausible.MigrationUtils do
 
   def community_edition?(), do: ce?()
 
+  # Table-level MODIFY SETTING lightweight_mutation_projection_mode exists from CH 25.1+.
+  # Older clusters (e.g. prod 24.3) skip; workers use query-level SETTINGS instead.
+  def clickhouse_version_at_least?({major, minor, patch}) do
+    case fetch_clickhouse_version_triple() do
+      {:ok, triple} -> version_triple_gte?(triple, {major, minor, patch})
+      :error -> false
+    end
+  end
+
+  defp fetch_clickhouse_version_triple() do
+    case Ecto.Adapters.SQL.query(IngestRepo, "SELECT version()", []) do
+      {:ok, %{rows: [[version_string]]}} -> parse_clickhouse_version_triple(version_string)
+      _ -> :error
+    end
+  end
+
+  defp parse_clickhouse_version_triple(version_string) do
+    case String.split(version_string, ".", parts: 4) do
+      [a, b, c, _] ->
+        with {maj, _} <- Integer.parse(a),
+             {min, _} <- Integer.parse(b),
+             {pat, _} <- Integer.parse(c) do
+          {:ok, {maj, min, pat}}
+        else
+          _ -> :error
+        end
+
+      _ ->
+        :error
+    end
+  end
+
+  defp version_triple_gte?({a, b, c}, {ma, mb, mc}) do
+    a > ma or (a == ma and (b > mb or (b == mb and c >= mc)))
+  end
+
   defp encode(value) when is_number(value), do: value
   defp encode(value) when is_binary(value), do: "'#{value}'"
 end

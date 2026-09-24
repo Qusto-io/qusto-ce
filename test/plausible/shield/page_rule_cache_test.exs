@@ -1,5 +1,5 @@
 defmodule Plausible.Shield.PageRuleCacheTest do
-  use Plausible.DataCase, async: false
+  use Plausible.DataCase, async: true
 
   alias Plausible.Shield.PageRule
   alias Plausible.Shield.PageRuleCache
@@ -54,19 +54,8 @@ defmodule Plausible.Shield.PageRuleCacheTest do
 
       {:ok, _} = Shields.add_page_rule(site, %{"page_path" => "/hello/**/world"})
       :ok = PageRuleCache.refresh_all(cache_name: test)
-
-      assert eventually(fn ->
-               case PageRuleCache.get(site.domain, cache_opts) do
-                 %{page_path_pattern: regex} ->
-                   {Regex.source(regex) == "^\/hello\/.*\/world$", regex}
-
-                 [%{page_path_pattern: regex}] ->
-                   {Regex.source(regex) == "^\/hello\/.*\/world$", regex}
-
-                 _ ->
-                   {false, nil}
-               end
-             end)
+      assert regex = PageRuleCache.get(site.domain, cache_opts).page_path_pattern
+      assert Regex.source(regex) == "^\/hello\/.*\/world$"
     end
 
     test "cache allows lookups for page paths on sites with changed domain", %{test: test} do
@@ -103,15 +92,8 @@ defmodule Plausible.Shield.PageRuleCacheTest do
 
       assert :ok = PageRuleCache.refresh_updated_recently(cache_opts)
 
-      assert eventually(fn ->
-               case PageRuleCache.get(domain, cache_opts) do
-                 %{page_path_pattern: path_pattern} ->
-                   {Regex.source(path_pattern) == "^\/test\/2$", path_pattern}
-
-                 _ ->
-                   {false, nil}
-               end
-             end)
+      assert %{page_path_pattern: path_pattern} = PageRuleCache.get(domain, cache_opts)
+      assert Regex.source(path_pattern) == "^\/test\/2$"
 
       assert :ok = PageRuleCache.refresh_all(cache_opts)
 

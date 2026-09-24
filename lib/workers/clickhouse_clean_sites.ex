@@ -83,11 +83,9 @@ defmodule Plausible.Workers.ClickhouseCleanSites do
         )
 
         measure_stage("events_deletion", fn ->
-          # Qusto adds projections to events_v2 (qusto_ai_search_proj,
-          # qusto_ecommerce_proj), and ClickHouse refuses lightweight deletes
-          # against tables with projections. Fall back to a mutation, which
-          # rebuilds the projections.
-          clear_table_via_mutation!("events_v2", site_ids)
+          for partition_id <- partition_ids_events do
+            clear_partitioned_table!("events_v2", partition_id, site_ids)
+          end
         end)
 
         measure_stage("sessions_deletion", fn ->

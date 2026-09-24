@@ -4,14 +4,23 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<<<<<<< HEAD
     <PlausibleWeb.Components.Layout.favicon />
     <title>Qusto · Web analytics</title>
+=======
+    <PlausibleWeb.Components.Layout.favicon conn={@conn} />
+    <title>Plausible · Web analytics</title>
+>>>>>>> 27cbc4419c501aa3e4e41f8ccd267f7dfb263d66
     <link rel="stylesheet" href={~p"/css/app.css"} />
   </head>
   <body class="flex flex-col h-full bg-gray-100 dark:bg-[var(--color-dark-bg-card)]">
     <div class="w-full my-8 text-center">
       <a href={home_dest(@conn.assigns[:current_user])}>
+<<<<<<< HEAD
         <PlausibleWeb.Components.Layout.logo class="w-44 inline-block" />
+=======
+        <Layout.logo />
+>>>>>>> 27cbc4419c501aa3e4e41f8ccd267f7dfb263d66
       </a>
     </div>
 

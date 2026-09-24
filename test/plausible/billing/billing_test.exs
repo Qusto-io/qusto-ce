@@ -624,12 +624,12 @@ defmodule Plausible.BillingTest do
 
       assert_email_delivered_with(
         to: [nil: user.email],
-        subject: "Mind sharing your thoughts on Qusto?"
+        subject: "Where did Plausible fall short?"
       )
 
       assert_email_delivered_with(
         to: [nil: billing_member.email],
-        subject: "Mind sharing your thoughts on Qusto?"
+        subject: "Where did Plausible fall short?"
       )
     end
   end

@@ -8,8 +8,6 @@ const isCI: boolean = !!process.env.CI
  */
 export default defineConfig({
   testDir: './tests',
-  // Upstream suite lives under dashboard/; legacy Qusto root specs stay for local runs only.
-  testMatch: '**/dashboard/**/*.spec.ts',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -33,7 +31,7 @@ export default defineConfig({
     trace: 'on-first-retry'
   },
   /* Opt out of parallel tests on CI. */
-  ...(isCI && { workers: 1 }),
+  ...(isCI && { workers: 4 }),
 
   /* Configure projects for major browsers */
   projects: [

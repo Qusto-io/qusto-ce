@@ -35,7 +35,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
     @enforce_keys [:message, :recommendation]
     defstruct [:message, :recommendation, inline_links: []]
 
-    @allowed_link_prefixes ["https://docs.qusto.io/", "https://plausible.io/"]
+    @allowed_link_hosts ~w(docs.qusto.io plausible.io)
 
     def new!(attrs) do
       message = Map.fetch!(attrs, :message)
@@ -57,13 +57,20 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
                 "Recommendation inline_links text #{inspect(text)} must appear exactly once in: #{inspect(recommendation)}"
         end
 
-        unless Enum.any?(@allowed_link_prefixes, &String.starts_with?(href, &1)) do
+        unless valid_doc_href?(href) do
           raise ArgumentError,
-                "Recommendation inline_links href must start with one of #{inspect(@allowed_link_prefixes)}: #{inspect(href)}"
+                "Recommendation inline_links href must use https and host in #{inspect(@allowed_link_hosts)}: #{inspect(href)}"
         end
       end
 
       struct!(__MODULE__, attrs)
+    end
+
+    defp valid_doc_href?(href) do
+      case URI.parse(href) do
+        %URI{scheme: "https", host: host} when host in @allowed_link_hosts -> true
+        _ -> false
+      end
     end
   end
 

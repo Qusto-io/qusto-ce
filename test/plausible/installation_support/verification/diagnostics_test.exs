@@ -35,8 +35,8 @@ defmodule Plausible.InstallationSupport.Verification.DiagnosticsTest do
         end
       end
 
-      test "raises when inline_links href doesn't point at plausible.io" do
-        assert_raise ArgumentError, ~r/must start with/, fn ->
+      test "raises when inline_links href doesn't point at docs.qusto.io or plausible.io" do
+        assert_raise ArgumentError, ~r/must use https/, fn ->
           Error.new!(%{
             message: "Something went wrong",
             recommendation: "Check the docs for more info",

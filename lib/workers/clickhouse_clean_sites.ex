@@ -140,7 +140,11 @@ defmodule Plausible.Workers.ClickhouseCleanSites do
 
   defp clear_partitioned_table!(table, partition_id, site_ids) do
     DeletionRepo.query!(
-      "DELETE FROM {$0:Identifier} IN PARTITION ID {$1:String} WHERE site_id IN {$2:Array(UInt64)}",
+      """
+      DELETE FROM {$0:Identifier} IN PARTITION ID {$1:String}
+      WHERE site_id IN {$2:Array(UInt64)}
+      SETTINGS lightweight_mutation_projection_mode = 'rebuild'
+      """,
       [table, partition_id, site_ids],
       settings: @settings
     )
@@ -148,7 +152,11 @@ defmodule Plausible.Workers.ClickhouseCleanSites do
 
   defp clear_unpartitioned_table!(table, site_ids) do
     DeletionRepo.query!(
-      "DELETE FROM {$0:Identifier} WHERE site_id IN {$1:Array(UInt64)}",
+      """
+      DELETE FROM {$0:Identifier}
+      WHERE site_id IN {$1:Array(UInt64)}
+      SETTINGS lightweight_mutation_projection_mode = 'rebuild'
+      """,
       [table, site_ids],
       settings: @settings
     )

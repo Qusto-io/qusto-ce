@@ -395,7 +395,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
     if found = Enum.find(goals_in_filter, &(&1 not in configured_goals)) do
       msg =
         goal_not_configured_message(found) <>
-          "Find out how to configure goals here: https://plausible.io/docs/stats-api#filtering-by-goals"
+          "Find out how to configure goals here: https://docs.qusto.io/stats-api#filtering-by-goals"
 
       {:error, msg}
     else
@@ -420,7 +420,7 @@ defmodule PlausibleWeb.Api.ExternalStatsController do
     "The goal `#{goal}` is not configured for this site. "
   end
 
-  @imported_query_unsupported_warning "Imported stats are not included in the results because query parameters are not supported. For more information, see: https://plausible.io/docs/stats-api#filtering-imported-stats"
+  @imported_query_unsupported_warning "Imported stats are not included in the results because query parameters are not supported. For more information, see: https://docs.qusto.io/stats-api#filtering-imported-stats"
 
   defp maybe_add_warning(payload, %Jason.OrderedObject{} = meta) do
     case meta[:imports_skip_reason] do

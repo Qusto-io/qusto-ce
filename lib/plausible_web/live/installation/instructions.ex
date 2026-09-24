@@ -25,7 +25,7 @@ defmodule PlausibleWeb.Live.Installation.Instructions do
       <p class="text-sm text-gray-500 dark:text-gray-400">
         Need help?
         <.styled_link
-          href="https://plausible.io/docs/plausible-script"
+          href="https://docs.qusto.io/plausible-script"
           new_tab={true}
           external_icon={false}
         >

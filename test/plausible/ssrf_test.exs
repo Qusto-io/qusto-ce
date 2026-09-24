@@ -189,7 +189,7 @@ defmodule Plausible.SSRFTest do
                  method: :get,
                  url: "http://localhost:#{bypass.port}/",
                  connect_options: [hostname: "localhost"],
-                 pool_max_idle_time: 50
+                 finch: [pool_max_idle_time: 50]
                )
 
       assert_receive :pool_reaped, 2000

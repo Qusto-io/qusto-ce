@@ -418,7 +418,7 @@ defmodule PlausibleWeb.EmailTest do
       assert body =~
                "If you don't subscribe, we'll permanently delete your Plausible dashboards and all their stats on #{PlausibleWeb.EmailView.date_format(deletion_date)}. This cannot be undone."
 
-      assert body =~ ~s|<a href="https://plausible.io/docs/export-stats">export your stats</a>|
+      assert body =~ ~s|<a href="https://docs.qusto.io/export-stats">export your stats</a>|
     end
   end
 
@@ -436,7 +436,7 @@ defmodule PlausibleWeb.EmailTest do
         PlausibleWeb.Email.deletion_full_notice_email(user, team, schedule, sites_summary)
 
       assert body =~ PlausibleWeb.EmailView.choose_plan_url(team)
-      assert body =~ ~s|<a href="https://plausible.io/docs/export-stats">export your stats</a>|
+      assert body =~ ~s|<a href="https://docs.qusto.io/export-stats">export your stats</a>|
 
       body = text(body)
 
@@ -506,7 +506,7 @@ defmodule PlausibleWeb.EmailTest do
         PlausibleWeb.Email.deletion_reminder_email(user, team, schedule, sites_summary)
 
       assert body =~ PlausibleWeb.EmailView.choose_plan_url(team)
-      assert body =~ ~s|<a href="https://plausible.io/docs/export-stats">export your stats</a>|
+      assert body =~ ~s|<a href="https://docs.qusto.io/export-stats">export your stats</a>|
 
       body = text(body)
 

@@ -77,7 +77,7 @@ defmodule Plausible.SSRF do
 
     request_opts =
       opts
-      |> Keyword.put_new(:pool_max_idle_time, @default_pool_max_idle_time)
+      |> Keyword.put_new(:finch, pool_max_idle_time: @default_pool_max_idle_time)
       |> Keyword.merge(
         method: :get,
         url: pinned_url,

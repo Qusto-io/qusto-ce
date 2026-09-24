@@ -24,15 +24,12 @@
       {assigns[:title] ||
         "Qusto · Simple, privacy-friendly alternative to Google Analytics"}
     </title>
-<<<<<<< HEAD
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&display=swap"
       rel="stylesheet"
     />
-=======
->>>>>>> 27cbc4419c501aa3e4e41f8ccd267f7dfb263d66
     <link rel="stylesheet" href={~p"/css/app.css"} />
     <PlausibleWeb.Components.Layout.theme_script {Map.take(assigns, [:current_user, :theme])} />
     {render("_tracking.html", assigns)}
@@ -40,11 +37,7 @@
   <body
     class={[
       if(!assigns[:embedded], do: "h-full"),
-<<<<<<< HEAD
       assigns[:bg_class]
-=======
-      assigns[:bg_class] || "bg-gray-50 dark:bg-gray-950"
->>>>>>> 27cbc4419c501aa3e4e41f8ccd267f7dfb263d66
     ]}
     style={
       cond do
@@ -55,15 +48,9 @@
     }
   >
     <%= if Map.get(assigns, :legacy_layout?, true) do %>
-<<<<<<< HEAD
       <PlausibleWeb.Layouts.legacy {assigns}>
         {@inner_content}
       </PlausibleWeb.Layouts.legacy>
-=======
-      <Layouts.legacy {assigns}>
-        {@inner_content}
-      </Layouts.legacy>
->>>>>>> 27cbc4419c501aa3e4e41f8ccd267f7dfb263d66
     <% else %>
       {@inner_content}
     <% end %>

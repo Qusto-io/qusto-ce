@@ -196,6 +196,27 @@ slices: `2026-03-31`, `2026-06-30`, then current.
 Merging to `main` **deploys to production** (ADR-008), so each slice ships on its
 own and must pass the Phase 0 smoke gate.
 
+## Production deploy traceability (AGPL §13)
+
+After a successful push-to-`main` deploy, GitHub Actions tags the deployed commit:
+
+- Tag: `v<run_number>-ce` (matches `CE_VERSION` on beta1, e.g. `v121-ce`)
+- Points at the **`main` commit that triggered the workflow** (same tree the host
+  clones for `docker build`)
+- Created only **after** the pre-swap smoke gate and on-host health check pass
+
+Verify a running beta1 image against source:
+
+```sh
+TAG=v121-ce   # from qusto-ee .env CE_VERSION
+git fetch --tags origin
+git rev-parse "$TAG"
+# Optional on beta1: docker inspect qusto-ce-ee --format '{{.Config.Image}}'
+```
+
+DRIFT-01 P1 (QUSTO-689): do not retag an existing `v*-ce` to a different SHA;
+fix forward with the next deploy.
+
 ## A warning about rerere
 
 rerere replays a *recorded* resolution faithfully — including a wrong one, on

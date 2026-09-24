@@ -25,7 +25,7 @@ set -euo pipefail
 IMAGE="${1:?usage: smoke-ce-image.sh <image-ref>}"
 
 PG_IMAGE="${SMOKE_PG_IMAGE:-postgres:15-alpine}"
-CH_IMAGE="${SMOKE_CH_IMAGE:-clickhouse/clickhouse-server:24.3-alpine}"
+CH_IMAGE="${SMOKE_CH_IMAGE:-clickhouse/clickhouse-server:25.11.5.8-alpine}"
 BOOT_TIMEOUT="${SMOKE_BOOT_TIMEOUT:-120}"
 DB_TIMEOUT="${SMOKE_DB_TIMEOUT:-90}"
 

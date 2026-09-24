@@ -35,7 +35,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
     @enforce_keys [:message, :recommendation]
     defstruct [:message, :recommendation, inline_links: []]
 
-    @required_link_prefix "https://plausible.io/"
+    @allowed_link_prefixes ["https://docs.qusto.io/", "https://plausible.io/"]
 
     def new!(attrs) do
       message = Map.fetch!(attrs, :message)
@@ -57,9 +57,9 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
                 "Recommendation inline_links text #{inspect(text)} must appear exactly once in: #{inspect(recommendation)}"
         end
 
-        if not String.starts_with?(href, @required_link_prefix) do
+        unless Enum.any?(@allowed_link_prefixes, &String.starts_with?(href, &1)) do
           raise ArgumentError,
-                "Recommendation inline_links href must start with '#{@required_link_prefix}': #{inspect(href)}"
+                "Recommendation inline_links href must start with one of #{inspect(@allowed_link_prefixes)}: #{inspect(href)}"
         end
       end
 

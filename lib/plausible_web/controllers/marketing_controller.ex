@@ -160,4 +160,21 @@ defmodule PlausibleWeb.MarketingController do
       layout: {PlausibleWeb.LayoutView, "app.html"}
     )
   end
+
+  @doc """
+  AGPL §13 Corresponding Source offer for network users of Qusto CE.
+  """
+  def source(conn, _params) do
+    build =
+      :plausible
+      |> Application.get_env(:runtime_metadata, [])
+      |> Keyword.take([:version, :commit, :created, :tags])
+      |> Map.new()
+
+    render(conn, "source.html",
+      page_title: "Source Code Offer (AGPL-3.0) - Qusto CE",
+      layout: {PlausibleWeb.LayoutView, "app.html"},
+      build: build
+    )
+  end
 end

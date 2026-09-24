@@ -275,7 +275,7 @@ defmodule PlausibleWeb.Api.Internal.SegmentsControllerTest do
 
       assert json_response(conn, 400) == %{
                "error" =>
-                 "segment_data Invalid filters. The goal `Signup` is not configured for this site. Find out how to configure goals here: https://plausible.io/docs/stats-api#filtering-by-goals"
+                 "segment_data Invalid filters. The goal `Signup` is not configured for this site. Find out how to configure goals here: https://docs.qusto.io/stats-api#filtering-by-goals"
              }
     end
 

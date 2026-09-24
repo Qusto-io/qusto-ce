@@ -13,7 +13,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
 
     @expected_domain "example.com"
     @url_to_verify "https://#{@expected_domain}"
-    @verify_manually_url "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+    @verify_manually_url "https://docs.qusto.io/troubleshoot-integration#how-to-manually-check-your-integration"
     @verify_manually_inline_link %{
       text: "verify your installation manually",
       href: @verify_manually_url
@@ -165,7 +165,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
                              inline_links: [
                                %{
                                  text: "Learn more",
-                                 href: "https://plausible.io/docs/proxy/introduction"
+                                 href: "https://docs.qusto.io/proxy/introduction"
                                }
                              ]
                            }
@@ -254,7 +254,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
                                %{
                                  text: "Learn more",
                                  href:
-                                   "https://plausible.io/docs/troubleshoot-integration#does-your-site-use-a-content-security-policy-csp"
+                                   "https://docs.qusto.io/troubleshoot-integration#does-your-site-use-a-content-security-policy-csp"
                                }
                              ]
                            }
@@ -435,7 +435,7 @@ defmodule Plausible.InstallationSupport.Verification.ChecksTest do
                                %{
                                  text: "Learn more",
                                  href:
-                                   "https://plausible.io/docs/troubleshoot-integration#have-you-cleared-the-cache-of-your-site"
+                                   "https://docs.qusto.io/troubleshoot-integration#have-you-cleared-the-cache-of-your-site"
                                }
                              ]
                            }

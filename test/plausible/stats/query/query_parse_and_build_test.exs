@@ -1105,7 +1105,7 @@ defmodule Plausible.Stats.Query.QueryParseAndBuildTest do
                Query.parse_and_build(site, params, now: @now)
 
       assert error ==
-               "Invalid filters. The goal `Signup` is not configured for this site. Find out how to configure goals here: https://plausible.io/docs/stats-api#filtering-by-goals"
+               "Invalid filters. The goal `Signup` is not configured for this site. Find out how to configure goals here: https://docs.qusto.io/stats-api#filtering-by-goals"
     end
 
     test "invalid page filter", %{site: site} do
@@ -1122,7 +1122,7 @@ defmodule Plausible.Stats.Query.QueryParseAndBuildTest do
                Query.parse_and_build(site, params, now: @now)
 
       assert error ==
-               "Invalid filters. The goal `Visit /thank-you` is not configured for this site. Find out how to configure goals here: https://plausible.io/docs/stats-api#filtering-by-goals"
+               "Invalid filters. The goal `Visit /thank-you` is not configured for this site. Find out how to configure goals here: https://docs.qusto.io/stats-api#filtering-by-goals"
     end
 
     test "unsupported filter", %{site: site} do

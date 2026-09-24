@@ -22,7 +22,7 @@ import {
   isComparisonForbidden,
   isComparisonEnabled
 } from '../../dashboard-time-periods'
-import { useMatch } from 'react-router'
+import { useMatch } from 'react-router-dom'
 import { rootRoute } from '../../router'
 import { Popover, Transition } from '@headlessui/react'
 import { popover, BlurMenuButtonOnEscape } from '../../components/popover'

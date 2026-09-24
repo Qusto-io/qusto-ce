@@ -189,8 +189,15 @@ jobs:
     environment:
       name: production
       url: https://beta1.qusto.io
+    permissions:
+      contents: write
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
       - name: Validate deploy secrets
         run: |
           if [ -z "${{ secrets.DEPLOY_HOST }}" ] && [ -z "${{ secrets.PRODUCTION_DEPLOY_HOST }}" ]; then
@@ -281,6 +288,35 @@ jobs:
             echo "ERROR: health check failed" >&2
             docker compose logs analytics --tail 40
             exit 1
+
+      - name: Tag git release at deployed SHA
+        if: success() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          TAG: v${{ github.run_number }}-ce
+        run: |
+          set -euo pipefail
+          SHA="${{ github.sha }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            EXISTING="$(git rev-parse "$TAG")"
+            if [ "$EXISTING" != "$SHA" ]; then
+              echo "::error::Tag $TAG points to $EXISTING but this deploy SHA is $SHA"
+              exit 1
+            fi
+            echo "Tag $TAG already at $SHA"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Production CE deploy $TAG (AGPL §13 traceability)" "$SHA"
+            git push origin "refs/tags/$TAG"
+            echo "Created and pushed tag $TAG -> $SHA"
+          fi
+          {
+            echo "### CE deploy traceability"
+            echo "- Tag: \`$TAG\`"
+            echo "- Commit: \`$SHA\`"
+            echo "- Image name on beta1: \`ghcr.io/qusto-io/qusto-ce:${TAG}\` (built on host from this commit)"
+            echo "- Verify: \`git fetch --tags && git rev-parse $TAG\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Notify deployment status
         if: always()

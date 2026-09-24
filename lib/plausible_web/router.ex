@@ -600,6 +600,9 @@ defmodule PlausibleWeb.Router do
 
     get "/auth/google/callback", AuthController, :google_auth_callback
 
+    # AGPL §13 Corresponding Source offer (DRIFT-01 P0 / QUSTO-688)
+    get "/source", MarketingController, :source
+
     get "/", PageController, :index
 
     get "/billing/change-plan/preview/:plan_id", BillingController, :change_plan_preview

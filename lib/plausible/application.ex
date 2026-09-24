@@ -4,7 +4,9 @@ defmodule Plausible.Application do
   use Application
   use Plausible
 
-  require Logger
+  on_ee do
+    @start_verification_mock_scenarios? Mix.env() in [:dev, :e2e_test, :test]
+  end
 
   on_ee do
     @start_verification_mock_scenarios? Mix.env() in [:dev, :e2e_test, :test]

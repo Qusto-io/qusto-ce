@@ -5,7 +5,7 @@ defmodule PlausibleWeb.Live.TeamMangementTest do
   import Phoenix.LiveViewTest
 
   def team_general_path(), do: ~p"/settings/team/general"
-  @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
+  @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
 
   describe "/settings/team/general" do
     setup [:create_user, :log_in, :create_team, :setup_team]

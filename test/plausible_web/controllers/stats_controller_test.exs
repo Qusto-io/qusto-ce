@@ -112,9 +112,7 @@ defmodule PlausibleWeb.StatsControllerTest do
       conn = get(conn, conn |> get("/some-other-public-site.io") |> redirected_to())
 
       assert redirected_to(conn) ==
-               Routes.auth_path(conn, :login_form,
-                 return_to: "/some-other-public-site.io/verification"
-               )
+               ~p"/login?#{[return_to: \"/some-other-public-site.io/verification\"]}"
     end
 
     test "public site - no stats with skip_to_dashboard", %{

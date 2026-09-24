@@ -20,8 +20,12 @@ permissions:
 env:
   UPSTREAM_REPO: https://github.com/plausible/analytics.git
   UPSTREAM_REF: master
-  # Drift above this many commits gets an issue raised/refreshed.
-  DRIFT_THRESHOLD: 150
+  # Drift above this many commits gets an issue raised/refreshed. Measured
+  # against integrated_upstream_tip (see Measure step below), not raw git
+  # ancestry - DRIFT-01 slices squash-merge to main, which never moves
+  # git's own merge-base, so a raw-ancestry threshold would misfire forever
+  # regardless of how much remediation actually landed.
+  DRIFT_THRESHOLD: 50
 
 jobs:
   measure-drift:
@@ -45,21 +49,47 @@ jobs:
         run: |
           set -euo pipefail
           base="$(git merge-base HEAD upstream/${UPSTREAM_REF})"
-          behind="$(git rev-list --count HEAD..upstream/${UPSTREAM_REF})"
+          behind_raw="$(git rev-list --count HEAD..upstream/${UPSTREAM_REF})"
           ahead="$(git rev-list --count upstream/${UPSTREAM_REF}..HEAD)"
           base_date="$(git log -1 --format=%cs "${base}")"
 
-          # Upstream commits since the merge base whose subject suggests a
-          # security fix. Acronyms are word-bounded on purpose: an unanchored
-          # RCE matches "sou(rce)s" and buried the real hits in noise.
+          # DRIFT-01 (2026-09) slices squash-merge to main, which never moves
+          # git's own merge-base - behind_raw is permanently pinned at the
+          # original 2026-01-07 fork and only ever grows, independent of how
+          # much upstream work has actually been integrated. The operational
+          # metric is commits after docs/UPSTREAM_INTEGRATION_STATE.md's
+          # integrated_upstream_tip, same source scripts/ops/upstream-merge.sh
+          # status uses. Fall back to behind_raw only if that file or its tip
+          # commit is unreadable, and say so plainly rather than silently
+          # reporting a misleading number.
+          scan_since="${base}"
+          behind="${behind_raw}"
+          metric="raw ancestry (no docs/UPSTREAM_INTEGRATION_STATE.md tip found)"
+          integrated_file="docs/UPSTREAM_INTEGRATION_STATE.md"
+          if [ -f "${integrated_file}" ]; then
+            integrated="$(sed -n 's/^integrated_upstream_tip: //p' "${integrated_file}" | head -1)"
+            if [ -n "${integrated}" ] && git cat-file -e "${integrated}^{commit}" 2>/dev/null; then
+              behind="$(git rev-list --count "${integrated}..upstream/${UPSTREAM_REF}")"
+              scan_since="${integrated}"
+              metric="since integrated tip \`${integrated:0:10}\`"
+            fi
+          fi
+
+          # Upstream commits since scan_since whose subject suggests a security
+          # fix. Scoped to the integrated tip (not the permanent fork point) so
+          # this doesn't re-flag the same already-resolved historical commits
+          # every week forever. Acronyms are word-bounded on purpose: an
+          # unanchored RCE matches "sou(rce)s" and buried the real hits in noise.
           sec_file="$(mktemp)"
-          git log --no-merges --format='%h %s' "${base}..upstream/${UPSTREAM_REF}" \
+          git log --no-merges --format='%h %s' "${scan_since}..upstream/${UPSTREAM_REF}" \
             | grep -iE 'security|CVE-[0-9]|GHSA|vulnerab|sanitiz|\bRCE\b|\bXSS\b|\bSSRF\b|\bCSRF\b|\bIDOR\b|injection|auth(entication)? bypass|privilege escalation' \
             > "${sec_file}" || true
           sec_count="$(wc -l < "${sec_file}" | tr -d '[:space:]')"
 
           {
             echo "behind=${behind}"
+            echo "behind_raw=${behind_raw}"
+            echo "metric=${metric}"
             echo "ahead=${ahead}"
             echo "base=${base}"
             echo "base_date=${base_date}"
@@ -72,10 +102,11 @@ jobs:
             echo ""
             echo "| | |"
             echo "|---|---|"
-            echo "| Commits behind upstream | **${behind}** |"
+            echo "| Commits behind upstream (${metric}) | **${behind}** |"
+            echo "| Commits behind — raw git ancestry (context only, not the gate) | ${behind_raw} |"
             echo "| Commits ahead (Qusto's own) | ${ahead} |"
             echo "| Merge base | \`${base:0:10}\` (${base_date}) |"
-            echo "| Security-looking upstream commits since base | **${sec_count}** |"
+            echo "| Security-looking upstream commits since scan point | **${sec_count}** |"
             echo ""
             if [ "${sec_count}" -gt 0 ]; then
               echo "<details><summary>Security-looking commits</summary>"
@@ -93,6 +124,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           BEHIND: ${{ steps.measure.outputs.behind }}
+          BEHIND_RAW: ${{ steps.measure.outputs.behind_raw }}
+          METRIC: ${{ steps.measure.outputs.metric }}
           AHEAD: ${{ steps.measure.outputs.ahead }}
           BASE: ${{ steps.measure.outputs.base }}
           BASE_DATE: ${{ steps.measure.outputs.base_date }}
@@ -104,7 +137,7 @@ jobs:
           # Only escalate to an issue once drift is material or upstream has
           # shipped something security-shaped. Otherwise the summary is enough.
           if [ "${BEHIND}" -lt "${THRESHOLD}" ] && [ "${SEC_COUNT}" -eq 0 ]; then
-            echo "Drift ${BEHIND} < ${THRESHOLD} and no security-looking commits — summary only."
+            echo "Drift ${BEHIND} (${METRIC}) < ${THRESHOLD} and no security-looking commits — summary only."
             exit 0
           fi
 
@@ -116,10 +149,11 @@ jobs:
           {
             printf 'Automated weekly measurement from `.github/workflows/upstream-drift.yml`.\n\n'
             printf '| | |\n|---|---|\n'
-            printf '| Commits behind upstream | **%s** |\n' "${BEHIND}"
+            printf '| Commits behind upstream (%s) | **%s** |\n' "${METRIC}" "${BEHIND}"
+            printf '| Commits behind — raw git ancestry (context only) | %s |\n' "${BEHIND_RAW}"
             printf '| Commits ahead (Qusto own) | %s |\n' "${AHEAD}"
             printf '| Merge base | `%s` (%s) |\n' "${BASE}" "${BASE_DATE}"
-            printf '| Security-looking upstream commits since base | **%s** |\n\n' "${SEC_COUNT}"
+            printf '| Security-looking upstream commits since scan point | **%s** |\n\n' "${SEC_COUNT}"
             printf 'Why this matters: the cost of absorbing upstream grows with the gap, and it is\n'
             printf 'paid at the worst possible moment - when a CVE lands and the merge is urgent.\n\n'
             printf 'See ADR-008 (build variant / branch model) and the drift remediation plan in\n'
@@ -127,13 +161,28 @@ jobs:
             printf '_This issue is updated in place each week; it is not a new issue per run._\n'
           } > "${body_file}"
 
+          # Label attachment is best-effort and decoupled from issue creation:
+          # a label hiccup (seen 2026-09-24 - `gh issue create --label` failed
+          # with "not found" even immediately after the label was confirmed to
+          # exist in the repo) must never suppress the substantive report.
+          gh label create upstream-drift --description "Fork drift from plausible/analytics" --color ededed 2>/dev/null || true
+
           existing="$(gh issue list --state open --label upstream-drift \
             --json number -q '.[0].number' 2>/dev/null || true)"
+          if [ -z "${existing}" ]; then
+            # Label search can miss a label created moments earlier; fall back
+            # to title matching so this doesn't fork into a duplicate issue.
+            existing="$(gh issue list --state open --search "in:title \"Upstream drift:\"" \
+              --json number -q '.[0].number' 2>/dev/null || true)"
+          fi
 
           if [ -n "${existing}" ]; then
             gh issue edit "${existing}" --title "${title}" --body-file "${body_file}"
             echo "Updated issue #${existing}"
           else
-            gh label create upstream-drift --description "Fork drift from plausible/analytics" --color ededed 2>/dev/null || true
-            gh issue create --title "${title}" --body-file "${body_file}" --label upstream-drift
+            issue_url="$(gh issue create --title "${title}" --body-file "${body_file}")"
+            echo "Created ${issue_url}"
+            issue_number="${issue_url##*/}"
+            gh issue edit "${issue_number}" --add-label upstream-drift \
+              || echo "::warning title=Label attach failed::Issue ${issue_url} created but could not attach 'upstream-drift' label - attach it manually."
           fi

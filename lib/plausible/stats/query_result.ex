@@ -18,7 +18,7 @@ defmodule Plausible.Stats.QueryResult do
   @imports_warnings %{
     unsupported_query:
       "Imported stats are not included in the results because query parameters are not supported. " <>
-        "For more information, see: https://plausible.io/docs/stats-api#filtering-imported-stats",
+        "For more information, see: https://docs.qusto.io/stats-api#filtering-imported-stats",
     unsupported_interval:
       "Imported stats are not included because the time dimension (i.e. the interval) is too short."
   }

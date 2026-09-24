@@ -352,7 +352,7 @@ defmodule PlausibleWeb.Live.Sites do
           </.button_link>
           <.button_link
             theme="secondary"
-            href="https://plausible.io/docs/consolidated-views"
+            href="https://docs.qusto.io/consolidated-views"
             mt?={false}
           >
             Learn more
@@ -389,7 +389,7 @@ defmodule PlausibleWeb.Live.Sites do
 
           <.button_link
             theme="secondary"
-            href="https://plausible.io/docs/consolidated-views"
+            href="https://docs.qusto.io/consolidated-views"
             mt?={false}
           >
             Learn more
@@ -415,7 +415,7 @@ defmodule PlausibleWeb.Live.Sites do
 
           <.button_link
             theme="secondary"
-            href="https://plausible.io/docs/consolidated-views"
+            href="https://docs.qusto.io/consolidated-views"
             mt?={false}
           >
             Learn more

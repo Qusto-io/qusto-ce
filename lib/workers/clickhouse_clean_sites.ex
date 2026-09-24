@@ -32,14 +32,25 @@ defmodule Plausible.Workers.ClickhouseCleanSites do
     "imported_visitors"
   ]
 
-  # ingest_counters has a projection (`ingest_counters_site_traffic_projection`), 
-  # and ClickHouse refuses lightweight deletes against tables with projections 
+  # ingest_counters has a projection (`ingest_counters_site_traffic_projection`),
+  # and ClickHouse refuses lightweight deletes against tables with projections
   # - fall back to a mutation which rebuilds the projection.
   @mutation_only_tables ["ingest_counters"]
 
+  # events_v2 also has Qusto projections (qusto_ai_search_proj / qusto_ecommerce_proj).
+  # ClickHouse 24.7+ defaults lightweight_mutation_projection_mode to throw;
+  # rebuild keeps projection parts consistent for remaining sites in the partition.
   @settings if Mix.env() in [:test, :ce_test, :e2e_test],
-              do: [mutations_sync: 2, lightweight_deletes_sync: 2],
-              else: [mutations_sync: 0, lightweight_deletes_sync: 0]
+              do: [
+                mutations_sync: 2,
+                lightweight_deletes_sync: 2,
+                lightweight_mutation_projection_mode: "rebuild"
+              ],
+              else: [
+                mutations_sync: 0,
+                lightweight_deletes_sync: 0,
+                lightweight_mutation_projection_mode: "rebuild"
+              ]
 
   @spec telemetry_run_event() :: [atom()]
   def telemetry_run_event(), do: [:plausible, :clickhouse_clean_sites, :run]
@@ -83,11 +94,9 @@ defmodule Plausible.Workers.ClickhouseCleanSites do
         )
 
         measure_stage("events_deletion", fn ->
-          # Qusto adds projections to events_v2 (qusto_ai_search_proj,
-          # qusto_ecommerce_proj), and ClickHouse refuses lightweight deletes
-          # against tables with projections. Fall back to a mutation, which
-          # rebuilds the projections.
-          clear_table_via_mutation!("events_v2", site_ids)
+          for partition_id <- partition_ids_events do
+            clear_partitioned_table!("events_v2", partition_id, site_ids)
+          end
         end)
 
         measure_stage("sessions_deletion", fn ->
@@ -131,7 +140,11 @@ defmodule Plausible.Workers.ClickhouseCleanSites do
 
   defp clear_partitioned_table!(table, partition_id, site_ids) do
     DeletionRepo.query!(
-      "DELETE FROM {$0:Identifier} IN PARTITION ID {$1:String} WHERE site_id IN {$2:Array(UInt64)}",
+      """
+      DELETE FROM {$0:Identifier} IN PARTITION ID {$1:String}
+      WHERE site_id IN {$2:Array(UInt64)}
+      SETTINGS lightweight_mutation_projection_mode = 'rebuild'
+      """,
       [table, partition_id, site_ids],
       settings: @settings
     )
@@ -139,7 +152,11 @@ defmodule Plausible.Workers.ClickhouseCleanSites do
 
   defp clear_unpartitioned_table!(table, site_ids) do
     DeletionRepo.query!(
-      "DELETE FROM {$0:Identifier} WHERE site_id IN {$1:Array(UInt64)}",
+      """
+      DELETE FROM {$0:Identifier}
+      WHERE site_id IN {$1:Array(UInt64)}
+      SETTINGS lightweight_mutation_projection_mode = 'rebuild'
+      """,
       [table, site_ids],
       settings: @settings
     )

@@ -554,7 +554,7 @@ defmodule PlausibleWeb.EmailTest do
     test "site setup success email", %{user: user, site: site} do
       email = PlausibleWeb.Email.site_setup_success(user, site)
 
-      assert email.html_body =~ "Your first visitor is now visible in Plausible."
+      assert email.html_body =~ "We've recorded the first visitor on"
     end
   end
 
@@ -602,7 +602,7 @@ defmodule PlausibleWeb.EmailTest do
           code: "123"
         })
 
-      assert email.text_body =~ "Welcome to Plausible."
+      assert email.text_body =~ "We are building Qusto"
     end
   end
 

@@ -17,7 +17,7 @@ defmodule PlausibleWeb.AdminAuthControllerTest do
 
       # "first launch" takes precedence
       conn = get(conn, "/register")
-      assert html_response(conn, 200) =~ "Create your Plausible CE account"
+      assert html_response(conn, 200) =~ "Create your Qusto CE account"
     end
   end
 

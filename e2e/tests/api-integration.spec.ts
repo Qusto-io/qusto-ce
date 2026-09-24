@@ -22,7 +22,7 @@ test.describe('API Integration Tests', () => {
     const response = await request.get(`${API_BASE_URL}/api/stats/revenue`, {
       params: {
         period: '30d',
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().slice(0, 10)
       }
     })
 
@@ -54,7 +54,9 @@ test.describe('API Integration Tests', () => {
   })
 
   test('API returns proper CORS headers', async ({ request }) => {
-    const response = await request.options(`${API_BASE_URL}/api/health`)
+    const response = await request.fetch(`${API_BASE_URL}/api/health`, {
+      method: 'OPTIONS'
+    })
     const headers = response.headers()
 
     // Check for CORS headers

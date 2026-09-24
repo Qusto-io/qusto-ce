@@ -111,3 +111,28 @@ export const filterOperatorOption = (scoped: Locator, option: HasTextArg) =>
 
 type HaveTextArg = string | RegExp | ReadonlyArray<string | RegExp>
 type HasTextArg = string | RegExp
+
+const dashboardTimeout = process.env.CI ? 30_000 : 10_000
+
+export async function expectDashboardTopStat(
+  page: Page,
+  selector: string,
+  text: string
+) {
+  const metric = page.locator(selector)
+  await expect(metric).toBeVisible({ timeout: dashboardTimeout })
+  await expect(metric).toHaveText(text, { timeout: dashboardTimeout })
+}
+
+export async function expectSiteDomainSwitcher(page: Page, domain: string) {
+  await expect(page.getByRole('button', { name: domain })).toBeVisible({
+    timeout: dashboardTimeout
+  })
+}
+
+export async function gotoSiteDashboard(page: Page, domain: string) {
+  await page.goto('/' + domain, { waitUntil: 'commit' })
+  await expect(page.locator('#visitors')).toBeVisible({
+    timeout: dashboardTimeout
+  })
+}

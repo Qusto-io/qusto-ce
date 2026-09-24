@@ -1,0 +1,365 @@
+name: Elixir CI
+
+on:
+  pull_request:
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The `refs/heads/main-` fallback caches are saved by elixir-cache-warm.yml; keep
+  # CACHE_VERSION and each job's cache `path` list in sync with it.
+  CACHE_VERSION: v17
+  PERSISTENT_CACHE_DIR: cached
+
+jobs:
+  build:
+    name: "Build and test (${{ matrix.mix_env }}, ${{ matrix.postgres_image }})"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mix_env: ["test", "ce_test"]
+        postgres_image: ["postgres:18"]
+        mix_test_partition: [1, 2, 3, 4, 5, 6]
+
+    env:
+      MIX_ENV: ${{ matrix.mix_env }}
+    services:
+      postgres:
+        image: ${{ matrix.postgres_image }}
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: postgres
+          options: >-
+            --health-cmd pg_isready
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+      clickhouse:
+        image: clickhouse/clickhouse-server:25.11.5.8-alpine
+        ports:
+          - 8123:8123
+        env:
+          CLICKHOUSE_SKIP_USER_SETUP: 1
+          options: >-
+            --health-cmd nc -zw3 localhost 8124
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: marocchino/tool-versions-action@v2.0.0
+        id: versions
+      - uses: erlef/setup-beam@ee09b1e59bb240681c382eb1f0abc6a04af72764 # v1.23.0
+        with:
+          elixir-version: ${{ steps.versions.outputs.elixir }}
+          otp-version: ${{ steps.versions.outputs.erlang }}
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            deps
+            _build
+            tracker/node_modules
+            priv/tracker/js
+            priv/tracker/installation_support
+            ${{ env.PERSISTENT_CACHE_DIR }}
+          key: ${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-
+            ${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-refs/heads/main-
+
+      - name: Check for changes in tracker/**
+        uses: dorny/paths-filter@v4.0.3
+        id: changes
+        with:
+          filters: |
+            tracker:
+              - 'tracker/**'
+      - name: Check if tracker and verifier are built already
+        run: |
+          if [ -f priv/tracker/js/plausible-web.js ] && [ -f priv/tracker/installation_support/verifier.js ]; then
+            echo "HAS_BUILT_TRACKER=true" >> $GITHUB_ENV
+          else
+            echo "HAS_BUILT_TRACKER=false" >> $GITHUB_ENV
+          fi
+      - run: npm install --prefix ./tracker
+        if: steps.changes.outputs.tracker == 'true' || env.HAS_BUILT_TRACKER == 'false'
+      - run: npm run deploy --prefix ./tracker
+        if: steps.changes.outputs.tracker == 'true' || env.HAS_BUILT_TRACKER == 'false'
+
+      - name: mix deps.get (with retry)
+        run: |
+          for i in 1 2 3; do
+            mix deps.get --only $MIX_ENV && exit 0
+            echo "::warning::mix deps.get attempt ${i}/3 failed"
+            [ "${i}" -lt 3 ] && sleep $((i * 15))
+          done
+          exit 1
+      - run: mix compile --warnings-as-errors --all-warnings
+      - run: mix do ecto.create, ecto.migrate
+      - run: mix run -e "Tzdata.ReleaseUpdater.poll_for_update"
+
+      - run: make minio
+        if: env.MIX_ENV == 'test'
+      - run: mix test --include slow --include minio --include migrations --max-failures 1 --warnings-as-errors --partitions 6
+        if: env.MIX_ENV == 'test'
+        env:
+          MINIO_HOST_FOR_CLICKHOUSE: "172.17.0.1"
+          MIX_TEST_PARTITION: ${{ matrix.mix_test_partition }}
+
+
+      - run: mix test --include slow --include migrations --max-failures 1 --warnings-as-errors --partitions 6
+        if: env.MIX_ENV == 'ce_test'
+        env:
+          MIX_TEST_PARTITION: ${{ matrix.mix_test_partition }}
+
+  e2e:
+    name: End-to-end tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MIX_ENV: e2e_test
+      BASE_URL: "http://localhost:8111"
+    services:
+      postgres:
+        image: "postgres:18"
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: postgres
+          options: >-
+            --health-cmd pg_isready
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+      clickhouse:
+        image: clickhouse/clickhouse-server:25.11.5.8-alpine
+        ports:
+          - 8123:8123
+        env:
+          CLICKHOUSE_SKIP_USER_SETUP: 1
+          options: >-
+            --health-cmd nc -zw3 localhost 8124
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: marocchino/tool-versions-action@4219f2e6bfdb4cce482b78f71ad9663e64f4d247 # v2.0.0
+        id: versions
+
+      - uses: erlef/setup-beam@ee09b1e59bb240681c382eb1f0abc6a04af72764 # v1.23.0
+        with:
+          elixir-version: ${{ steps.versions.outputs.elixir }}
+          otp-version: ${{ steps.versions.outputs.erlang }}
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            deps
+            _build
+            assets/node_modules
+            tracker/node_modules
+            priv/tracker/js
+            priv/tracker/installation_support
+            priv/geodb/dbip-country.mmdb.gz
+            ${{ env.PERSISTENT_CACHE_DIR }}
+          key: e2e-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            e2e-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-
+            e2e-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-refs/heads/main-
+
+      - name: Cache E2E dependencies and Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: playwright-cache
+        with:
+          path: |
+            e2e/node_modules
+            ~/.cache/ms-playwright
+            ~/.cache/ms-playwright-github
+          key: playwright-${{ runner.os }}-${{ hashFiles('e2e/package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Check for changes in tracker/**
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: changes
+        with:
+          filters: |
+            tracker:
+              - 'tracker/**'
+
+      - run: npm install --prefix ./tracker
+      - run: npm run deploy --prefix ./tracker
+      - name: mix deps.get (with retry)
+        run: |
+          for i in 1 2 3; do
+            mix deps.get --only $MIX_ENV && exit 0
+            echo "::warning::mix deps.get attempt ${i}/3 failed"
+            [ "${i}" -lt 3 ] && sleep $((i * 15))
+          done
+          exit 1
+      - run: mix compile --warnings-as-errors --all-warnings
+      - run: npm install --prefix ./assets
+      - run: mix assets.deploy
+      - run: mix do ecto.create, ecto.migrate
+      - run: mix download_country_database
+      - run: mix run -e "Tzdata.ReleaseUpdater.poll_for_update"
+
+      - name: Install E2E dependencies
+        run: npm --prefix ./e2e ci
+
+      - name: Check format
+        run: npm --prefix ./e2e run check-format
+
+      - name: Check types
+        run: npm --prefix ./e2e run typecheck
+
+      - name: Install E2E Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        working-directory: ./e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E Playwright tests
+        run: npm --prefix ./e2e test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --reporter=blob
+
+      - name: Upload E2E blob report to GitHub Actions Artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-blob-report-${{ matrix.shardIndex }}
+          path: e2e/blob-report
+          retention-days: 1
+
+  merge-sharded-e2e-test-report:
+    if: ${{ !cancelled() }}
+    needs: [e2e]
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 23.2.0
+          cache: 'npm'
+          cache-dependency-path: e2e/package-lock.json
+      - name: Install dependencies
+        run: npm --prefix ./e2e ci
+
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: all-e2e-blob-reports
+          pattern: e2e-blob-report-*
+          merge-multiple: true
+
+      - name: Merge into list report
+        working-directory: ./e2e
+        run: npx playwright merge-reports --reporter list ../all-e2e-blob-reports
+
+  static:
+    name: static
+    env:
+      MIX_ENV: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: marocchino/tool-versions-action@v2.0.0
+        id: versions
+
+      - uses: erlef/setup-beam@ee09b1e59bb240681c382eb1f0abc6a04af72764 # v1.23.0
+        with:
+          elixir-version: ${{ steps.versions.outputs.elixir }}
+          otp-version: ${{ steps.versions.outputs.erlang }}
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            deps
+            _build
+            priv/plts
+          key: static-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            static-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-
+            static-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-refs/heads/main-
+
+      - name: mix deps.get (with retry)
+        run: |
+          for i in 1 2 3; do
+            mix deps.get && exit 0
+            echo "::warning::mix deps.get attempt ${i}/3 failed"
+            [ "${i}" -lt 3 ] && sleep $((i * 15))
+          done
+          exit 1
+      - run: mix compile --warnings-as-errors --all-warnings
+      - run: mix format --check-formatted
+      - run: mix deps.unlock --check-unused
+      - run: mix credo diff --from-git-merge-base origin/main
+      - run: mix dialyzer
+
+  security:
+    name: security
+    env:
+      MIX_ENV: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: marocchino/tool-versions-action@v2.0.0
+        id: versions
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ steps.versions.outputs.elixir }}
+          otp-version: ${{ steps.versions.outputs.erlang }}
+
+      - uses: actions/cache@v6
+        with:
+          path: |
+            deps
+            _build
+          key: security-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            security-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-${{ github.head_ref || github.ref }}-
+            security-${{ env.MIX_ENV }}-${{ env.CACHE_VERSION }}-refs/heads/main-
+
+      - name: mix deps.get (with retry)
+        run: |
+          for i in 1 2 3; do
+            mix deps.get && exit 0
+            echo "::warning::mix deps.get attempt ${i}/3 failed"
+            [ "${i}" -lt 3 ] && sleep $((i * 15))
+          done
+          exit 1
+      - run: mix compile --warnings-as-errors --all-warnings
+      - name: Check for dependency vulnerabilities
+        run: |
+          # mint (GHSA-2pg6/g586/mjqx): resolved by mint 1.10.0 in mix.lock.
+          # phoenix_storybook advisories (GHSA-55hg/833p/mrhx) are no longer
+          # ignored: #106 removed the dependency, so they are resolved.
+          # GHSA-rhv4: decimal DoS (fix requires decimal 3.0.0 major — deferred)
+          # GHSA-g2wm: cowlib cookie injection (no upstream patch exists)
+          # GHSA-52mm: earmark XSS — transitive via nimble_publisher; 1.4.49 retired on hex
+          # GHSA-gp9c/j9wq/mp55/pj7v: hackney 4.x fixes require major bump (~> 1.8 pinned)
+          mix deps.audit --ignore-advisory-ids GHSA-rhv4-8758-jx7v,GHSA-g2wm-735q-3f56,GHSA-52mm-h59v-f3c7,GHSA-gp9c-pm5m-5cxr,GHSA-j9wq-vxxc-94wf,GHSA-mp55-p8c9-rfw2,GHSA-pj7v-xfvx-wmjq
+      - name: Run Sobelow security scan
+        run: mix sobelow --config

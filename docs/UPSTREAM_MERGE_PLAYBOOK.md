@@ -99,9 +99,10 @@ A change can pass one and fail the other; that has happened more than once. If
 
   If a downgrade is genuinely intended, add the **`allow-dep-downgrade`** label
   and write the reason in the PR description; the check then passes with a
-  warning. Add a package to `SECURITY_PINS` in the script whenever we bump it
-  ahead of upstream for a security reason. npm lockfiles are not covered — diff
-  them by hand as above.
+  warning.   Add a hex package to `SECURITY_PINS` in the script whenever we bump it
+  ahead of upstream for a security reason. npm packages (`assets/` and
+  `tracker/`) are guarded via `NPM_SECURITY_PINS` in the same script; add a
+  package there when we apply a security-motivated npm bump ahead of a slice.
 
 ## Workflows: runner labels and triggers
 

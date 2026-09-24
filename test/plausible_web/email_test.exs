@@ -547,8 +547,8 @@ defmodule PlausibleWeb.EmailTest do
     test "site setup help email", %{user: user, site: site} do
       email = PlausibleWeb.Email.site_setup_help(user, site.team, site)
 
-      assert email.html_body =~
-               "We haven't recorded any traffic for #{site.domain} yet."
+      assert email.html_body =~ "To finish your setup for #{site.domain}, review"
+      assert email.html_body =~ "your installation"
     end
 
     test "site setup success email", %{user: user, site: site} do

@@ -157,7 +157,7 @@ defmodule PlausibleWeb.EmailTest do
       %{html_body: html_body, subject: subject} =
         PlausibleWeb.Email.over_limit_email(user, team, usage, "100k")
 
-      assert subject == "[Action required] You have outgrown your Plausible subscription tier"
+      assert subject == "[Action required] You have outgrown your Qusto subscription tier"
 
       assert html_body =~ PlausibleWeb.TextHelpers.format_date_range(last_cycle)
       assert html_body =~ "We recommend you upgrade to the 100k pageviews/month plan"
@@ -216,7 +216,7 @@ defmodule PlausibleWeb.EmailTest do
       %{html_body: html_body, subject: subject} =
         PlausibleWeb.Email.dashboard_locked(user, team, usage, "100k")
 
-      assert subject == "[Action required] Your Plausible dashboard is now locked"
+      assert subject == "[Action required] Your Qusto dashboard is now locked"
 
       assert html_body =~ PlausibleWeb.TextHelpers.format_date_range(last_cycle)
       assert html_body =~ "We recommend you upgrade to the 100k pageviews/month plan"

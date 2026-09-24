@@ -94,7 +94,7 @@ services:
 
   # ClickHouse Analytics Database
   clickhouse:
-    image: clickhouse/clickhouse-server:24.3-alpine
+    image: clickhouse/clickhouse-server:25.11.5.8-alpine
     environment:
       - CLICKHOUSE_DB=plausible
       - CLICKHOUSE_USER=default

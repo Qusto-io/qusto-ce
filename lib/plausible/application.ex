@@ -371,7 +371,7 @@ defmodule Plausible.Application do
   end
 
   def setup_sentry() do
-    LoggerBackends.add(Sentry.LoggerBackend)
+    Logger.add_backend(Sentry.LoggerBackend)
 
     :telemetry.attach_many(
       "oban-errors",

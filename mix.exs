@@ -124,6 +124,7 @@ defmodule Plausible.MixProject do
       {:mox, "~> 1.0", only: [:test, :ce_test, :e2e_test]},
       {:nanoid, "~> 2.1.0"},
       {:nimble_publisher, "~> 1.1"},
+      {:nimble_csv, "~> 1.3"},
       {:nimble_totp, "~> 1.0"},
       {:oban, "~> 2.24.1"},
       {:observer_cli, "~> 1.7"},

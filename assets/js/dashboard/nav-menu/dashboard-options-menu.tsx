@@ -12,7 +12,7 @@ import { IntervalPicker } from '../stats/graph/interval-picker'
 import { AppNavigationLink } from '../navigation/use-app-navigate'
 import { Notice } from '../components/notice'
 import { isModifierPressed, isTyping, Keybind } from '../keybinding'
-import { useMatch } from 'react-router'
+import { useMatch } from 'react-router-dom'
 import { rootRoute } from '../router'
 import { CsvExport, ExportStatus } from '../stats/csv-export/csv-export'
 

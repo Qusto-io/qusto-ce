@@ -104,7 +104,7 @@ export async function register({
   const emails = emailData.filter(
     (e) =>
       e.to![0]![0] === user.name &&
-      e.subject.indexOf('is your Qusto email verification code') > -1
+      e.subject.indexOf('is your Plausible email verification code') > -1
   )
 
   expect(emails.length).toEqual(1)
@@ -131,9 +131,11 @@ export async function login({ page, user }: { page: Page; user: User }) {
 }
 
 export async function logout(page: Page) {
-  await page.goto('/logout?redirect=/login', { waitUntil: 'commit' })
+  await page.goto('/logout', { waitUntil: 'commit' })
 
-  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'Welcome to Plausible!' })
+  ).toBeVisible()
 }
 
 export async function addSite({

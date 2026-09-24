@@ -5,7 +5,7 @@ defmodule PlausibleWeb.Live.SiteTransferSettingsTest do
 
   import Phoenix.LiveViewTest
 
-  @subject_prefix if ee?(), do: "[Qusto Analytics] ", else: "[Qusto CE] "
+  @subject_prefix if ee?(), do: "[Plausible Analytics] ", else: "[Plausible CE] "
 
   setup [:create_user, :log_in, :create_site]
 

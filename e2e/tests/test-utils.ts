@@ -15,38 +15,10 @@ export function timeToISO(ts: ZonedDateTime): string {
   return ts.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 }
 
-const dashboardTimeout = process.env.CI ? 30_000 : 10_000
-
 export async function expectLiveViewConnected(page: Page) {
   await expect
-    .poll(() => page.locator('.phx-connected').count(), {
-      timeout: dashboardTimeout
-    })
+    .poll(() => page.locator('.phx-connected').count())
     .toBeGreaterThan(0)
-}
-
-/** Top stats (#visitors etc.) load asynchronously after the LiveView shell mounts. */
-export async function expectDashboardTopStat(
-  page: Page,
-  selector: string,
-  text: string
-) {
-  const metric = page.locator(selector)
-  await expect(metric).toBeVisible({ timeout: dashboardTimeout })
-  await expect(metric).toHaveText(text, { timeout: dashboardTimeout })
-}
-
-export async function expectSiteDomainSwitcher(page: Page, domain: string) {
-  await expect(page.getByRole('button', { name: domain })).toBeVisible({
-    timeout: dashboardTimeout
-  })
-}
-
-export async function gotoSiteDashboard(page: Page, domain: string) {
-  await page.goto('/' + domain, { waitUntil: 'commit' })
-  await expect(page.locator('#visitors')).toBeVisible({
-    timeout: dashboardTimeout
-  })
 }
 
 export function randomID() {

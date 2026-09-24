@@ -11,7 +11,7 @@ defmodule Plausible.InstallationSupport.Verification.DiagnosticsTest do
                  Error.new!(%{
                    message: "Something went wrong",
                    recommendation: "Check the docs for more info",
-                   inline_links: [%{text: "docs", href: "https://plausible.io/docs"}]
+                   inline_links: [%{text: "docs", href: "https://docs.qusto.io"}]
                  })
       end
 
@@ -20,7 +20,7 @@ defmodule Plausible.InstallationSupport.Verification.DiagnosticsTest do
           Error.new!(%{
             message: "Something went wrong",
             recommendation: "Check the manual for more info",
-            inline_links: [%{text: "docs", href: "https://plausible.io/docs"}]
+            inline_links: [%{text: "docs", href: "https://docs.qusto.io"}]
           })
         end
       end
@@ -30,7 +30,7 @@ defmodule Plausible.InstallationSupport.Verification.DiagnosticsTest do
           Error.new!(%{
             message: "Something went wrong",
             recommendation: "Check the docs, or check the docs again",
-            inline_links: [%{text: "the docs", href: "https://plausible.io/docs"}]
+            inline_links: [%{text: "the docs", href: "https://docs.qusto.io"}]
           })
         end
       end

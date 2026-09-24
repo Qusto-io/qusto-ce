@@ -23,7 +23,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
 
   @type t :: %__MODULE__{}
 
-  @verify_manually_url "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
+  @verify_manually_url "https://docs.qusto.io/troubleshoot-integration#how-to-manually-check-your-integration"
 
   alias Plausible.InstallationSupport.Result
 
@@ -80,7 +80,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
                                             %{
                                               text: "Learn more",
                                               href:
-                                                "https://plausible.io/docs/troubleshoot-integration#have-you-cleared-the-cache-of-your-site"
+                                                "https://docs.qusto.io/troubleshoot-integration#have-you-cleared-the-cache-of-your-site"
                                             }
                                           ]
                                         })
@@ -147,7 +147,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
                                inline_links: [
                                  %{
                                    text: "Learn more",
-                                   href: "https://plausible.io/docs/proxy/introduction"
+                                   href: "https://docs.qusto.io/proxy/introduction"
                                  }
                                ]
                              })
@@ -204,7 +204,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
                             %{
                               text: "Learn more",
                               href:
-                                "https://plausible.io/docs/troubleshoot-integration#does-your-site-use-a-content-security-policy-csp"
+                                "https://docs.qusto.io/troubleshoot-integration#does-your-site-use-a-content-security-policy-csp"
                             }
                           ]
                         })

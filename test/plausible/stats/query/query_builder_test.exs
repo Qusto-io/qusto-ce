@@ -126,7 +126,7 @@ defmodule Plausible.Stats.QueryBuilderTest do
       assert {:error, %QueryError{message: error}} = QueryBuilder.build(site, params)
 
       assert error ==
-               "Invalid filters. The goal `Unknown` is not configured for this site. Find out how to configure goals here: https://plausible.io/docs/stats-api#filtering-by-goals"
+               "Invalid filters. The goal `Unknown` is not configured for this site. Find out how to configure goals here: https://docs.qusto.io/stats-api#filtering-by-goals"
     end
 
     for operation <- [:matches, :matches_not, :matches_wildcard, :matches_wildcard_not] do

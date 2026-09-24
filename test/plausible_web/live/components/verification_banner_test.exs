@@ -62,7 +62,7 @@ defmodule PlausibleWeb.Live.Components.VerificationBannerTest do
 
       assert element_exists?(
                html,
-               ~s|#recommendation a[href="https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"]|
+               ~s|#recommendation a[href="https://docs.qusto.io/troubleshoot-integration#how-to-manually-check-your-integration"]|
              )
 
       assert element_exists?(
@@ -106,7 +106,7 @@ defmodule PlausibleWeb.Live.Components.VerificationBannerTest do
 
       assert element_exists?(
                html,
-               ~s|#recommendation a[href="https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"]|
+               ~s|#recommendation a[href="https://docs.qusto.io/troubleshoot-integration#how-to-manually-check-your-integration"]|
              )
 
       refute element_exists?(html, ~s|#recommendation a[href^="/example.com/installation"]|)

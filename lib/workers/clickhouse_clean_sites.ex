@@ -32,14 +32,25 @@ defmodule Plausible.Workers.ClickhouseCleanSites do
     "imported_visitors"
   ]
 
-  # ingest_counters has a projection (`ingest_counters_site_traffic_projection`), 
-  # and ClickHouse refuses lightweight deletes against tables with projections 
+  # ingest_counters has a projection (`ingest_counters_site_traffic_projection`),
+  # and ClickHouse refuses lightweight deletes against tables with projections
   # - fall back to a mutation which rebuilds the projection.
   @mutation_only_tables ["ingest_counters"]
 
+  # events_v2 also has Qusto projections (qusto_ai_search_proj / qusto_ecommerce_proj).
+  # ClickHouse 24.7+ defaults lightweight_mutation_projection_mode to throw;
+  # rebuild keeps projection parts consistent for remaining sites in the partition.
   @settings if Mix.env() in [:test, :ce_test, :e2e_test],
-              do: [mutations_sync: 2, lightweight_deletes_sync: 2],
-              else: [mutations_sync: 0, lightweight_deletes_sync: 0]
+              do: [
+                mutations_sync: 2,
+                lightweight_deletes_sync: 2,
+                lightweight_mutation_projection_mode: "rebuild"
+              ],
+              else: [
+                mutations_sync: 0,
+                lightweight_deletes_sync: 0,
+                lightweight_mutation_projection_mode: "rebuild"
+              ]
 
   @spec telemetry_run_event() :: [atom()]
   def telemetry_run_event(), do: [:plausible, :clickhouse_clean_sites, :run]

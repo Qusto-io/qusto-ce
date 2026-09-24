@@ -3,6 +3,7 @@ defmodule PlausibleWeb.StatsControllerTest do
   use Plausible.Repo
 
   @react_container "div#stats-react-container"
+  @verification_banner "#verification-ui"
 
   describe "GET /:domain - anonymous user" do
     test "public site - shows site stats", %{conn: conn} do
@@ -104,26 +105,42 @@ defmodule PlausibleWeb.StatsControllerTest do
       assert resp =~ "User Guide"
     end
 
-    test "public site - redirect to /login when no stats because verification requires it", %{
-      conn: conn
-    } do
+    test "public site - shows an empty dashboard without stats (no verification banner)",
+         %{
+           conn: conn
+         } do
       new_site(domain: "some-other-public-site.io", public: true)
 
-      conn = get(conn, conn |> get("/some-other-public-site.io") |> redirected_to())
+      resp = get(conn, "/some-other-public-site.io") |> html_response(200)
 
-      assert redirected_to(conn) ==
-               ~p"/login?#{[return_to: "/some-other-public-site.io/verification"]}"
+      refute element_exists?(resp, @verification_banner)
     end
 
-    test "public site - no stats with skip_to_dashboard", %{
-      conn: conn
-    } do
+    test "public site - anonymous visitors never see the verification banner, even with the param",
+         %{
+           conn: conn
+         } do
       new_site(domain: "some-other-public-site.io", public: true)
 
-      conn = get(conn, "/some-other-public-site.io?skip_to_dashboard=true")
-      resp = html_response(conn, 200)
+      resp =
+        get(conn, "/some-other-public-site.io?verify_installation=true") |> html_response(200)
 
       assert text_of_attr(resp, @react_container, "data-logged-in") == "false"
+      refute element_exists?(resp, @verification_banner)
+    end
+
+    test "public site - anonymous visitors never see the email reports CTA", %{conn: conn} do
+      public_site =
+        new_site(
+          domain: "some-other-public-site.io",
+          public: true,
+          onboarding_status: :first_pageview
+        )
+
+      resp = get(conn, "/#{public_site.domain}") |> html_response(200)
+
+      assert text_of_attr(resp, @react_container, "data-logged-in") == "false"
+      assert text_of_attr(resp, @react_container, "data-show-email-reports-cta") == "false"
     end
 
     test "can not view stats of a private website", %{conn: conn} do

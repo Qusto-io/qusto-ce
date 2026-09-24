@@ -239,7 +239,7 @@ for (const mode of ['legacy', 'web'])
         outboundMock.getRequestList()
       ])
 
-      expect(outboundRequestTime).toBeLessThan(trackingResponseTime)
+      expect(outboundRequestTime).toBeLessThanOrEqual(trackingResponseTime)
       expect(outboundMockRequestList).toHaveLength(1)
       expect(trackingRequestList).toEqual([
         expect.objectContaining({

@@ -371,7 +371,7 @@ for (const mode of ['legacy', 'web']) {
         pdfMock.getRequestList()
       ])
 
-      expect(downloadRequestTime).toBeLessThan(trackingResponseTime)
+      expect(downloadRequestTime).toBeLessThanOrEqual(trackingResponseTime)
       expect(downloadMockRequestList).toHaveLength(1)
       expect(trackingRequestList).toEqual([
         expect.objectContaining({

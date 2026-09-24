@@ -61,18 +61,13 @@ defmodule Plausible.Ingestion.Event do
         false
       end
 
-    gate_keeper_opts =
-      context
-      |> Keyword.get(:gate_keeper_opts, [])
-      |> Keyword.put(:skip_rate_limit?, skip_rate_limit?)
-
     processed_events =
       if spam_referrer?(request) do
         for domain <- domains, do: drop(new(domain, request), :spam_referrer)
       else
         Enum.reduce(domains, [], fn domain, acc ->
           # credo:disable-for-next-line Credo.Check.Refactor.Nesting
-          case GateKeeper.check(domain, gate_keeper_opts) do
+          case GateKeeper.check(domain, skip_rate_limit?: skip_rate_limit?) do
             {:allow, site} ->
               processed =
                 domain

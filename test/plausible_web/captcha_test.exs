@@ -7,8 +7,6 @@ defmodule PlausibleWeb.CaptchaTest do
   alias PlausibleWeb.Captcha
 
   describe "mocked payloads" do
-    setup_patch_env(:friendly_captcha, sitekey: "test", api_key: "scottiger")
-
     @failure Jason.decode!(
                ~s/{"success":false,"error":{"error_code":"response_invalid","detail":"the response was invalid"}}/
              )

@@ -56,21 +56,46 @@ postgres-stop: ## Stop and remove the postgres container
 browserless:
 	docker run -e "TOKEN=dummy_token" -p 3000:3000 --network host ghcr.io/browserless/chromium
 
-# Image: quay.io, pinned. Docker Hub's minio/minio now refuses anonymous pulls
-# ("pull access denied for minio/minio"), which broke CI `make minio` (2026-09-20).
-MINIO_IMAGE ?= quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
-minio: ## Start a transient container with minio (S3) for tests
-	docker run -d --rm -p 10000:10000 -p 10001:10001 \
-		--name plausible-minio \
-		-e MINIO_ROOT_USER=minioadmin \
-		-e MINIO_ROOT_PASSWORD=minioadmin \
-		$(MINIO_IMAGE) server /data --address ":10000" --console-address ":10001"
-	while ! docker exec plausible-minio mc alias set local http://localhost:10000 minioadmin minioadmin; do sleep 1; done
-	docker exec plausible-minio mc mb --ignore-existing local/test-exports
-	docker exec plausible-minio mc mb --ignore-existing local/test-imports
+# MinIO via GitHub release binaries (not Docker).
+# Docker Hub and quay.io both reject anonymous pulls of minio/minio as of 2026-09,
+# which broke CI `make minio`. Legacy community binaries remain on GitHub Releases.
+MINIO_RELEASE ?= RELEASE.2025-09-07T16-13-09Z
+MC_RELEASE ?= RELEASE.2025-08-13T08-35-41Z
+MINIO_BIN_DIR ?= .minio-bin
+MINIO_DATA_DIR ?= .minio-data
 
-minio-stop: ## Stop and remove the minio container
-	docker stop plausible_minio || docker stop plausible-minio || true
+minio: ## Start a local MinIO (S3) for tests via release binaries
+	@set -e; \
+	OS=$$(uname -s | tr '[:upper:]' '[:lower:]'); \
+	ARCH=$$(uname -m); \
+	case "$$ARCH" in x86_64|amd64) ARCH=amd64 ;; aarch64|arm64) ARCH=arm64 ;; *) echo "unsupported arch: $$ARCH"; exit 1 ;; esac; \
+	mkdir -p $(MINIO_BIN_DIR) $(MINIO_DATA_DIR); \
+	MINIO_URL="https://github.com/minio/minio/releases/download/$(MINIO_RELEASE)/minio.$${OS}-$${ARCH}.$(MINIO_RELEASE)"; \
+	MC_URL="https://github.com/minio/mc/releases/download/$(MC_RELEASE)/mc.$${OS}-$${ARCH}.$(MC_RELEASE)"; \
+	if [ ! -x $(MINIO_BIN_DIR)/minio ]; then curl -fsSL "$$MINIO_URL" -o $(MINIO_BIN_DIR)/minio && chmod +x $(MINIO_BIN_DIR)/minio; fi; \
+	if [ ! -x $(MINIO_BIN_DIR)/mc ]; then curl -fsSL "$$MC_URL" -o $(MINIO_BIN_DIR)/mc && chmod +x $(MINIO_BIN_DIR)/mc; fi; \
+	if [ -f $(MINIO_BIN_DIR)/minio.pid ] && kill -0 $$(cat $(MINIO_BIN_DIR)/minio.pid) 2>/dev/null; then \
+		echo "MinIO already running (pid $$(cat $(MINIO_BIN_DIR)/minio.pid))"; \
+	else \
+		MINIO_ROOT_USER=minioadmin MINIO_ROOT_PASSWORD=minioadmin \
+			$(MINIO_BIN_DIR)/minio server $(MINIO_DATA_DIR) --address ":10000" --console-address ":10001" \
+			>$(MINIO_BIN_DIR)/minio.log 2>&1 & echo $$! > $(MINIO_BIN_DIR)/minio.pid; \
+		echo "MinIO started (pid $$(cat $(MINIO_BIN_DIR)/minio.pid))"; \
+	fi; \
+	i=0; \
+	until $(MINIO_BIN_DIR)/mc alias set local http://127.0.0.1:10000 minioadmin minioadmin >/dev/null 2>&1; do \
+		i=$$((i+1)); if [ $$i -gt 30 ]; then echo "MinIO failed to become ready:"; tail -n 50 $(MINIO_BIN_DIR)/minio.log; exit 1; fi; \
+		sleep 1; \
+	done; \
+	$(MINIO_BIN_DIR)/mc mb --ignore-existing local/test-exports; \
+	$(MINIO_BIN_DIR)/mc mb --ignore-existing local/test-imports
+
+minio-stop: ## Stop the local MinIO process started by `make minio`
+	@if [ -f $(MINIO_BIN_DIR)/minio.pid ]; then \
+		kill $$(cat $(MINIO_BIN_DIR)/minio.pid) 2>/dev/null || true; \
+		rm -f $(MINIO_BIN_DIR)/minio.pid; \
+	fi; \
+	docker stop plausible_minio 2>/dev/null || docker stop plausible-minio 2>/dev/null || true
 
 sso:
 	$(call require, integration_id)

@@ -1,9 +1,10 @@
 name: Dep Downgrade Guard
 
-# Fails a PR that lowers the mix.lock version of a security-pinned package
-# (scripts/ci/check-dep-downgrades.sh holds the list). Upstream slice merges that
-# intentionally take an older version need the `allow-dep-downgrade` label.
-# See docs/UPSTREAM_MERGE_PLAYBOOK.md.
+# Fails a PR that lowers the version of a security-pinned package in either
+# mix.lock (Elixir/Hex) or an npm package-lock.json.
+# (scripts/ci/check-dep-downgrades.sh holds the SECURITY_PINS / NPM_SECURITY_PINS lists.)
+# Upstream slice merges that intentionally take an older version need the
+# `allow-dep-downgrade` label. See docs/UPSTREAM_MERGE_PLAYBOOK.md.
 
 on:
   pull_request:

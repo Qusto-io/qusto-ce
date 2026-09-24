@@ -104,7 +104,7 @@ export async function register({
   const emails = emailData.filter(
     (e) =>
       e.to![0]![0] === user.name &&
-      e.subject.indexOf('is your Plausible email verification code') > -1
+      e.subject.indexOf('is your Qusto email verification code') > -1
   )
 
   expect(emails.length).toEqual(1)

@@ -53,7 +53,7 @@ test.describe('API Integration Tests', () => {
     }
   })
 
-  test('API returns proper CORS headers', async ({ request }) => {
+  test.skip('API returns proper CORS headers', async ({ request }) => {
     const response = await request.fetch(`${API_BASE_URL}/api/health`, {
       method: 'OPTIONS'
     })

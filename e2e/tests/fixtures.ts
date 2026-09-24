@@ -131,11 +131,9 @@ export async function login({ page, user }: { page: Page; user: User }) {
 }
 
 export async function logout(page: Page) {
-  await page.goto('/logout', { waitUntil: 'commit' })
+  await page.goto('/logout?redirect=/login', { waitUntil: 'commit' })
 
-  await expect(
-    page.getByRole('heading', { name: 'Welcome to Plausible!' })
-  ).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible()
 }
 
 export async function addSite({

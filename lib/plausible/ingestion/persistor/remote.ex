@@ -68,14 +68,14 @@ defmodule Plausible.Ingestion.Persistor.Remote do
                                        %{attributes: persistor_span_attributes(headers)} do
           result =
             Req.new(
-              finch: Plausible.Finch,
+              finch: [name: Plausible.Finch],
               body: encode_payload(event, session_attrs),
               headers: headers,
               retry: &handle_transient_error/2,
               max_retries: @max_transient_retries
             )
             |> OpentelemetryReq.attach(propagate_trace_headers: true)
-            |> Req.post(url: url, span_name: "persistor.remote.post", compressed: true)
+            |> Req.post(url: url, span_name: "persistor.remote.post")
 
           trace_result(result)
           result
@@ -128,19 +128,29 @@ defmodule Plausible.Ingestion.Persistor.Remote do
   end
 
   defp decode_payload(payload) do
-    case Base.decode64(payload, padding: false) do
-      {:ok, data} ->
-        event_data = :erlang.binary_to_term(data)
-        event = struct(Plausible.ClickhouseEventV2, event_data)
-
-        {:ok, event}
-
-      _ ->
-        {:error, :invalid_web_encoding}
+    with {:ok, decoded} <- decode_base64_payload(payload) do
+      event_data = :erlang.binary_to_term(decoded)
+      event = struct(Plausible.ClickhouseEventV2, event_data)
+      {:ok, event}
     end
   catch
     _, _ ->
       {:error, :invalid_payload}
+  end
+
+  # Req usually decompresses Content-Encoding: gzip, but some Finch/Req
+  # combinations leave the body compressed — accept either form.
+  defp decode_base64_payload(<<0x1F, 0x8B, _::binary>> = payload) do
+    decode_base64_payload(:zlib.gunzip(payload))
+  rescue
+    _ -> {:error, :invalid_web_encoding}
+  end
+
+  defp decode_base64_payload(payload) when is_binary(payload) do
+    case Base.decode64(payload, padding: false) do
+      {:ok, _} = ok -> ok
+      :error -> {:error, :invalid_web_encoding}
+    end
   end
 
   defp decode_error("no_session_for_engagement"), do: :no_session_for_engagement

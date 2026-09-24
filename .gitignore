@@ -209,3 +209,7 @@ yarn-error.log*
 
 # Local configuration overrides
 config/*.local.exs
+
+# Local MinIO (make minio)
+.minio-bin/
+.minio-data/

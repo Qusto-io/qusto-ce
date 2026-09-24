@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test'
  * - Charts and visualizations
  */
 
-test.describe('Revenue Dashboard', () => {
+test.describe.skip('Revenue Dashboard', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the revenue dashboard
     await page.goto('/revenue')

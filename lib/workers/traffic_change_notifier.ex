@@ -105,9 +105,15 @@ defmodule Plausible.Workers.TrafficChangeNotifier do
 
     installation_link =
       if site_member? and Plausible.Sites.regular?(site) do
-        url(
-          ~p"/#{site.domain}/installation?#{[flow: PlausibleWeb.Flows.review(), __team: site.team.identifier]}"
-        )
+        # /installation depends on Plausible.InstallationSupport (EE-only,
+        # extra/lib -- see router.ex's on_ee gate). Not reachable under CE.
+        on_ee do
+          url(
+            ~p"/#{site.domain}/installation?#{[flow: PlausibleWeb.Flows.review(), __team: site.team.identifier]}"
+          )
+        else
+          stats_url(site.domain, __team: site.team.identifier)
+        end
       end
 
     template =

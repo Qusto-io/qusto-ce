@@ -201,8 +201,14 @@ defmodule PlausibleWeb.Live.TrackingSettings do
     """
   end
 
+  # /installation depends on Plausible.InstallationSupport (EE-only,
+  # extra/lib -- see router.ex's on_ee gate). Not reachable under CE builds.
   defp review_installation_path(site) do
-    ~p"/#{site.domain}/installation?#{[flow: PlausibleWeb.Flows.review()]}"
+    on_ee do
+      ~p"/#{site.domain}/installation?#{[flow: PlausibleWeb.Flows.review()]}"
+    else
+      stats_path(site.domain)
+    end
   end
 
   on_ee do

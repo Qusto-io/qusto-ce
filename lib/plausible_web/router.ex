@@ -642,16 +642,23 @@ defmodule PlausibleWeb.Router do
     scope alias: Live, assigns: %{connect_live_socket: true} do
       pipe_through [:app_layout, PlausibleWeb.RequireAccountPlug]
 
-      scope assigns: %{
-              dogfood_page_path: "/:website/installation",
-              bg_class: "bg-white dark:bg-gray-950",
-              legacy_layout?: false
-            } do
-        live "/:domain/installation",
-             Installation,
-             :installation,
-             as: :site,
-             container: {:div, class: "h-full"}
+      # Installation LiveView depends on Plausible.InstallationSupport, which
+      # upstream moved to extra/lib (EE-only, #5758) -- excluded from CE builds
+      # (mix.exs elixirc_paths(:ce)). Registering this route unconditionally
+      # left it reachable-but-crashing on every :ce build, including on the
+      # new-site-creation redirect (site_controller.ex).
+      on_ee do
+        scope assigns: %{
+                dogfood_page_path: "/:website/installation",
+                bg_class: "bg-white dark:bg-gray-950",
+                legacy_layout?: false
+              } do
+          live "/:domain/installation",
+               Installation,
+               :installation,
+               as: :site,
+               container: {:div, class: "h-full"}
+        end
       end
 
       scope assigns: %{

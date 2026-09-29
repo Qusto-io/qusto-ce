@@ -47,6 +47,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- Fixed the CE build (`MIX_ENV=ce`) crashing on `/:domain/installation`, including on the new-site-creation redirect — `Plausible.InstallationSupport` moved to `extra/lib` (EE-only) upstream, but the route and its callers weren't gated
 - Fixed "Create Team" going through when the team name was rejected, creating the team under a name the user never entered
 - Improve team member removal/team role change
 - Validate empty filter clauses list in Stats API v2

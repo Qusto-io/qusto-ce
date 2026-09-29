@@ -234,6 +234,21 @@ defmodule PlausibleWeb.Live.ChangeDomain do
     end
 
     defp v1_generic_notice(assigns) do
+      # /installation depends on Plausible.InstallationSupport (EE-only,
+      # extra/lib -- see router.ex's on_ee gate). Point CE builds at the
+      # stats page instead of a route that doesn't exist there.
+      installation_href =
+        on_ee do
+          ~p"/#{assigns.site.domain}/installation"
+        else
+          stats_path(assigns.site.domain)
+        end
+
+      installation_label = on_ee(do: "installation instructions", else: "tracking snippet settings")
+
+      assigns =
+        assign(assigns, installation_href: installation_href, installation_label: installation_label)
+
       ~H"""
       <p class="mt-4 text-sm">
         We've detected you're using our legacy script. This means that you'll also need
@@ -241,9 +256,9 @@ defmodule PlausibleWeb.Live.ChangeDomain do
         continuous tracking. The easiest way to fix that is to simply follow your
         <.styled_link
           new_tab
-          href={~p"/#{@site.domain}/installation"}
+          href={@installation_href}
         >
-          installation instructions
+          {@installation_label}
         </.styled_link>
         and upgrade to our new, more powerful tracking script.
       </p>

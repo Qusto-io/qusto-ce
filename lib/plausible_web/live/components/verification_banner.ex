@@ -199,7 +199,7 @@ defmodule PlausibleWeb.Live.Components.VerificationBanner do
           <.button_link
             :if={not @offer_custom_url_input?}
             mt?={false}
-            href={~p"/#{@domain}/installation?#{[flow: @flow, return_to: "dashboard"]}"}
+            href={review_installation_path(@domain, @flow)}
             theme="ghost"
             size="sm"
             class="hover:bg-gray-600/10 dark:hover:bg-white/10 hover:border-transparent dark:hover:border-transparent"
@@ -265,12 +265,22 @@ defmodule PlausibleWeb.Live.Components.VerificationBanner do
   end
 
   defp review_installation_link_sentence(assigns) do
-    review_installation_url =
-      ~p"/#{assigns.domain}/installation?#{[flow: assigns.flow, return_to: "dashboard"]}"
-
     render_recommendation("See your installation instructions again here", [
-      %{text: "here", href: review_installation_url}
+      %{text: "here", href: review_installation_path(assigns.domain, assigns.flow)}
     ])
+  end
+
+  # /installation depends on Plausible.InstallationSupport (EE-only,
+  # extra/lib -- see router.ex's on_ee gate). This whole component only ever
+  # mounts under ee?() (stats_controller.ex gates verify_installation?), but
+  # its functions still need to compile under :ce.
+  defp review_installation_path(domain, flow) do
+    on_ee do
+      ~p"/#{domain}/installation?#{[flow: flow, return_to: "dashboard"]}"
+    else
+      _ = flow
+      stats_path(domain)
+    end
   end
 
   defp link_markup(text, href) do

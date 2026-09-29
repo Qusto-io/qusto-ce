@@ -45,9 +45,7 @@ defmodule PlausibleWeb.SiteController do
           |> Plausible.Mailer.send()
         end
 
-        redirect(conn,
-          to: ~p"/#{site.domain}/installation?#{[flow: flow]}"
-        )
+        redirect(conn, to: post_create_path(site, flow))
 
       {:error, _, :permission_denied, _} ->
         conn
@@ -65,6 +63,19 @@ defmodule PlausibleWeb.SiteController do
           {:error, :no_access} ->
             render_new_site_form(conn, flow, changeset: changeset)
         end
+    end
+  end
+
+  # The /installation LiveView depends on Plausible.InstallationSupport
+  # (extra/lib, EE-only -- see router.ex's on_ee gate around it) and doesn't
+  # exist as a route on :ce builds. Fall back to the site's stats page there
+  # instead of redirecting into a 404.
+  defp post_create_path(site, flow) do
+    on_ee do
+      ~p"/#{site.domain}/installation?#{[flow: flow]}"
+    else
+      _ = flow
+      stats_path(site.domain)
     end
   end
 

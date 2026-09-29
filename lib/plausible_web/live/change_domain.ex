@@ -244,10 +244,14 @@ defmodule PlausibleWeb.Live.ChangeDomain do
           stats_path(assigns.site.domain)
         end
 
-      installation_label = on_ee(do: "installation instructions", else: "tracking snippet settings")
+      installation_label =
+        on_ee(do: "installation instructions", else: "tracking snippet settings")
 
       assigns =
-        assign(assigns, installation_href: installation_href, installation_label: installation_label)
+        assign(assigns,
+          installation_href: installation_href,
+          installation_label: installation_label
+        )
 
       ~H"""
       <p class="mt-4 text-sm">

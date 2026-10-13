@@ -12,8 +12,10 @@ defmodule Plausible.Ingestion.IPMaskTest do
       assert IPMask.mask("2001:db8:abcd:12:1:2:3:4") == "2001:db8:abcd::"
     end
 
-    test "IPv4-mapped IPv6 is masked as IPv6 /48" do
-      assert IPMask.mask("::ffff:93.184.216.34") == "::"
+    # /48 of ::ffff:a.b.c.d is "::" for every IPv4 visitor, which would merge
+    # them all into one key; the embedded IPv4 address is masked to /24 instead.
+    test "IPv4-mapped IPv6 is masked as its IPv4 address (/24)" do
+      assert IPMask.mask("::ffff:93.184.216.34") == "93.184.216.0"
     end
 
     test "a value that is not an IP is returned unchanged" do

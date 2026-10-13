@@ -594,7 +594,11 @@ defmodule Plausible.Ingestion.EventTest do
   describe "IP masking before the daily visitor hash (G5, Garante 2021 §7.2)" do
     setup do
       previous = Application.get_env(:plausible, Plausible.Ingestion.IPMask)
-      on_exit(fn -> Application.put_env(:plausible, Plausible.Ingestion.IPMask, previous || []) end)
+
+      on_exit(fn ->
+        Application.put_env(:plausible, Plausible.Ingestion.IPMask, previous || [])
+      end)
+
       :ok
     end
 
@@ -611,15 +615,24 @@ defmodule Plausible.Ingestion.EventTest do
 
     test "a listed site: IPv4 addresses in the same /24 count as one visitor" do
       site = new_site()
-      Application.put_env(:plausible, Plausible.Ingestion.IPMask, domains: MapSet.new([site.domain]))
 
-      assert user_id_for(site.domain, "93.184.216.34") == user_id_for(site.domain, "93.184.216.200")
-      assert user_id_for(site.domain, "93.184.216.34") != user_id_for(site.domain, "93.184.217.34")
+      Application.put_env(:plausible, Plausible.Ingestion.IPMask,
+        domains: MapSet.new([site.domain])
+      )
+
+      assert user_id_for(site.domain, "93.184.216.34") ==
+               user_id_for(site.domain, "93.184.216.200")
+
+      assert user_id_for(site.domain, "93.184.216.34") !=
+               user_id_for(site.domain, "93.184.217.34")
     end
 
     test "a listed site: IPv6 addresses in the same /48 count as one visitor" do
       site = new_site()
-      Application.put_env(:plausible, Plausible.Ingestion.IPMask, domains: MapSet.new([site.domain]))
+
+      Application.put_env(:plausible, Plausible.Ingestion.IPMask,
+        domains: MapSet.new([site.domain])
+      )
 
       assert user_id_for(site.domain, "2001:db8:abcd:1::1") ==
                user_id_for(site.domain, "2001:db8:abcd:ffff::2")
@@ -627,9 +640,13 @@ defmodule Plausible.Ingestion.EventTest do
 
     test "an unlisted site keeps the full IP in the hash" do
       site = new_site()
-      Application.put_env(:plausible, Plausible.Ingestion.IPMask, domains: MapSet.new(["other.example"]))
 
-      assert user_id_for(site.domain, "93.184.216.34") != user_id_for(site.domain, "93.184.216.200")
+      Application.put_env(:plausible, Plausible.Ingestion.IPMask,
+        domains: MapSet.new(["other.example"])
+      )
+
+      assert user_id_for(site.domain, "93.184.216.34") !=
+               user_id_for(site.domain, "93.184.216.200")
     end
   end
 

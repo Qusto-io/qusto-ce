@@ -107,6 +107,17 @@ super_admin_user_ids =
   end)
   |> Enum.filter(& &1)
 
+# G5 (CONSENT-MODES P5): sites whose daily visitor hash uses a masked IP
+# (IPv4 /24, IPv6 /48). Italy, Garante 2021 §7.2. See Plausible.Ingestion.IPMask.
+ip_mask_domains =
+  get_var_from_path_or_env(config_dir, "IP_MASK_DOMAINS", "")
+  |> String.split(",", trim: true)
+  |> Enum.map(&(&1 |> String.trim() |> String.downcase()))
+  |> Enum.reject(&(&1 == ""))
+  |> MapSet.new()
+
+config :plausible, Plausible.Ingestion.IPMask, domains: ip_mask_domains
+
 env = get_var_from_path_or_env(config_dir, "ENVIRONMENT", "prod")
 mailer_adapter = get_var_from_path_or_env(config_dir, "MAILER_ADAPTER", "Bamboo.Mua")
 mailer_email = get_var_from_path_or_env(config_dir, "MAILER_EMAIL", "plausible@#{base_url.host}")

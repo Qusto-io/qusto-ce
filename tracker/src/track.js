@@ -36,12 +36,21 @@ export function track(eventName, options) {
       return onIgnoredEvent(eventName, options)
     }
   }
-  try {
-    if (window.localStorage.qusto_ignore === 'true') {
-      return onIgnoredEvent(eventName, options, 'localStorage flag')
+  // CONSENT-MODES (G8): qusto.js marks the script event-consent="false" until
+  // the visitor gives analytics consent. In that mode the tracker touches no
+  // device storage, so the owner's opt-out flag is not read either (ePrivacy
+  // art. 5(3) covers reading as well as writing). After consent, and on every
+  // install without the attribute, the flag works as before.
+  var consentDenied =
+    scriptEl && scriptEl.getAttribute('event-consent') === 'false'
+  if (!consentDenied) {
+    try {
+      if (window.localStorage.qusto_ignore === 'true') {
+        return onIgnoredEvent(eventName, options, 'localStorage flag')
+      }
+    } catch (_error) {
+      // ignore error
     }
-  } catch (_error) {
-    // ignore error
   }
 
   if (COMPILE_EXCLUSIONS) {

@@ -584,7 +584,9 @@ defmodule Plausible.Ingestion.Event do
 
         SipHash.hash!(
           salt,
-          user_agent <> request.remote_ip <> domain <> root_domain <> replay_session_id
+          user_agent <>
+            Plausible.Ingestion.IPMask.hash_ip(request.remote_ip, domain) <>
+            domain <> root_domain <> replay_session_id
         )
     end
   end

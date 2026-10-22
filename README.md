@@ -1,3 +1,19 @@
+# Qusto Community Edition
+
+Qusto Community Edition is a fork of Plausible Analytics. The upstream project, its copyright, and its trademarks stay credited below, including Plausible Insights OÜ.
+
+Plain traffic counts, no tracking cookies, and your store's order totals once the store is connected. Ask us about consent in your market.
+
+No tracking cookies. Ask us about consent in your market.
+
+Open source so you can trust it. Managed so you don't have to run it.
+
+Data processing agreement: https://qusto.io/dpa/
+
+This readme names no company. The sections below keep the upstream Plausible Analytics readme. Sentences that stated a compliance badge are replaced with the facts above.
+
+# Upstream readme: Plausible Analytics
+
 # Plausible Analytics
 
 <p align="center">
@@ -16,7 +32,7 @@
 [Plausible Analytics](https://plausible.io/) is an open source, privacy-first web analytics tool. Lightweight, cookie-free [alternative to Google Analytics](https://plausible.io/blog/remove-google-analytics). Available in managed cloud or self-hosted community edition.
 
 - 🔐 [Privacy-focused](https://plausible.io/privacy-focused-web-analytics)
-- 🛡️ [GDPR, CCPA, PECR compliant](https://plausible.io/data-policy)
+- 🛡️ No tracking cookies. Ask us about consent in your market. [Data processing agreement](https://qusto.io/dpa/)
 - 📊 [Simple, fast dashboard](https://plausible.io/simple-web-analytics)
 - 🪶 [Lightweight script](https://plausible.io/lightweight-web-analytics)
 - 🇪🇺 [Made and hosted in the EU](https://plausible.io/eu-hosted-web-analytics)
@@ -30,9 +46,9 @@ Here's what makes Plausible a great Google Analytics alternative and why we're t
 - **Clutter-free**  
   Plausible provides [simple web analytics](https://plausible.io/simple-web-analytics) that cut through the noise. No layers of menus or need to create custom reports. All key insights are on a single page, with no training required.
 
-- **Privacy-first and compliant**  
-  Measure traffic, not individuals. No personal data or IP addresses are stored, and no cookies or persistent identifiers are used. Fully compliant with GDPR, CCPA and PECR.  
-  [Read more about our data policy](https://plausible.io/data-policy)
+- **Privacy-first**  
+  Plain traffic counts, no tracking cookies, and your store's order totals once the store is connected. Ask us about consent in your market.  
+  [Data processing agreement](https://qusto.io/dpa/)
 
 - **Lightweight**  
   Our script is [tiny](https://plausible.io/lightweight-web-analytics), helping your website load faster. You can also send events directly to our [events API](https://plausible.io/docs/events-api).
@@ -72,7 +88,7 @@ Google Analytics is free to use because Google monetizes user data for advertisi
 
 With Plausible, the business model is simple:
 
-- No data collection beyond aggregated, anonymized stats  
+- No tracking cookies. Ask us about consent in your market. [Data processing agreement](https://qusto.io/dpa/)  
 - No third-party data sharing  
 - No advertising or tracking ecosystem  
 - You fully own and control your data  
@@ -87,7 +103,7 @@ The easiest way to get started with Plausible Analytics is with [our official ma
 - Global CDN, high availability, backups and security included  
 - No maintenance required
 
-In order to be compliant with the GDPR and the Schrems II ruling, all visitor data for our managed service in the cloud is exclusively processed on servers and cloud infrastructure owned and operated by European providers. Your website data never leaves the EU.
+The upstream managed service described in this section processes visitor data in the EU. That is a hosting fact from the upstream readme. It is not a compliance badge. Ask us about consent in your market. [Data processing agreement](https://qusto.io/dpa/).
 
 Our managed hosting can save a substantial amount of developer time and resources. For most sites this ends up being the best value option and the revenue goes to funding the maintenance and further development of Plausible. So you’ll be supporting open source software and getting a great service!
 
@@ -101,7 +117,7 @@ Plausible is [open source web analytics](https://plausible.io/open-source-websit
 | **Release schedule** | Continuously developed and improved with new features and updates multiple times per week. | [It's a long term release](https://plausible.io/blog/building-open-source) published twice per year so latest features and improvements won't be immediately available.|
 | **Premium features** | All features available as listed in [our pricing plans](https://plausible.io/#pricing). | Premium features (marketing funnels, ecommerce revenue goals, SSO and sites API) are not available in order to help support [the project's long-term sustainability](https://plausible.io/blog/community-edition).|
 | **Bot filtering** | Advanced bot filtering for more accurate stats. Our algorithm detects and excludes non-human traffic patterns. We also exclude known bots by the User-Agent header and filter out traffic from data centers and referrer spam domains. We exclude ~32K data center IP ranges (i.e. a lot of bot IP addresses) by default. | Basic bot filtering that targets the most common non-human traffic based on the User-Agent header and referrer spam domains.|
-| **Server location** | All visitor data is exclusively processed on EU-owned cloud infrastructure. We keep your site data on a secure, encrypted and green energy powered server in Germany. This ensures that your site data is protected by the strict European Union data privacy laws and ensures compliance with GDPR. Your website data never leaves the EU. | You have full control and can host your instance on any server in any country that you wish. Host it on a server in your basement or host it with any cloud provider wherever you want, even those that are not GDPR compliant.|
+| **Server location** | Visitor data for the upstream managed service is processed on EU-owned cloud infrastructure. Ask us about consent in your market. [Data processing agreement](https://qusto.io/dpa/). | You choose the server. Ask us about consent in your market. |
 | **Data portability** | You see all your site stats and metrics on our modern-looking, simple to use and fast loading dashboard. You can only see the stats aggregated in the dashboard. You can download the stats using the [CSV export](https://plausible.io/docs/export-stats), [stats API](https://plausible.io/docs/stats-api) or the [Data Studio Connector](https://plausible.io/docs/looker-studio). | Do you want access to the raw data? Self-hosting gives you that option. You can take the data directly from the ClickHouse database. The Data Studio Connector is not available. |
 | **Premium support** | Real support delivered by real human beings who build and maintain Plausible. | Premium support is not included. CE is community supported only.|
 | **Costs** | There's a cost associated with providing an analytics service so we charge a subscription fee. We choose the subscription business model rather than the business model of surveillance capitalism. Your money funds further development of Plausible. | You need to pay for your server, CDN, backups and whatever other cost there is associated with running the infrastructure. You never have to pay any fees to us. Your money goes to 3rd party companies with no connection to us.|

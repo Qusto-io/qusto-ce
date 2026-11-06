@@ -24,6 +24,23 @@ defmodule Plausible.Ingestion.IPMaskTest do
     end
   end
 
+  describe "mask?/1 with the * wildcard (CPOL-01 D-P9: every market)" do
+    setup do
+      previous = Application.get_env(:plausible, IPMask)
+      Application.put_env(:plausible, IPMask, domains: MapSet.new(["*"]))
+      on_exit(fn -> Application.put_env(:plausible, IPMask, previous || []) end)
+    end
+
+    test "every site is masked" do
+      assert IPMask.mask?("any-shop.example")
+      assert IPMask.hash_ip("93.184.216.34", "any-shop.example") == "93.184.216.0"
+    end
+
+    test "no domain stays unmasked: there is no site to apply it to" do
+      refute IPMask.mask?(nil)
+    end
+  end
+
   describe "hash_ip/2" do
     setup do
       previous = Application.get_env(:plausible, IPMask)

@@ -33,6 +33,7 @@ defmodule Plausible.Ingestion.Event do
           | :site_page_blocklist
           | :site_hostname_allowlist
           | :verification_agent
+          | :no_consent
           | :lock_timeout
           | :no_session_for_engagement
           | :persist_timeout
@@ -136,6 +137,7 @@ defmodule Plausible.Ingestion.Event do
 
   defp pipeline() do
     [
+      drop_without_consent: &drop_without_consent/2,
       drop_verification_agent: &drop_verification_agent/2,
       drop_datacenter_ip: &drop_datacenter_ip/2,
       drop_threat_ip: &drop_threat_ip/2,
@@ -214,6 +216,14 @@ defmodule Plausible.Ingestion.Event do
     end
   else
     defp drop_verification_agent(%__MODULE__{} = event, _context), do: event
+  end
+
+  defp drop_without_consent(%__MODULE__{} = event, _context) do
+    if Plausible.Ingestion.ConsentGate.allow?(event.domain, event.request.props) do
+      event
+    else
+      drop(event, :no_consent)
+    end
   end
 
   defp drop_datacenter_ip(%__MODULE__{} = event, _context) do

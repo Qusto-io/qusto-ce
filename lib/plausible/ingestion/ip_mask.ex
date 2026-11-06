@@ -23,6 +23,8 @@ defmodule Plausible.Ingestion.IPMask do
 
   EE sets `sites.consent_market = 'IT'` from the shop's country; until EE
   writes a CE-side flag, the operator adds each Italian site's domain here.
+
+  `*` masks every site (CPOL-01 D-P9), which is the production setting.
   """
 
   import Bitwise
@@ -38,7 +40,7 @@ defmodule Plausible.Ingestion.IPMask do
   def mask?(domain) when is_binary(domain) do
     case domains() do
       [] -> false
-      set -> MapSet.member?(set, String.downcase(domain))
+      set -> MapSet.member?(set, "*") or MapSet.member?(set, String.downcase(domain))
     end
   end
 

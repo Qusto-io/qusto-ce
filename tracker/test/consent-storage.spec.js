@@ -48,6 +48,34 @@ test.describe('consent and device storage', () => {
     })
   })
 
+  // CPOL-01: qusto.js opts a visitor out mid-page by setting the flag, removing
+  // event-consent, and sending a pageview for the tracker to ignore. Without
+  // this, that pageview flushed one last engagement event: live on qusto.io,
+  // 2026-11-06.
+  test('opting out mid-page sends nothing more, not even a last engagement', async ({
+    page
+  }) => {
+    await expectQustoInAction(page, {
+      action: () => page.goto('/consent-false-pageview-props.html'),
+      expectedRequests: [{ n: 'pageview' }]
+    })
+    await expectQustoInAction(page, {
+      action: async () => {
+        await page.evaluate(() => {
+          window.localStorage.setItem('qusto_ignore', 'true')
+          document
+            .querySelector('script[event-consent]')
+            .removeAttribute('event-consent')
+          window.qusto('pageview')
+          document.dispatchEvent(new Event('visibilitychange'))
+          window.dispatchEvent(new Event('blur'))
+        })
+      },
+      expectedRequests: [],
+      refutedRequests: [{ n: 'engagement' }, { n: 'pageview' }]
+    })
+  })
+
   test('no event-consent attribute: behaviour unchanged, the flag is read', async ({
     page
   }) => {

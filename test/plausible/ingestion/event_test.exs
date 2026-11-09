@@ -591,6 +591,61 @@ defmodule Plausible.Ingestion.EventTest do
     assert event3.clickhouse_event.user_id != event4.clickhouse_event.user_id
   end
 
+  describe "consent gate (CPOL-01)" do
+    setup do
+      previous = Application.get_env(:plausible, Plausible.Ingestion.ConsentGate)
+
+      on_exit(fn ->
+        Application.put_env(:plausible, Plausible.Ingestion.ConsentGate, previous || [])
+      end)
+
+      :ok
+    end
+
+    defp gated_event(site, props) do
+      conn =
+        build_conn(:post, "/api/events", %{
+          name: "pageview",
+          url: "http://#{site.domain}",
+          props: props
+        })
+        |> Plug.Conn.put_req_header("user-agent", "Mozilla/5.0 Firefox/120.0")
+
+      assert {:ok, request, _conn} = Request.build(conn)
+      assert {:ok, %{buffered: buffered, dropped: dropped}} = Event.build_and_buffer(request)
+      {buffered, dropped}
+    end
+
+    test "off by default: an event with no consent prop is kept" do
+      Application.put_env(:plausible, Plausible.Ingestion.ConsentGate, [])
+      assert {[_], []} = gated_event(new_site(), %{})
+    end
+
+    test "on: an event without consent is dropped" do
+      Application.put_env(:plausible, Plausible.Ingestion.ConsentGate, required: true)
+      site = new_site()
+
+      assert {[], [%{drop_reason: :no_consent}]} = gated_event(site, %{})
+      assert {[], [%{drop_reason: :no_consent}]} = gated_event(site, %{consent: "false"})
+    end
+
+    test "on: an event with consent is kept" do
+      Application.put_env(:plausible, Plausible.Ingestion.ConsentGate, required: true)
+      assert {[_], []} = gated_event(new_site(), %{consent: "true"})
+    end
+
+    test "on: a site on the aggregate list keeps its no-consent pageview" do
+      site = new_site()
+
+      Application.put_env(:plausible, Plausible.Ingestion.ConsentGate,
+        required: true,
+        aggregate_domains: MapSet.new([String.downcase(site.domain)])
+      )
+
+      assert {[_], []} = gated_event(site, %{consent: "false"})
+    end
+  end
+
   describe "IP masking before the daily visitor hash (G5, Garante 2021 §7.2)" do
     setup do
       previous = Application.get_env(:plausible, Plausible.Ingestion.IPMask)

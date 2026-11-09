@@ -231,6 +231,7 @@ defmodule Plausible.Application do
 
     setup_geolocation()
     Location.load_all()
+    Plausible.Ingestion.GeoNames.build_index()
     Plausible.Geo.await_loader()
 
     Supervisor.start_link(List.flatten(children), opts)

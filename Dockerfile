@@ -3,7 +3,7 @@
 
 
 #### Node
-FROM node:26.12.0-alpine3.23@sha256:2ae3a23c9c5d2129398f4844c7c43400c061faf6973852f0fa837323bff9a5a8 AS nodejs
+FROM node:26.12.1-alpine3.23@sha256:bc2b334006f15c7167bbeb2f08f28c2df883f7594a0470e04454ebe7560cfe68 AS nodejs
 
 #### Builder
 FROM hexpm/elixir:1.20.4-erlang-28.5.0.5-alpine-3.23.5@sha256:743f3bddec5e9d65b7f65902b1f4ce2a625e58cea6e8e93238757b042bec78db AS buildcontainer

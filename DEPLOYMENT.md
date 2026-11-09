@@ -1,426 +1,60 @@
-# Qusto Deployment Guide
+# Qusto Community Edition — deployment
 
-This guide explains how to deploy Qusto Analytics in various configurations.
+This repository is **Qusto Community Edition (CE)**: a fork of
+[Plausible Analytics](https://github.com/plausible/analytics), licensed AGPL-3.0.
+It is the event engine and traffic dashboard that managed Qusto also runs.
 
-## Architecture Overview
+> **Rewritten 2026-11-09 (OC-03).** The previous version described a private
+> `qusto-ecommerce` submodule compiled into this engine, Helm charts and a
+> `public-main` branch. None of that exists, and compiling private modules into
+> this AGPL program would have made them AGPL. The hook that allowed it
+> (`proprietary_paths()` in `mix.exs`) has been removed.
 
-Qusto uses a dual-repository architecture:
+## What this repository builds
 
-1. **qusto-ce** (Public AGPL)
-   - Core analytics engine
-   - Basic dashboards and reporting
-   - Open source, community edition
+| Build | How | What is in it |
+|---|---|---|
+| **CE** (`MIX_ENV=ce`) | `Dockerfile` default; `docker compose` in this repo; the production deploy | `lib/` only. Traffic analytics, goals, custom properties, Stats API, Qusto branding and privacy defaults |
+| Upstream test/dev envs (`test`, `dev`) | `mix test`, local dev | also compile `extra/lib` (see below). **Never built into an image** |
 
-2. **qusto-ecommerce** (Private)
-   - E-commerce analytics
-   - Advanced attribution
-   - Proprietary features
+`extra/` is **Plausible's proprietary code**, kept only because it is in the
+upstream tree. `extra/COPYING.txt` grants no rights to use, distribute or
+otherwise exploit it. No Qusto image includes it: `deploy-variant-guard.yml`
+fails any PR that builds an image with the `prod` variant.
 
-3. **deploy-production** (Private branch)
-   - Combines both repos via git submodules
-   - Docker Compose orchestration
-   - Production deployment configuration
+**Not in this repository:** orders, revenue, products, the Coverage figure,
+customer LTV, cart abandonment, attribution and the Shopify/WooCommerce
+connectors. Those are managed Qusto (separate services that read this engine
+over its API), not part of CE.
 
-## Deployment Options
+## Self-hosting from source
 
-### Option 1: Community Edition Only (Public)
-
-Deploy the open-source core without proprietary features.
+Self-hosting is **community supported**. A tested install guide and versioned
+public images are planned; until then, build from source:
 
 ```bash
-# Clone public repo
 git clone https://github.com/Qusto-io/qusto-ce.git
 cd qusto-ce
-git checkout public-main
-
-# Configure
-cp config/config.example.env .env
-# Edit .env with your settings
-
-# Deploy with Docker Compose
-docker-compose up -d
-
-# Or deploy manually
-mix deps.get
-mix ecto.setup
-mix phx.server
+# Set at least SECRET_KEY_BASE (64+ random bytes) and BASE_URL in .env
+docker compose up -d        # builds the CE image (MIX_ENV=ce), Postgres, ClickHouse
 ```
 
-**Features Available:**
-- ✅ Core analytics
-- ✅ Basic dashboards
-- ✅ Event tracking
-- ✅ Simple funnels
-- ❌ E-commerce analytics
-- ❌ Advanced attribution
-- ❌ AI tracking
-
-### Option 2: Full Deployment with E-commerce (Private)
-
-Deploy with all proprietary features included.
-
-#### Step 1: Clone with Submodules
-
-```bash
-# Clone with private access
-git clone --recursive git@github.com:Qusto-io/qusto-ce.git
-cd qusto-ce
-git checkout deploy-production
-
-# Initialize submodules (if not already done)
-git submodule update --init --recursive
-```
-
-#### Step 2: Configure Environment
-
-Create `.env` file:
-
-```bash
-# Required
-SECRET_KEY_BASE=your-secret-key-base-here
-BASE_URL=https://analytics.yourdomain.com
-POSTGRES_PASSWORD=your-postgres-password
-CLICKHOUSE_PASSWORD=your-clickhouse-password
-JWT_SECRET=your-jwt-secret
-
-# E-commerce Configuration
-QUSTO_ECOMMERCE_ENABLED=true
-QUSTO_ECOMMERCE_PATH=modules/qusto-ecommerce
-QUSTO_ECOMMERCE_URL=http://ecommerce:8085
-
-# Optional
-ANALYTICS_PORT=8000
-ECOMMERCE_PORT=8085
-ECOMMERCE_FRONTEND_PORT=3001
-DATABASE_POOL_SIZE=10
-CLICKHOUSE_POOL_SIZE=5
-LOG_LEVEL=info
-```
-
-#### Step 3: Deploy with Docker Compose
-
-```bash
-# Start all services
-docker-compose -f docker-compose.deploy.yml up -d
-
-# Check logs
-docker-compose -f docker-compose.deploy.yml logs -f
-
-# Verify services
-curl http://localhost:8000/api/health  # Analytics
-curl http://localhost:8085/health      # E-commerce backend
-curl http://localhost:3001/health      # E-commerce frontend
-```
-
-#### Step 4: Run Migrations
-
-```bash
-# Public migrations (analytics)
-docker-compose -f docker-compose.deploy.yml exec analytics mix ecto.migrate
-
-# Private migrations (e-commerce)
-docker-compose -f docker-compose.deploy.yml exec ecommerce ./migrate
-```
-
-**Features Available:**
-- ✅ All CE features
-- ✅ E-commerce analytics
-- ✅ Advanced attribution
-- ✅ AI search tracking
-- ✅ Revenue tracking
-- ✅ Cart abandonment
-
-## Kubernetes Deployment
-
-### Prerequisites
-
-- Kubernetes cluster (1.24+)
-- kubectl configured
-- Helm 3+
-
-### Deploy with Helm
-
-```bash
-# Add Qusto Helm repo (private)
-helm repo add qusto https://charts.qusto.io
-helm repo update
-
-# Install CE (public charts)
-helm install qusto-ce qusto/qusto-ce \
-  --namespace qusto \
-  --create-namespace \
-  --set ingress.enabled=true \
-  --set ingress.host=analytics.yourdomain.com
-
-# Install Enterprise (private charts)
-helm install qusto-enterprise qusto/qusto-complete \
-  --namespace qusto \
-  --create-namespace \
-  --set analytics.enabled=true \
-  --set ecommerce.enabled=true \
-  --set ingress.enabled=true \
-  --set ingress.host=analytics.yourdomain.com \
-  -f values-production.yaml
-```
-
-### Manual Kubernetes Deployment
-
-See `k8s/` directory for manifest templates.
-
-```bash
-# Deploy public analytics
-kubectl apply -f k8s/public/
-
-# Deploy private e-commerce (requires access)
-kubectl apply -f k8s/private/
-
-# Deploy combined
-kubectl apply -f k8s/deploy/
-```
-
-## Separate Services Deployment
-
-Deploy analytics and e-commerce as independent services.
-
-### Analytics Service
-
-```bash
-cd qusto-ce
-git checkout public-main
-
-# Deploy to your infrastructure
-docker build -t qusto-ce:latest .
-docker push your-registry/qusto-ce:latest
-
-# Run
-docker run -d \
-  -p 8000:8000 \
-  -e DATABASE_URL=... \
-  -e CLICKHOUSE_DATABASE_URL=... \
-  your-registry/qusto-ce:latest
-```
-
-### E-commerce Service
-
-```bash
-cd qusto-ecommerce
-
-# Backend
-docker build -t qusto-ecommerce-backend:latest ./backend
-docker push your-registry/qusto-ecommerce-backend:latest
-
-# Frontend
-docker build -t qusto-ecommerce-frontend:latest ./frontend
-docker push your-registry/qusto-ecommerce-frontend:latest
-
-# Configure analytics to point to e-commerce
-# QUSTO_ECOMMERCE_ENABLED=true
-# QUSTO_ECOMMERCE_URL=https://ecommerce-api.yourdomain.com
-```
-
-## Branch Strategy
-
-### qusto-ce Branches
-
-- **public-main**: Public CE development (default for open source)
-- **deploy-production**: Production with submodules (PRIVATE, never public)
-- **feature/\***: Feature branches from public-main
-
-### qusto-ecommerce Branches
-
-- **main**: Private development (default)
-- **feature/\***: Feature branches from main
-
-### Deployment Workflow
-
-```
-┌─────────────────────────────────────────────────────────┐
-│ Development                                              │
-├─────────────────────────────────────────────────────────┤
-│ public-main (CE)  │  ecommerce/main (Private)           │
-│                   │                                      │
-│ ↓ Develop & Test  │  ↓ Develop & Test                   │
-│ ↓ Merge PR        │  ↓ Merge PR                         │
-│ ↓ CI/CD Tests     │  ↓ CI/CD Tests                      │
-└─────────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│ Staging/Production                                       │
-├─────────────────────────────────────────────────────────┤
-│ deploy-production branch                                 │
-│   ↓ Update submodule reference                          │
-│   ↓ git submodule update --remote                       │
-│   ↓ Test combined system                                │
-│   ↓ Deploy to staging                                   │
-│   ↓ Deploy to production                                │
-└─────────────────────────────────────────────────────────┘
-```
-
-## Updating Deployments
-
-### Update CE Only
-
-```bash
-cd qusto-ce
-git checkout public-main
-git pull origin public-main
-
-# Rebuild and redeploy
-docker-compose up -d --build analytics
-```
-
-### Update E-commerce
-
-```bash
-cd qusto-ce
-git checkout deploy-production
-
-# Update submodule
-git submodule update --remote modules/qusto-ecommerce
-
-# Commit new submodule reference
-git add modules/qusto-ecommerce
-git commit -m "chore: Update e-commerce submodule"
-
-# Rebuild and redeploy
-docker-compose -f docker-compose.deploy.yml up -d --build ecommerce ecommerce-frontend
-```
-
-### Update Both
-
-```bash
-git checkout deploy-production
-git pull origin deploy-production
-git submodule update --remote --recursive
-
-# Rebuild everything
-docker-compose -f docker-compose.deploy.yml up -d --build
-```
-
-## Environment Variables Reference
-
-### Required
-
-- `SECRET_KEY_BASE` - Phoenix secret key (generate with `mix phx.gen.secret`)
-- `BASE_URL` - Public URL (e.g., https://analytics.yourdomain.com)
-- `DATABASE_URL` - PostgreSQL connection string
-- `CLICKHOUSE_DATABASE_URL` - ClickHouse connection string
-- `POSTGRES_PASSWORD` - PostgreSQL password
-- `CLICKHOUSE_PASSWORD` - ClickHouse password
-
-### E-commerce Specific
-
-- `QUSTO_ECOMMERCE_ENABLED` - Enable proprietary features (true/false)
-- `QUSTO_ECOMMERCE_PATH` - Path to e-commerce submodule
-- `QUSTO_ECOMMERCE_URL` - E-commerce backend API URL
-- `JWT_SECRET` - JWT signing secret
-
-### Optional
-
-- `ANALYTICS_PORT` - Analytics port (default: 8000)
-- `ECOMMERCE_PORT` - E-commerce backend port (default: 8085)
-- `ECOMMERCE_FRONTEND_PORT` - E-commerce frontend port (default: 3001)
-- `DATABASE_POOL_SIZE` - PostgreSQL pool size (default: 10)
-- `CLICKHOUSE_POOL_SIZE` - ClickHouse pool size (default: 5)
-- `LOG_LEVEL` - Logging level (debug/info/warn/error)
-- `REDIS_URL` - Redis connection string (for caching)
-
-## Troubleshooting
-
-### Submodule Not Initialized
-
-```bash
-git submodule update --init --recursive
-```
-
-### Missing Proprietary Features
-
-Check:
-1. `QUSTO_ECOMMERCE_ENABLED=true` in environment
-2. Submodule is initialized: `ls modules/qusto-ecommerce/`
-3. Elixir modules exist: `ls modules/qusto-ecommerce/elixir-modules/`
-
-### Port Conflicts
-
-Modify ports in `.env`:
-```
-ANALYTICS_PORT=8001
-ECOMMERCE_PORT=8086
-ECOMMERCE_FRONTEND_PORT=3002
-```
-
-### Database Connection Issues
-
-- Verify PostgreSQL is running: `docker-compose ps postgres`
-- Check connection string format
-- Ensure network connectivity
-
-### Module Federation Not Loading
-
-- Check frontend environment: `BACKEND_URL` and `PUBLIC_URL`
-- Verify CORS settings
-- Check browser console for errors
-
-## Health Checks
-
-```bash
-# Analytics
-curl http://localhost:8000/api/health
-
-# E-commerce backend
-curl http://localhost:8085/health
-
-# E-commerce frontend
-curl http://localhost:3001/health
-
-# PostgreSQL
-docker-compose exec postgres pg_isready
-
-# ClickHouse
-docker-compose exec clickhouse clickhouse-client --query "SELECT 1"
-```
-
-## Backup and Restore
-
-### Backup
-
-```bash
-# PostgreSQL
-docker-compose exec postgres pg_dump -U postgres plausible > backup.sql
-
-# ClickHouse
-docker-compose exec clickhouse clickhouse-client --query "BACKUP DATABASE plausible TO Disk('backups', 'backup.zip')"
-```
-
-### Restore
-
-```bash
-# PostgreSQL
-docker-compose exec -T postgres psql -U postgres plausible < backup.sql
-
-# ClickHouse
-docker-compose exec clickhouse clickhouse-client --query "RESTORE DATABASE plausible FROM Disk('backups', 'backup.zip')"
-```
-
-## Security Checklist
-
-- [ ] Change default passwords
-- [ ] Use strong `SECRET_KEY_BASE` and `JWT_SECRET`
-- [ ] Enable HTTPS/TLS
-- [ ] Configure firewall rules
-- [ ] Set up rate limiting
-- [ ] Enable database SSL
-- [ ] Regular security updates
-- [ ] Monitor logs
-- [ ] Set up backups
+City and region data needs an IP database: set `IP_GEOLOCATION_DB` (e.g. DB-IP
+City Lite) or `MAXMIND_LICENSE_KEY`. Without one, locations fall back to country
+level or are empty.
+
+`main` is the only release line, and every merge to `main` is a production
+deploy of managed Qusto. Pin a commit if you need a stable install.
+
+## Production deploy (maintainers)
+
+`.github/workflows/deploy.yml`, job `deploy-production`, runs on every push to
+`main`: it builds the image on the host with `docker build .` (so `MIX_ENV=ce`),
+boots it against throwaway databases (smoke gate), then swaps the running
+container. The job prints the build variant it shipped. See ADR-008 in the vault
+for the branch model and build-variant decision.
 
 ## Support
 
-- **CE Documentation**: https://docs.qusto.io/self-hosting
-- **CE Issues**: https://github.com/Qusto-io/qusto-ce/issues
-- **Enterprise Support**: support@qusto.io
-- **Emergency**: emergency@qusto.io
-
----
-
-For questions about deployment, open a [GitHub Discussion](https://github.com/Qusto-io/qusto-ce/discussions) or contact support@qusto.io.
+Community support: GitHub issues on this repository. Upstream Plausible's own
+self-hosting guide describes Plausible CE, not this fork.

@@ -28,7 +28,9 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  MIX_ENV: prod
+  # ce, never prod: the prod variant compiles Plausible's proprietary extra/lib
+  # (extra/COPYING.txt grants no rights). Production already ships ce (OC-03).
+  MIX_ENV: ce
   CACHE_VERSION: v1
 
 jobs:

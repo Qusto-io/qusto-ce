@@ -25,3 +25,12 @@ https://github.com/plausible/analytics
 
 Qusto CE source code is available at:
 https://github.com/Qusto-io/qusto-ce
+
+---
+
+GeoNames
+Website:   https://www.geonames.org
+License:   Creative Commons Attribution 4.0 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/
+Used in:   priv/geodata/city_coords.tsv
+Changes:   Reduced to the id, latitude and longitude columns of the cities15000 extract, limited to
+           the cities present in the bundled location dictionary, coordinates rounded to 3 decimals.

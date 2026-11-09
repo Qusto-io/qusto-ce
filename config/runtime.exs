@@ -118,6 +118,18 @@ ip_mask_domains =
 
 config :plausible, Plausible.Ingestion.IPMask, domains: ip_mask_domains
 
+# CPOL-01: drop events without analytics consent. See Plausible.Ingestion.ConsentGate.
+consent_aggregate_domains =
+  get_var_from_path_or_env(config_dir, "CONSENT_AGGREGATE_DOMAINS", "")
+  |> String.split(",", trim: true)
+  |> Enum.map(&(&1 |> String.trim() |> String.downcase()))
+  |> Enum.reject(&(&1 == ""))
+  |> MapSet.new()
+
+config :plausible, Plausible.Ingestion.ConsentGate,
+  required: get_var_from_path_or_env(config_dir, "CONSENT_REQUIRED", "false") == "true",
+  aggregate_domains: consent_aggregate_domains
+
 env = get_var_from_path_or_env(config_dir, "ENVIRONMENT", "prod")
 mailer_adapter = get_var_from_path_or_env(config_dir, "MAILER_ADAPTER", "Bamboo.Mua")
 mailer_email = get_var_from_path_or_env(config_dir, "MAILER_EMAIL", "plausible@#{base_url.host}")

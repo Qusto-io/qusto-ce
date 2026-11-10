@@ -12,6 +12,10 @@ ARG MIX_ENV=ce
 
 # preparation
 ENV MIX_ENV=$MIX_ENV
+# Release version (OC-05). Public images pass the SemVer tag without the "v";
+# production deploys pass nothing, so the default keeps /app/lib/plausible-0.0.1.
+ARG APP_VERSION=0.0.1
+ENV APP_VERSION=$APP_VERSION
 ENV NODE_ENV=production
 ENV NODE_OPTIONS=--openssl-legacy-provider
 

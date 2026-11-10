@@ -1,40 +1,119 @@
 name: Build Public Images GHCR
 
+# OC-05 (approved 2026-11-10): the public, versioned Qusto CE image.
+# Spec: vault 01-strategy/roadmap/OC05_PUBLIC_CE_IMAGE_SPEC_20261109.md
+#
+# - Only SemVer tags (v1.2.3) release. Deploy counters (v147-ce) never match.
+# - Image: ghcr.io/qusto-io/qusto-ce-community (public). Never the private
+#   ghcr.io/qusto-io/qusto-ce package, which held EE-variant builds.
+# - The release must be prod-proven: the tagged commit was deployed to
+#   production by deploy.yml at least 7 days ago and is still on main.
+# - MIX_ENV=ce only. A step asserts that no module defined in extra/lib
+#   (Plausible's proprietary code) is in the image.
+# - The final image is signed (cosign, keyless) and carries SLSA build
+#   provenance and an SPDX SBOM attestation.
+
 on:
   push:
-    tags: ["v*"]
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
-  GHCR_REPO: ghcr.io/plausible/community-edition
+  GHCR_REPO: ghcr.io/qusto-io/qusto-ce-community
+  MIN_PROD_DAYS: "7"
 
 jobs:
+  gate:
+    name: Release gate (prod-proven, upstream base)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      app_version: ${{ steps.base.outputs.app_version }}
+      upstream_base: ${{ steps.base.outputs.upstream_base }}
+      upstream_describe: ${{ steps.base.outputs.upstream_describe }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Tagged commit is on main and has run in production for >= MIN_PROD_DAYS
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          sha=$(git rev-parse HEAD)
+          git fetch -q origin main
+          if ! git merge-base --is-ancestor "$sha" origin/main; then
+            echo "::error::$GITHUB_REF_NAME ($sha) is not on main. Release only commits production runs."
+            exit 1
+          fi
+          deployed=$(gh run list -R "$GITHUB_REPOSITORY" -w deploy.yml -b main -L 300 \
+            --json headSha,conclusion,createdAt \
+            --jq "[.[] | select(.headSha==\"$sha\" and .conclusion==\"success\")] | sort_by(.createdAt) | .[0].createdAt // empty")
+          if [ -z "$deployed" ]; then
+            echo "::error::No successful production deploy of $sha found. Tag a commit that production has run."
+            exit 1
+          fi
+          age_days=$(( ( $(date -u +%s) - $(date -u -d "$deployed" +%s) ) / 86400 ))
+          echo "Deployed to production at $deployed ($age_days days ago)"
+          if [ "$age_days" -lt "$MIN_PROD_DAYS" ]; then
+            echo "::error::Deployed $age_days days ago; a release needs at least $MIN_PROD_DAYS days in production."
+            exit 1
+          fi
+
+      - name: Record version and upstream base
+        id: base
+        run: |
+          set -euo pipefail
+          echo "app_version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          git fetch -q --tags https://github.com/plausible/analytics.git master
+          mb=$(git merge-base HEAD FETCH_HEAD)
+          echo "upstream_base=$mb" >> "$GITHUB_OUTPUT"
+          echo "upstream_describe=$(git describe --tags "$mb" 2>/dev/null || echo "$mb")" >> "$GITHUB_OUTPUT"
+          echo "Upstream base: $mb"
+
   build:
+    needs: gate
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - platform: linux/amd64
             runner: ubuntu-22.04
           - platform: linux/arm64
             runner: ubuntu-22.04-arm
-
-    runs-on: ${{ matrix.runner || 'ubuntu-22.04' }}
-
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
-          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+          echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ${{ env.GHCR_REPO }}
+          labels: |
+            org.opencontainers.image.title=Qusto Community Edition
+            org.opencontainers.image.description=Fork of Plausible Analytics (AGPL-3.0). Traffic analytics only; Qusto commerce services are not included.
+            org.opencontainers.image.licenses=AGPL-3.0-only
+            io.qusto.build.variant=ce
+            io.qusto.upstream.base=${{ needs.gate.outputs.upstream_base }}
+            io.qusto.upstream.describe=${{ needs.gate.outputs.upstream_describe }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -50,16 +129,41 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
+          context: .
+          platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.GHCR_REPO }},push-by-digest=true,name-canonical=true,push=true
+          provenance: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
             MIX_ENV=ce
+            APP_VERSION=${{ needs.gate.outputs.app_version }}
             BUILD_METADATA=${{ steps.meta.outputs.json }}
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Assert no extra/lib (proprietary) module is in the image
+        env:
+          DIGEST: ${{ steps.docker_build.outputs.digest }}
+        run: |
+          set -euo pipefail
+          docker pull -q "$GHCR_REPO@$DIGEST" >/dev/null
+          grep -rhoE '^\s*defmodule [A-Za-z0-9_.]+' extra/lib \
+            | awk '{print "Elixir." $2 ".beam"}' | sort -u > extra.txt
+          # Some upstream modules share a name across lib/ and extra/lib
+          # (defined under on_ee/on_ce); those are lib/ code, not extra/.
+          grep -rhoE '^\s*defmodule [A-Za-z0-9_.]+' lib \
+            | awk '{print "Elixir." $2 ".beam"}' | sort -u > lib.txt
+          comm -23 extra.txt lib.txt > extra_only.txt
+          docker run --rm --entrypoint sh "$GHCR_REPO@$DIGEST" \
+            -c 'ls /app/lib/plausible-*/ebin' | sort -u > image.txt
+          hits=$(comm -12 extra_only.txt image.txt || true)
+          echo "extra/lib-only modules checked: $(wc -l < extra_only.txt); image beams: $(wc -l < image.txt)"
+          if [ -n "$hits" ]; then
+            echo "::error::Image contains modules from Plausible's proprietary extra/lib:"
+            echo "$hits"
+            exit 1
+          fi
+          echo "OK: no extra/lib module in the image"
 
       - name: Export digest
         run: |
@@ -75,21 +179,17 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: Notify team on failure
-        if: ${{ failure() }}
-        uses: fjogeleit/http-request-action@f98bb26551cd1af7d3eb2674578a80754ece88db # v2.0.1
-        with:
-          url: ${{ secrets.BUILD_NOTIFICATION_URL }}
-          method: "POST"
-          customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"content": "<a href=\"https://github.com/plausible/analytics/actions/workflows/build-public-images-ghcr.yml\">Build failed</a>"}'
-
   push:
+    needs: [gate, build]
     runs-on: ubuntu-latest
-    needs:
-      - build
-
+    permissions:
+      contents: write # GitHub Release
+      packages: write
+      id-token: write # keyless cosign + provenance
+      attestations: write
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
       - name: Download digests
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
@@ -109,10 +209,12 @@ jobs:
         id: meta
         with:
           images: ${{ env.GHCR_REPO }}
+          flavor: latest=false
           tags: |
             type=semver,pattern={{version}},prefix=v
-            type=semver,pattern={{major}}.{{minor}},prefix=v
-            type=semver,pattern={{major}},prefix=v
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest
 
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests
@@ -120,6 +222,58 @@ jobs:
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.GHCR_REPO }}@sha256:%s ' *)
 
-      - name: Inspect image
+      - name: Resolve the published digest
+        id: digest
         run: |
-          docker buildx imagetools inspect ${{ env.GHCR_REPO }}:${{ steps.meta.outputs.version }}
+          set -euo pipefail
+          d=$(docker buildx imagetools inspect "$GHCR_REPO:$GITHUB_REF_NAME" --format '{{json .Manifest}}' | jq -r .digest)
+          echo "digest=$d" >> "$GITHUB_OUTPUT"
+          echo "Published $GHCR_REPO:$GITHUB_REF_NAME@$d"
+
+      - uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3
+
+      - name: Sign (keyless)
+        run: cosign sign --yes "$GHCR_REPO@${{ steps.digest.outputs.digest }}"
+
+      - name: SBOM (SPDX)
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          image: ${{ env.GHCR_REPO }}@${{ steps.digest.outputs.digest }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      - name: Attest SBOM
+        run: cosign attest --yes --type spdxjson --predicate sbom.spdx.json "$GHCR_REPO@${{ steps.digest.outputs.digest }}"
+
+      - name: Build provenance attestation
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ${{ env.GHCR_REPO }}
+          subject-digest: ${{ steps.digest.outputs.digest }}
+          push-to-registry: true
+
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DIGEST: ${{ steps.digest.outputs.digest }}
+          BASE: ${{ needs.gate.outputs.upstream_describe }}
+        run: |
+          set -euo pipefail
+          cat > notes.md <<EOF
+          **Qusto Community Edition ${GITHUB_REF_NAME}**: a fork of Plausible Analytics (AGPL-3.0).
+
+          \`docker pull ${GHCR_REPO}:${GITHUB_REF_NAME}\` (digest \`${DIGEST}\`), linux/amd64 and linux/arm64.
+
+          - **You get:** traffic analytics (sources, pages, locations, devices), goals, custom properties, the Stats API.
+          - **Not included:** funnels, orders, revenue, products, Coverage, LTV, attribution and store connectors. Those are managed Qusto services.
+          - **Upstream base:** \`${BASE}\`.
+          - **Build:** \`MIX_ENV=ce\`; Plausible's proprietary \`extra/\` code is not in the image (asserted in CI).
+          - **Verify:** \`cosign verify ${GHCR_REPO}@${DIGEST} --certificate-identity-regexp 'https://github.com/${GITHUB_REPOSITORY}/' --certificate-oidc-issuer https://token.actions.githubusercontent.com\`
+
+          Community supported. Install guide: see DEPLOYMENT.md.
+          EOF
+          sed -i 's/^          //' notes.md
+          gh release create "$GITHUB_REF_NAME" -R "$GITHUB_REPOSITORY" --verify-tag \
+            --title "Qusto CE $GITHUB_REF_NAME" --notes-file notes.md --generate-notes

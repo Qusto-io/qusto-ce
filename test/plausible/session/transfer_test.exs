@@ -42,12 +42,17 @@ defmodule Plausible.Session.TransferTest do
     end
   end
 
+  # Booting the whole app in a fresh peer node regularly takes longer than
+  # :peer.call's default 5s on CI runners, which failed this test
+  # intermittently (Qusto CI, 2026-11). Give the boot calls a realistic budget.
+  @boot_timeout 60_000
+
   defp ensure_applications_started(pid) do
-    {:ok, _apps} = :peer.call(pid, Application, :ensure_all_started, [:mix])
+    {:ok, _apps} = :peer.call(pid, Application, :ensure_all_started, [:mix], @boot_timeout)
     :ok = :peer.call(pid, Mix, :env, [Mix.env()])
 
     for {app_name, _, _} <- Application.loaded_applications(), app_name != :dialyxir do
-      {:ok, _apps} = :peer.call(pid, Application, :ensure_all_started, [app_name])
+      {:ok, _apps} = :peer.call(pid, Application, :ensure_all_started, [app_name], @boot_timeout)
     end
   end
 

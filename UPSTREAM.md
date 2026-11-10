@@ -1,184 +1,100 @@
-# Upstream Attribution & Differences
+# Upstream attribution and differences
 
-Qusto Analytics is forked from [Plausible Analytics](https://github.com/plausible/analytics) v2.1.0 (January 2025).
+Qusto Community Edition (CE) is a fork of
+[Plausible Analytics](https://github.com/plausible/analytics), licensed under the
+GNU AGPL v3. Plausible's copyright, trademarks and authorship stay credited to
+**Plausible Insights OÜ**.
 
----
+> **Updated 2026-11-10.** The previous version said the fork was "based on
+> v2.1.0 (January 2025)". That was the original fork point, and it has been out
+> of date since the 2026 upstream syncs. It also claimed features this
+> repository does not contain. Both are corrected below.
 
-## 🙏 Gratitude to Plausible
+## Where this fork stands
 
-We're deeply grateful to the Plausible team for creating excellent, privacy-focused analytics software and releasing it as open source under AGPLv3.
+| | |
+|---|---|
+| Upstream base | `plausible/analytics` `master` at `27cbc4419c` (2026-09-24), `git describe`: `v3.2.0-rc.0-444-g27cbc4419c` |
+| Last upstream sync | "Slice 4 monthly", merged 2026-09-24 (DRIFT-01) |
+| Divergence (2026-11-10) | 266 commits ahead (Qusto changes and merges), 106 behind upstream `master` |
+| Drift monitoring | `.github/workflows/upstream-drift.yml`, every Monday 06:00 UTC |
 
-Plausible has demonstrated that privacy-respecting analytics can be both effective and sustainable. Their work has been foundational to what we're building at Qusto.
+To recompute:
 
-**Plausible Team:** [plausible.io/about](https://plausible.io/about)
-
----
-
-## Key Differences from Plausible
-
-### Architecture
-
-| Aspect | Plausible | Qusto |
-|--------|-----------|-------|
-| Model | Monolithic application | Open-core with microservices |
-| Premium features | Built into main app | Separate private repositories |
-| Deployment | Single application | Core + optional premium services |
-
-### Target Market
-
-| Aspect | Plausible | Qusto |
-|--------|-----------|-------|
-| Focus | General website analytics | European SMB e-commerce |
-| Geographic | Global market | EU-first, GDPR-focused |
-| Primary users | Websites of all types | E-commerce, AI developers |
-
-### Premium Features (Qusto Only)
-
-Qusto extends the open-source core with proprietary premium features developed in separate private repositories. These include enhanced e-commerce analytics, AI search traffic detection, and advanced attribution capabilities.
-
-### Hosting Philosophy
-
-| Aspect | Plausible | Qusto |
-|--------|-----------|-------|
-| Cloud hosting | Global CDN, EU/US options | EU-only (Hetzner Germany) |
-| Infrastructure | Mix of providers | European-owned only |
-| Data residency | EU option available | EU mandatory |
-| GDPR approach | Compliant | EU-centric by design |
-
----
-
-## Upstream Sync Strategy
-
-We periodically merge updates from upstream Plausible to benefit from:
-
-- 🐛 Bug fixes
-- ⚡ Performance improvements
-- 🔒 Security patches
-- ✨ New core features
-
-### Sync Schedule
-
-| Activity | Frequency |
-|----------|-----------|
-| Security patches | Immediate (within 48 hours) |
-| Bug fixes | Monthly review |
-| Feature updates | Quarterly review |
-| Major version upgrades | As needed, with testing |
-
-### Sync Process
-
-1. **Monitor** - Watch Plausible releases and changelog
-2. **Evaluate** - Assess relevance and compatibility
-3. **Test** - Apply changes to development environment
-4. **Adapt** - Modify for Qusto-specific requirements
-5. **Merge** - Integrate into main branch
-6. **Document** - Update CHANGELOG with upstream credits
-
----
-
-## Contributing Back to Plausible
-
-When we make improvements to the core analytics engine that would benefit all Plausible users, we contribute them back upstream under AGPLv3.
-
-### Types of Upstream Contributions
-
-| Contribution Type | Example |
-|-------------------|---------|
-| Bug fixes | Event processing edge cases |
-| Performance | Query optimizations |
-| UI/UX | Accessibility improvements |
-| Documentation | Setup guides, API docs |
-| Security | Vulnerability fixes |
-
-### What We Don't Contribute Back
-
-- Qusto-specific branding
-- Premium feature integrations
-- EU-specific hosting configurations
-- Business logic for proprietary features
-
----
-
-## File Attribution
-
-Files that originate from Plausible maintain their original copyright headers:
-
-```elixir
-# Copyright (c) 2018-present Plausible Insights OÜ
-# Licensed under AGPLv3
-#
-# Modified by Qusto - see CHANGELOG for details
+```sh
+git fetch upstream master
+mb=$(git merge-base origin/main upstream/master)
+git describe --tags "$mb"
+git rev-list --count upstream/master..origin/main   # ahead
+git rev-list --count origin/main..upstream/master   # behind
 ```
 
-New files created by Qusto use:
+## What this repository is, and is not
 
-```elixir
-# Copyright (c) 2024-present Qusto
-# Licensed under AGPLv3
-#
-# Based on Plausible Analytics (https://github.com/plausible/analytics)
-```
+**Is:** Plausible's open-source engine and dashboard (`lib/`), built with
+`MIX_ENV=ce`. Qusto changes are kept small on purpose:
+- branding
+- privacy defaults (IP masking)
+- city and region resolution for the DB-IP City Lite database
+- a Source Code Offer page that links the exact running commit (AGPL §13)
+- deployment and CI
 
----
+**Is not:** Qusto's commercial product. Store orders, revenue, products, the
+Coverage figure, customer LTV, attribution and the Shopify and WooCommerce
+connectors are separate Qusto services. They read this engine over its API and
+are not part of this repository.
 
-## License Compliance
+### `extra/` is not open source
 
-### AGPLv3 Requirements Met
+Plausible keeps some features (funnels, installation verification, the
+customer-support tools and more) in `extra/`. **`extra/COPYING.txt` grants no
+rights** to use, distribute or otherwise exploit that code. It is in this
+repository only because it is in the upstream tree.
 
-- ✅ Source code publicly available
-- ✅ All Plausible copyright notices preserved
-- ✅ AGPLv3 license maintained for this repository
-- ✅ Modifications clearly documented
-- ✅ Network use provisions respected
+- Every image Qusto builds or ships uses `MIX_ENV=ce`, which compiles `lib/`
+  only. `deploy-variant-guard.yml` fails any PR that builds an image with the
+  `prod` variant.
+- CI runs the Elixir suite as `ce_test` only (ADR-008 D3, 2026-11-10).
+- Still open: the end-to-end suite (`e2e_test`) and local `dev` compile
+  `extra/lib`. Moving them to CE environments is tracked as a follow-up.
+- Funnels in managed Qusto are a separate Qusto implementation, not
+  Plausible's `extra/` code.
 
-### Tracker Script
+## Licence notices
 
-The JavaScript tracker remains under MIT license (as in Plausible) to avoid AGPL virality issues for users embedding the script:
+- Files from Plausible keep their copyright and licence notices.
+- The JavaScript tracker is MIT, `Copyright 2020 Plausible Insights OÜ`
+  ([tracker/npm_package/LICENSE.md](tracker/npm_package/LICENSE.md)). A 2026-02
+  branding change had replaced that line. It was restored on 2026-11-09.
+- Third-party data attributions (for example GeoNames, CC BY 4.0) are listed in
+  [NOTICE](NOTICE).
+- The AGPL source offer for the running service is the in-app Source Code Offer
+  page. It links the commit that is deployed.
 
-- Location: [tracker/LICENSE.md](tracker/LICENSE.md)
-- Reason: Ensures users can embed the tracker without AGPLv3 obligations
+## How upstream changes come in
 
----
+- **Security fixes:** taken as soon as upstream publishes them.
+- **Everything else:** merged in monthly slices from upstream `master`. Each
+  slice goes through CI and the production deploy smoke gate.
+- **Drift budget:** fewer than 50 Qusto-only commits outside the areas listed
+  above (ADR-009).
+- **Qusto UX:** not forked into CE. Qusto's product UX lives in the managed
+  dashboard.
 
-## Version Tracking
+## Contributing back
 
-| Qusto Version | Based on Plausible | Last Sync |
-|---------------|-------------------|-----------|
-| v0.1.x | v2.1.0 | January 2025 |
+Qusto has not yet contributed a change upstream. Fixes to upstream code that
+would help every Plausible user (bugs, security, test reliability) should be
+offered to `plausible/analytics` as pull requests rather than kept only here.
 
----
+## Self-hosting
 
-## Questions?
+Build from source with `MIX_ENV=ce` (see [DEPLOYMENT.md](DEPLOYMENT.md)).
+Versioned public images and an install guide are being prepared. Until they ship,
+self-hosting this fork is community supported. Plausible's own Community Edition
+guide describes Plausible CE, not this fork.
 
-### About our relationship with Plausible
+## Acknowledgements
 
-Open a [Discussion](https://github.com/qusto-io/qusto-ce/discussions) with the `upstream` tag.
-
-### About the open-core model
-
-See [README.md](README.md#-open-core-model) for details.
-
-### For Plausible users considering Qusto
-
-Qusto is ideal if you:
-- Need EU-only data hosting
-- Want e-commerce funnel analytics
-- Need AI search traffic tracking
-- Prefer European infrastructure
-
-Stick with Plausible if you:
-- Want a simpler, all-in-one solution
-- Don't need EU-specific hosting
-- Don't need e-commerce or AI tracking features
-
----
-
-## Acknowledgments
-
-- **Plausible Insights OÜ** - For creating and maintaining Plausible Analytics
-- **Plausible Contributors** - For their open-source contributions
-- **AGPLv3 License** - For enabling sustainable open-source business models
-
----
-
-*Last updated: January 2025*
+- **Plausible Insights OÜ**, for creating and maintaining Plausible Analytics
+- **Plausible contributors**, for their open-source work

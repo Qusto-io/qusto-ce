@@ -667,9 +667,9 @@ defmodule Plausible.Sites.IndexTest do
 
     test "traffic sort: pinning a site moves it to front, traffic order preserved for rest" do
       user = new_user()
-      site_low = new_site(owner: user, domain: "low.example.com")
-      site_mid = new_site(owner: user, domain: "mid.example.com")
-      site_high = new_site(owner: user, domain: "high.example.com")
+      site_low = new_site(owner: user, domain: "low.index-test.example.com")
+      site_mid = new_site(owner: user, domain: "mid.index-test.example.com")
+      site_high = new_site(owner: user, domain: "high.index-test.example.com")
 
       now = NaiveDateTime.utc_now()
 
@@ -767,8 +767,8 @@ defmodule Plausible.Sites.IndexTest do
 
     test "traffic desc -> traffic asc: reuses existing traffic map, no CH query" do
       user = new_user()
-      site_low = new_site(owner: user, domain: "low.example.com")
-      site_high = new_site(owner: user, domain: "high.example.com")
+      site_low = new_site(owner: user, domain: "low.index-test.example.com")
+      site_high = new_site(owner: user, domain: "high.index-test.example.com")
 
       now = NaiveDateTime.utc_now()
 

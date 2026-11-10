@@ -20,7 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        mix_env: ["test", "ce_test"]
+        # ADR-008 D3 (2026-11-10): ce_test only. The upstream `test` env compiles
+        # extra/lib, Plausible's proprietary code (extra/COPYING.txt: no rights to
+        # use). ce_test covers everything production ships (MIX_ENV=ce). The
+        # test-env steps below are kept, inert, to keep upstream syncs clean.
+        mix_env: ["ce_test"]
         postgres_image: ["postgres:18"]
         mix_test_partition: [1, 2, 3, 4, 5, 6]
 

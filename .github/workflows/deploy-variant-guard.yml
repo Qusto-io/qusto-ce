@@ -32,6 +32,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: No image may be built with the proprietary extra/lib (OC-03)
+        run: |
+          set -euo pipefail
+          # extra/lib is Plausible's proprietary code (extra/COPYING.txt: "no rights
+          # to use, distribute or otherwise exploit"). Only MIX_ENV=ce images are
+          # built or shipped. mix.exs still compiles extra/lib for the upstream
+          # `test`/`dev` envs; that is tracked as an open decision in ADR-008 D3.
+          hits="$(grep -rnE 'MIX_ENV[=:][[:space:]]*"?prod' \
+                    .github/workflows Dockerfile docker-compose*.yml 2>/dev/null \
+                  | grep -v 'deploy-variant-guard.yml' || true)"
+          if [ -n "${hits}" ]; then
+            echo "::error::An image build sets MIX_ENV=prod, which compiles Plausible's proprietary extra/lib:"
+            echo "${hits}"
+            exit 1
+          fi
+          echo "No image build uses MIX_ENV=prod."
+
       - name: Flag changes that production does not compile
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}

@@ -8,6 +8,8 @@ const isCI: boolean = !!process.env.CI
  */
 export default defineConfig({
   testDir: './tests',
+  // extra/ is not compiled. These specs drive Plausible's proprietary UI.
+  testIgnore: ['**/verification.spec.ts', '**/exploration.spec.ts'],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -72,7 +74,7 @@ export default defineConfig({
   webServer: {
     cwd: '..',
     command: 'mix phx.server',
-    env: { ...(process.env as Record<string, string>), MIX_ENV: 'e2e_test' },
+    env: { ...(process.env as Record<string, string>), MIX_ENV: 'ce_e2e' },
     gracefulShutdown: { signal: 'SIGTERM', timeout: 500 },
     url: `${baseURL}/api/system/health/ready`,
     reuseExistingServer: !isCI

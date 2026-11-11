@@ -37,8 +37,7 @@ jobs:
           set -euo pipefail
           # extra/lib is Plausible's proprietary code (extra/COPYING.txt: "no rights
           # to use, distribute or otherwise exploit"). Only MIX_ENV=ce images are
-          # built or shipped. mix.exs still compiles extra/lib for the upstream
-          # `test`/`dev` envs; that is tracked as an open decision in ADR-008 D3.
+          # built or shipped. No Mix env compiles extra/lib.
           hits="$(grep -rnE 'MIX_ENV[=:][[:space:]]*"?prod' \
                     .github/workflows Dockerfile docker-compose*.yml 2>/dev/null \
                   | grep -v 'deploy-variant-guard.yml' || true)"

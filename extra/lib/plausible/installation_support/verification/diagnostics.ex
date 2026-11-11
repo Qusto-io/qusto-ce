@@ -23,7 +23,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
 
   @type t :: %__MODULE__{}
 
-  @verify_manually_url "https://docs.qusto.io/troubleshoot-integration#how-to-manually-check-your-integration"
+  @verify_manually_url "https://plausible.io/docs/troubleshoot-integration#how-to-manually-check-your-integration"
 
   alias Plausible.InstallationSupport.Result
 
@@ -35,7 +35,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
     @enforce_keys [:message, :recommendation]
     defstruct [:message, :recommendation, inline_links: []]
 
-    @allowed_link_hosts ~w(docs.qusto.io plausible.io)
+    @required_link_prefix "https://plausible.io/"
 
     def new!(attrs) do
       message = Map.fetch!(attrs, :message)
@@ -57,20 +57,13 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
                 "Recommendation inline_links text #{inspect(text)} must appear exactly once in: #{inspect(recommendation)}"
         end
 
-        unless valid_doc_href?(href) do
+        if not String.starts_with?(href, @required_link_prefix) do
           raise ArgumentError,
-                "Recommendation inline_links href must use https and host in #{inspect(@allowed_link_hosts)}: #{inspect(href)}"
+                "Recommendation inline_links href must start with '#{@required_link_prefix}': #{inspect(href)}"
         end
       end
 
       struct!(__MODULE__, attrs)
-    end
-
-    defp valid_doc_href?(href) do
-      case URI.parse(href) do
-        %URI{scheme: "https", host: host} when host in @allowed_link_hosts -> true
-        _ -> false
-      end
     end
   end
 
@@ -87,7 +80,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
                                             %{
                                               text: "Learn more",
                                               href:
-                                                "https://docs.qusto.io/troubleshoot-integration#have-you-cleared-the-cache-of-your-site"
+                                                "https://plausible.io/docs/troubleshoot-integration#have-you-cleared-the-cache-of-your-site"
                                             }
                                           ]
                                         })
@@ -154,7 +147,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
                                inline_links: [
                                  %{
                                    text: "Learn more",
-                                   href: "https://docs.qusto.io/proxy/introduction"
+                                   href: "https://plausible.io/docs/proxy/introduction"
                                  }
                                ]
                              })
@@ -211,7 +204,7 @@ defmodule Plausible.InstallationSupport.Verification.Diagnostics do
                             %{
                               text: "Learn more",
                               href:
-                                "https://docs.qusto.io/troubleshoot-integration#does-your-site-use-a-content-security-policy-csp"
+                                "https://plausible.io/docs/troubleshoot-integration#does-your-site-use-a-content-security-policy-csp"
                             }
                           ]
                         })

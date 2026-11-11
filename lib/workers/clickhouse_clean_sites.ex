@@ -40,7 +40,7 @@ defmodule Plausible.Workers.ClickhouseCleanSites do
   # events_v2 also has Qusto projections (qusto_ai_search_proj / qusto_ecommerce_proj).
   # ClickHouse 24.7+ defaults lightweight_mutation_projection_mode to throw;
   # rebuild keeps projection parts consistent for remaining sites in the partition.
-  @settings if Mix.env() in [:test, :ce_test, :e2e_test],
+  @settings if Mix.env() in [:test, :ce_test, :e2e_test, :ce_e2e],
               do: [
                 mutations_sync: 2,
                 lightweight_deletes_sync: 2,

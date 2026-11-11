@@ -14,7 +14,10 @@ test.describe('API Integration Tests', () => {
     expect(response.status()).toBe(200)
   })
 
-  test('Revenue API endpoint returns data', async ({ request, page }) => {
+  // /api/stats* is not an API: it matches the dashboard route /:domain/*path
+  // and redirects to login. Skipped until it is rewritten against a keyed
+  // public API call (/api/v1/stats or /api/v2/query).
+  test.skip('Revenue API endpoint returns data', async ({ request, page }) => {
     // First, navigate to the page to establish session if needed
     await page.goto('/')
 
@@ -36,7 +39,13 @@ test.describe('API Integration Tests', () => {
     }
   })
 
-  test('Stats API endpoint returns valid JSON', async ({ request, page }) => {
+  // /api/stats* is not an API: it matches the dashboard route /:domain/*path
+  // and redirects to login. Skipped until it is rewritten against a keyed
+  // public API call (/api/v1/stats or /api/v2/query).
+  test.skip('Stats API endpoint returns valid JSON', async ({
+    request,
+    page
+  }) => {
     await page.goto('/')
 
     const response = await request.get(`${API_BASE_URL}/api/stats`, {
@@ -81,7 +90,12 @@ test.describe('API Integration Tests', () => {
     expect(successfulRequests.length).toBeGreaterThan(0)
   })
 
-  test('API handles invalid parameters gracefully', async ({ request }) => {
+  // /api/stats* is not an API: it matches the dashboard route /:domain/*path
+  // and redirects to login. Skipped until it is rewritten against a keyed
+  // public API call (/api/v1/stats or /api/v2/query).
+  test.skip('API handles invalid parameters gracefully', async ({
+    request
+  }) => {
     const response = await request.get(`${API_BASE_URL}/api/stats`, {
       params: {
         period: 'invalid',

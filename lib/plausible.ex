@@ -3,7 +3,7 @@ defmodule Plausible do
   Build-related macros
   """
 
-  @ce_builds [:ce, :ce_test, :ce_dev]
+  @ce_builds [:ce, :ce_test, :ce_dev, :ce_e2e, :dev, :test, :e2e_test]
 
   defmacro __using__(_) do
     quote do

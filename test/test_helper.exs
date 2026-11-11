@@ -4,7 +4,7 @@ end
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)
 
-if Mix.env() != :e2e_test do
+if Mix.env() not in [:e2e_test, :ce_e2e] do
   Mox.defmock(Plausible.HTTPClient.Mock, for: Plausible.HTTPClient.Interface)
 
   Mox.defmock(Plausible.DnsLookup.Mock,
@@ -33,11 +33,11 @@ for {app, _, _} <- Application.loaded_applications() do
 end
 
 case Mix.env() do
-  :ce_test ->
+  env when env in [:ce_test, :test] ->
     IO.puts("Test mode: Community Edition")
     ExUnit.configure(exclude: [:ee_only, :e2e | default_exclude])
 
-  :e2e_test ->
+  env when env in [:e2e_test, :ce_e2e] ->
     IO.puts("Test mode: End-to-End Tests")
     ExUnit.configure(exclude: [:test], include: [:e2e])
 

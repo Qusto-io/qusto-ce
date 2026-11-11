@@ -52,21 +52,18 @@ defmodule Plausible.MixProject do
   def cli do
     [
       preferred_envs: [
-        "test.e2e": :e2e_test,
-        "test.e2e.ui": :e2e_test
+        "test.e2e": :ce_e2e,
+        "test.e2e.ui": :ce_e2e
       ]
     ]
   end
 
-  # Specifies which paths to compile per environment.
-  defp elixirc_paths(env) when env in [:test, :e2e_test, :dev],
-    do: ["lib", "test/support", "extra/lib"]
-
-  defp elixirc_paths(env) when env in [:ce_test, :ce_dev],
+  # No env compiles extra/. Those files are Plausible's (extra/COPYING.txt).
+  # Local development is MIX_ENV=ce_dev.
+  defp elixirc_paths(env) when env in [:test, :ce_test, :e2e_test, :ce_e2e, :dev, :ce_dev],
     do: ["lib", "test/support"]
 
-  defp elixirc_paths(:ce), do: ["lib"]
-  defp elixirc_paths(_), do: ["lib", "extra/lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
   #
@@ -80,22 +77,22 @@ defmodule Plausible.MixProject do
       {:gen_smtp, "~> 1.3", override: true},
       {:bamboo_mua, "~> 0.2.0"},
       {:bcrypt_elixir, "~> 3.3"},
-      {:bypass, "~> 2.1", only: [:dev, :test, :ce_test, :e2e_test]},
+      {:bypass, "~> 2.1", only: [:dev, :test, :ce_test, :e2e_test, :ce_e2e]},
       {:ecto_ch, "~> 0.8.6"},
       {:cloak, "~> 1.1"},
       {:cloak_ecto, "~> 1.2"},
       {:combination, "~> 0.0.3"},
       {:cors_plug, "~> 3.0"},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
-      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
-      {:double, "~> 0.8.0", only: [:dev, :test, :ce_test, :ce_dev, :e2e_test]},
+      {:credo, "~> 1.7", only: [:dev, :test, :ce_test, :ce_dev], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test, :ce_test, :ce_dev], runtime: false},
+      {:mix_audit, "~> 2.1", only: [:dev, :test, :ce_test, :ce_dev], runtime: false},
+      {:sobelow, "~> 0.13", only: [:dev, :test, :ce_test, :ce_dev], runtime: false},
+      {:double, "~> 0.8.0", only: [:dev, :test, :ce_test, :ce_dev, :e2e_test, :ce_e2e]},
       {:ecto, "~> 3.13.5"},
       {:ecto_sql, "~> 3.13.2"},
       {:envy, "~> 1.1.1"},
       {:eqrcode, "~> 0.2.1"},
-      {:ex_machina, "~> 2.3", only: [:dev, :test, :ce_dev, :ce_test, :e2e_test]},
+      {:ex_machina, "~> 2.3", only: [:dev, :test, :ce_dev, :ce_test, :e2e_test, :ce_e2e]},
       {:excoveralls, "~> 0.10", only: :test},
       {:finch, "~> 0.23.0"},
       {:floki, "~> 0.36"},
@@ -107,7 +104,7 @@ defmodule Plausible.MixProject do
       {:hackney, "~> 1.8"},
       {:jason, "~> 1.3"},
       {:location, git: "https://github.com/plausible/location.git"},
-      {:mox, "~> 1.0", only: [:test, :ce_test, :e2e_test]},
+      {:mox, "~> 1.0", only: [:test, :ce_test, :e2e_test, :ce_e2e]},
       {:nanoid, "~> 2.1.0"},
       {:nimble_publisher, "~> 1.1"},
       {:nimble_csv, "~> 1.3"},
@@ -179,11 +176,11 @@ defmodule Plausible.MixProject do
        git: "https://github.com/aerosol/con_cache", branch: "ensure-dirty-ops-emit-telemetry"},
       {:req, "~> 0.7.4"},
       {:opentelemetry_req, "~> 1.0"},
-      {:happy_tcp, github: "ruslandoga/happy_tcp", only: [:ce, :ce_dev, :ce_test, :e2e_test]},
+      {:happy_tcp, github: "ruslandoga/happy_tcp", only: [:ce, :ce_dev, :ce_test, :ce_e2e]},
       {:ex_json_schema, "~> 0.11.1"},
       {:odgn_json_pointer, "~> 3.1.0"},
-      {:phoenix_bakery, "~> 0.1.2", only: [:ce, :ce_dev, :ce_test, :e2e_test]},
-      {:site_encrypt, github: "sasa1977/site_encrypt", only: [:ce, :ce_dev, :ce_test, :e2e_test]},
+      {:phoenix_bakery, "~> 0.1.2", only: [:ce, :ce_dev, :ce_test, :ce_e2e]},
+      {:site_encrypt, github: "sasa1977/site_encrypt", only: [:ce, :ce_dev, :ce_test, :ce_e2e]},
       {:phoenix_html_helpers, "~> 1.0"},
       {:libcluster, "~> 3.5"}
     ]

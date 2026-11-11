@@ -57,15 +57,14 @@ a reflexive `--ours` silently drops it. The `Makefile` conflict in slice 1 is
 exactly this — our branded header versus upstream's new `.PHONY` line. Correct
 answer is both.
 
-## Always run both test environments
+## Run the CE test environment
 
 ```sh
-MIX_ENV=test    mix test      # EE mode — compiles extra/lib
-MIX_ENV=ce_test mix test      # CE mode — does not
+MIX_ENV=ce_test mix test
 ```
 
-A change can pass one and fail the other; that has happened more than once. If
-`ce_test` reports `column u0.trial_expiry_date does not exist`, the local
+`extra/` is not in this tree. It remains on tags published before the removal.
+If `ce_test` reports `column u0.trial_expiry_date does not exist`, the local
 `ce_test` database is stale: `MIX_ENV=ce_test mix ecto.drop/create/migrate`.
 
 ## Lockfiles

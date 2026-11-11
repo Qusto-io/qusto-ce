@@ -8,8 +8,7 @@ name: Build Public Images GHCR
 #   ghcr.io/qusto-io/qusto-ce package, which held EE-variant builds.
 # - The release must be prod-proven: the tagged commit was deployed to
 #   production by deploy.yml at least 7 days ago and is still on main.
-# - MIX_ENV=ce only. A step asserts that no module defined in extra/lib
-#   (Plausible's proprietary code) is in the image.
+# - MIX_ENV=ce only. A step asserts that extra/ is absent from the tree.
 # - The final image is signed (cosign, keyless) and carries SLSA build
 #   provenance and an SPDX SBOM attestation.
 
@@ -141,29 +140,14 @@ jobs:
             APP_VERSION=${{ needs.gate.outputs.app_version }}
             BUILD_METADATA=${{ steps.meta.outputs.json }}
 
-      - name: Assert no extra/lib (proprietary) module is in the image
-        env:
-          DIGEST: ${{ steps.docker_build.outputs.digest }}
+      - name: Assert extra/ is absent from the tree
         run: |
           set -euo pipefail
-          docker pull -q "$GHCR_REPO@$DIGEST" >/dev/null
-          grep -rhoE '^\s*defmodule [A-Za-z0-9_.]+' extra/lib \
-            | awk '{print "Elixir." $2 ".beam"}' | sort -u > extra.txt
-          # Some upstream modules share a name across lib/ and extra/lib
-          # (defined under on_ee/on_ce); those are lib/ code, not extra/.
-          grep -rhoE '^\s*defmodule [A-Za-z0-9_.]+' lib \
-            | awk '{print "Elixir." $2 ".beam"}' | sort -u > lib.txt
-          comm -23 extra.txt lib.txt > extra_only.txt
-          docker run --rm --entrypoint sh "$GHCR_REPO@$DIGEST" \
-            -c 'ls /app/lib/plausible-*/ebin' | sort -u > image.txt
-          hits=$(comm -12 extra_only.txt image.txt || true)
-          echo "extra/lib-only modules checked: $(wc -l < extra_only.txt); image beams: $(wc -l < image.txt)"
-          if [ -n "$hits" ]; then
-            echo "::error::Image contains modules from Plausible's proprietary extra/lib:"
-            echo "$hits"
+          if [ -e extra ] || [ -e assets/js/dashboard/extra ]; then
+            echo "::error::extra/ or assets/js/dashboard/extra is present. Those trees are Plausible's and are not part of this commit."
             exit 1
           fi
-          echo "OK: no extra/lib module in the image"
+          echo "OK: extra trees are absent"
 
       - name: Export digest
         run: |
@@ -269,7 +253,7 @@ jobs:
           - **You get:** traffic analytics (sources, pages, locations, devices), goals, custom properties, the Stats API.
           - **Not included:** funnels, orders, revenue, products, Coverage, LTV, attribution and store connectors. Those are managed Qusto services.
           - **Upstream base:** \`${BASE}\`.
-          - **Build:** \`MIX_ENV=ce\`; Plausible's proprietary \`extra/\` code is not in the image (asserted in CI).
+          - **Build:** \`MIX_ENV=ce\`. \`extra/\` is not in this tree (asserted in CI). It remains on older tags.
           - **Verify:** \`cosign verify ${GHCR_REPO}@${DIGEST} --certificate-identity-regexp 'https://github.com/${GITHUB_REPOSITORY}/' --certificate-oidc-issuer https://token.actions.githubusercontent.com\`
 
           Community supported. Install guide: see DEPLOYMENT.md.

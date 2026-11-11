@@ -58,8 +58,7 @@ defmodule Plausible.MixProject do
     ]
   end
 
-  # No env compiles extra/. Those files are Plausible's (extra/COPYING.txt).
-  # Local development is MIX_ENV=ce_dev.
+  # extra/ is not in this tree. Local development is MIX_ENV=ce_dev.
   defp elixirc_paths(env) when env in [:test, :ce_test, :e2e_test, :ce_e2e, :dev, :ce_dev],
     do: ["lib", "test/support"]
 

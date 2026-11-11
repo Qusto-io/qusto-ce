@@ -16,7 +16,9 @@ defmodule Plausible.DataMigration.PurgeIngestReplay do
 
   alias Plausible.IngestRepo
 
-  @settings if Mix.env() in [:test, :ce_test, :e2e_test], do: [mutations_sync: 2], else: []
+  @settings if Mix.env() in [:test, :ce_test, :e2e_test, :ce_e2e],
+              do: [mutations_sync: 2],
+              else: []
 
   @confirmation_phrase "REMOVE REPLAYED INGEST"
 

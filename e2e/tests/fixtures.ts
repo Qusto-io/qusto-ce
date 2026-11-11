@@ -81,16 +81,16 @@ export async function register({
   await expectLiveViewConnected(page)
 
   await expect(
-    page.getByRole('button', { name: 'Start my free trial' })
+    page.getByRole('button', { name: 'Create my account' })
   ).toBeVisible()
 
   await page.getByLabel('Full name').fill(user.name)
   await page.getByLabel('Email').fill(user.email)
   await page.getByLabel('Password', { exact: true }).fill(user.password)
   await expect(
-    page.getByRole('button', { name: 'Start my free trial' })
+    page.getByRole('button', { name: 'Create my account' })
   ).toBeEnabled()
-  await page.getByRole('button', { name: 'Start my free trial' }).click()
+  await page.getByRole('button', { name: 'Create my account' }).click()
 
   await expect(
     page.getByRole('heading', { name: 'Check your email' })

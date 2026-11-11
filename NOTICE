@@ -11,12 +11,12 @@ License:   GNU Affero General Public License v3.0 (AGPL-3.0)
 Source:    https://github.com/plausible/analytics
 
 Qusto CE is built upon and derived from Plausible Analytics.
-Modifications made by Qusto, Inc.:
+Modifications made by Qusto, Inc. are listed in MODIFICATIONS.md, including:
   - ClickHouse database renamed from plausible_events_db to qusto
   - JavaScript tracker global aliased: window.qusto (primary), window.plausible (compat shim)
   - Custom event extensions for e-commerce: product_view, add_to_cart, purchase
   - AI referrer detection for ChatGPT, Perplexity, Claude, Gemini acquisition channels
-  - CE-EE internal API bridge endpoints
+  - Geo-name fields on the public stats API. There is no private bridge and no separate internal API
 
 All modifications are licensed under AGPL-3.0 in accordance with the upstream license.
 

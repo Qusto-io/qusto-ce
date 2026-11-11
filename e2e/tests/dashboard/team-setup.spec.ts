@@ -137,8 +137,10 @@ test('add another button moves focus to the new row and hides once the row limit
   await expectLiveViewConnected(page)
 
   const addAnother = page.getByRole('button', { name: 'Add another' })
-  // 10 is the team member limit for a trial account
-  const maxRows = 10
+  // The CE build has no team member limit, so team setup caps the form at
+  // @max_rows_when_unlimited (20) in PlausibleWeb.Live.TeamSetup. The EE
+  // trial limit was 10.
+  const maxRows = 20
 
   await expect(addAnother).toBeVisible()
 

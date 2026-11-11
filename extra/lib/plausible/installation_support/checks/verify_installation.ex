@@ -17,9 +17,6 @@ defmodule Plausible.InstallationSupport.Checks.VerifyInstallation do
                     {:error, _} -> ""
                   end)
 
-  # Global function name the bundled verifier assigns to `window`
-  @verifier_global_function "verifyQustoInstallation"
-
   # Puppeteer wrapper function that executes the vanilla JS verifier code
   @puppeteer_wrapper_code """
   export default async function({ page, context: { url, userAgent, maxAttempts, timeoutBetweenAttemptsMs, ...functionContext } }) {
@@ -30,9 +27,9 @@ defmodule Plausible.InstallationSupport.Checks.VerifyInstallation do
       const responseHeaders = response.headers()
 
       async function verify() {
-        await page.evaluate(() => {#{@verifier_code}}) // injects window.#{@verifier_global_function}
+        await page.evaluate(() => {#{@verifier_code}}) // injects window.verifyPlausibleInstallation
         return await page.evaluate(
-          (c) => window.#{@verifier_global_function}(c),
+          (c) => window.verifyPlausibleInstallation(c),
           { ...functionContext, responseHeaders }
         );
       }
@@ -90,9 +87,6 @@ defmodule Plausible.InstallationSupport.Checks.VerifyInstallation do
 
   @impl true
   def report_progress_as, do: "We're verifying that your visitors are being counted correctly"
-
-  @doc false
-  def verifier_global_function, do: @verifier_global_function
 
   @impl true
   def perform(%State{url: url} = state, _opts) do
@@ -182,8 +176,8 @@ defmodule Plausible.InstallationSupport.Checks.VerifyInstallation do
     do: [
       disallowed_by_csp: data["disallowedByCsp"],
       tracker_is_in_html: data["trackerIsInHtml"],
-      plausible_is_on_window: data["qustoIsOnWindow"],
-      plausible_is_initialized: data["qustoIsInitialized"],
+      plausible_is_on_window: data["plausibleIsOnWindow"],
+      plausible_is_initialized: data["plausibleIsInitialized"],
       plausible_version: data["plausibleVersion"],
       plausible_variant: data["plausibleVariant"],
       test_event: data["testEvent"],

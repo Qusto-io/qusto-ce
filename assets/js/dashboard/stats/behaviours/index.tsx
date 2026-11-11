@@ -57,26 +57,14 @@ export const BEHAVIOURS_METRICS_HIDDEN_ON_MOBILE: Metric[] = [
   'average_revenue'
 ]
 
-/*global BUILD_EXTRA*/
-/*global require*/
 function maybeRequireFunnels(): {
   default: ComponentType<{ funnelName: string }> | null
 } {
-  if (BUILD_EXTRA) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    return require('../../extra/funnel')
-  } else {
-    return { default: null }
-  }
+  return { default: null }
 }
 
 function maybeRequireExploration(): { default: ComponentType | null } {
-  if (BUILD_EXTRA) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    return require('../../extra/exploration')
-  } else {
-    return { default: null }
-  }
+  return { default: null }
 }
 
 const Funnel = maybeRequireFunnels().default

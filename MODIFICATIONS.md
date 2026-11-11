@@ -11,6 +11,7 @@ Qusto Community Edition is derived from Plausible Analytics. The upstream merge-
 - Custom events: `product_view`, `add_to_cart`, `purchase`
 - AI referrer detection for ChatGPT, Perplexity, Claude, Gemini
 - Geo-name fields on the public stats API. There is no private bridge between this repository and the managed service
+- `POST /api/v1/sites` and `DELETE /api/v1/sites/:domain` write and remove a site row for managed Qusto. The token is `QUSTO_PROVISION_TOKEN`. An empty timezone is stored as `Europe/Berlin`. The write is `sites` plus `site_memberships` for team 1 and user 1. It does not call `Plausible.Sites.create/3`
 
 The files under `extra/` are Plausible's. `extra/COPYING.txt` is unchanged. This record does not claim a right to those files.
 

@@ -23,7 +23,7 @@ defmodule Plausible.PromEx do
   ]
 
   @impl true
-  if Mix.env() in [:test, :ce_test, :e2e_test] do
+  if Mix.env() in [:test, :ce_test, :e2e_test, :ce_e2e] do
     # PromEx tries to query Oban's DB tables in order to retrieve metrics.
     # During tests, however, this is pointless as Oban is in manual mode,
     # and that leads to connection ownership clashes.

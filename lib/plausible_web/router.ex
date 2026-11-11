@@ -104,7 +104,7 @@ defmodule PlausibleWeb.Router do
     end
   end
 
-  if Mix.env() in [:dev, :ce_dev, :e2e_test] do
+  if Mix.env() in [:dev, :ce_dev, :e2e_test, :ce_e2e] do
     forward "/sent-emails", Bamboo.SentEmailViewerPlug
     forward "/sent-emails-api", Bamboo.SentEmailApiPlug
   end
@@ -161,7 +161,7 @@ defmodule PlausibleWeb.Router do
   end
 
   # Routes for plug integration testing
-  if Mix.env() in [:test, :ce_test, :e2e_test] do
+  if Mix.env() in [:test, :ce_test, :e2e_test, :ce_e2e] do
     scope "/plug-tests", PlausibleWeb do
       scope [] do
         pipe_through :browser
@@ -180,17 +180,13 @@ defmodule PlausibleWeb.Router do
     end
   end
 
-  # Routes for E2E testing
-  on_ee do
-    if Mix.env() == :e2e_test do
-      scope "/e2e-tests", PlausibleWeb do
-        pipe_through :api
+  # Routes for E2E testing. Present on the CE e2e env, which does not compile extra/.
+  if Mix.env() in [:e2e_test, :ce_e2e] do
+    scope "/e2e-tests", PlausibleWeb do
+      pipe_through :api
 
-        post "/stats", E2EController, :populate_stats
-        post "/funnel", E2EController, :create_funnel
-        post "/goal", E2EController, :create_goal
-        put "/verification", E2EController, :put_verification_scenario
-      end
+      post "/stats", E2EController, :populate_stats
+      post "/goal", E2EController, :create_goal
     end
   end
 

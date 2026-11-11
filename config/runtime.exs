@@ -20,7 +20,7 @@ if config_env() == :ce do
   if File.exists?(env_dev), do: Envy.load([env_dev])
 end
 
-if config_env() == :e2e_test do
+if config_env() in [:e2e_test, :ce_e2e] do
   Envy.load(["config/.env.e2e_test"])
 end
 

@@ -17,7 +17,7 @@ env:
 jobs:
   build:
     name: "Build and test (${{ matrix.mix_env }}, ${{ matrix.postgres_image }})"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         # ADR-008 D3 (2026-11-10): ce_test only. No Mix env compiles extra/
@@ -129,7 +129,7 @@ jobs:
 
   e2e:
     name: End-to-end tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       MIX_ENV: ce_e2e
@@ -260,7 +260,7 @@ jobs:
     if: ${{ !cancelled() }}
     needs: [e2e]
     timeout-minutes: 15
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -286,7 +286,7 @@ jobs:
     name: static
     env:
       MIX_ENV: ce_test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -329,7 +329,7 @@ jobs:
     name: security
     env:
       MIX_ENV: ce_test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
         with:

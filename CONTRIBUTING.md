@@ -9,7 +9,7 @@ We welcome everyone to contribute to Qusto Analytics! This document helps you un
 - [Understanding Qusto's Architecture](#understanding-qustos-architecture)
 - [Development Setup](#development-setup)
 - [Finding a Task](#finding-a-task)
-- [Contributor License Agreement (CLA)](#contributor-license-agreement-cla)
+- [Licence of contributions](#licence-of-contributions)
 - [Code Guidelines](#code-guidelines)
 - [Pull Request Process](#pull-request-process)
 
@@ -42,9 +42,8 @@ These repositories are **not open source** and are developed separately:
 ### What This Means for Contributors
 
 1. **Your contributions remain AGPLv3** - All code in this repo is open source
-2. **Integration with premium services** - We may integrate your contributions with proprietary services via APIs
-3. **You retain copyright** - Your contributions remain yours, licensed under AGPLv3
-4. **CLA for certain contributions** - Required when contributions might be used in premium feature integration (see below)
+2. **You retain copyright** - Your contributions remain yours, licensed under AGPLv3
+3. **Inbound = outbound** - Contributions are accepted under the GNU AGPL v3.0. They are not used in closed software. See [Licence of contributions](#licence-of-contributions)
 
 ---
 
@@ -152,8 +151,6 @@ New features need to be discussed first. Please:
 2. Open a new discussion to propose your feature
 3. Wait for feedback before starting implementation
 
-**Important:** Some features may be better suited for premium repositories. We'll help guide you during the discussion.
-
 ### What Belongs in This Repository
 
 | Belongs Here ✅ | Belongs in Premium Repos ❌ |
@@ -167,44 +164,9 @@ New features need to be discussed first. Please:
 
 ---
 
-## Contributor License Agreement (CLA)
+## Licence of contributions
 
-For certain contributions, we require a Contributor License Agreement (CLA).
-
-### When CLA is Required
-
-- New API endpoints that premium features might integrate with
-- Database schema changes
-- Core event processing logic
-- Authentication/authorization changes
-
-### When CLA is NOT Required
-
-- Documentation improvements
-- Bug fixes in existing code
-- UI/UX improvements (styling, layout, accessibility)
-- Self-hosting guides and examples
-- Test improvements
-- Typo fixes
-
-### Why We Need a CLA
-
-The CLA allows us to:
-1. Integrate open-source contributions with proprietary premium features
-2. Ensure legal clarity for both parties
-3. Protect your rights as a contributor
-4. Maintain our ability to offer premium services
-
-**Your contributions remain AGPLv3 licensed** - the CLA does not change this. It simply grants us permission to use your contribution in our premium services as well.
-
-### How to Sign
-
-When you open a pull request that requires a CLA:
-1. Our bot will comment with a link to the CLA
-2. Read and sign the CLA electronically
-3. Your PR will be updated automatically
-
-[View the full CLA text](CLA.md) *(Coming soon)*
+Contributions are accepted under the GNU AGPL v3.0, the licence of this repository (inbound = outbound). Each commit must carry a `Signed-off-by:` line certifying the Developer Certificate of Origin 1.1 (https://developercertificate.org/). We do not ask for a CLA, and we do not use contributions to this repository in closed software.
 
 ---
 
@@ -233,12 +195,11 @@ When you open a pull request that requires a CLA:
 
 ### API Design
 
-If your contribution adds or modifies APIs that premium features might use:
+If your contribution adds or modifies a public API:
 
 1. **Document thoroughly** - Include clear descriptions and examples
 2. **Add OpenAPI specs** - Update API documentation
 3. **Consider backward compatibility** - Avoid breaking changes
-4. **CLA required** - See section above
 
 ### Testing
 
@@ -257,9 +218,13 @@ type(scope): short description
 Longer description if needed.
 
 Fixes #123
+
+Signed-off-by: Your Name <you@example.com>
 ```
 
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+The `Signed-off-by` line is the Developer Certificate of Origin. Use your own name and email.
 
 ---
 
@@ -269,7 +234,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 2. **Make changes** - Follow the code guidelines above
 3. **Test locally** - Run tests and verify self-hosted deployment works
 4. **Open PR** - Use our [PR template](.github/PULL_REQUEST_TEMPLATE.md)
-5. **Sign CLA if needed** - Our bot will guide you
+5. **Signed-off-by** - Every commit in the pull request carries the DCO trailer. CI checks this
 6. **Address feedback** - Respond to review comments
 7. **Merge** - Once approved, we'll merge your PR
 

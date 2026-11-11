@@ -787,7 +787,9 @@ test('pages breakdown modal', async ({ page, request }) => {
   })
 })
 
-test('pages breakdown with a pageview goal filter applied', async ({
+// Revenue goals are EE-only: the goal form renders the revenue toggle only
+// when ee?() (PlausibleWeb.Live.GoalSettings.Form). This build is CE.
+test.skip('pages breakdown with a pageview goal filter applied', async ({
   page,
   request
 }) => {
@@ -1238,7 +1240,9 @@ test('locations breakdown', async ({ page, request }) => {
   })
 })
 
-test('locations breakdown with a revenue goal filter applied', async ({
+// Revenue goals are EE-only: the goal form renders the revenue toggle only
+// when ee?() (PlausibleWeb.Live.GoalSettings.Form). This build is CE.
+test.skip('locations breakdown with a revenue goal filter applied', async ({
   page,
   request
 }) => {
@@ -1651,7 +1655,9 @@ test('devices breakdown', async ({ page, request }) => {
   })
 })
 
-test('devices breakdown with a revenue goal filter applied', async ({
+// Revenue goals are EE-only: the goal form renders the revenue toggle only
+// when ee?() (PlausibleWeb.Live.GoalSettings.Form). This build is CE.
+test.skip('devices breakdown with a revenue goal filter applied', async ({
   page,
   request
 }) => {

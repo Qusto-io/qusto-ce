@@ -461,13 +461,16 @@ defmodule PlausibleWeb.StatsController do
       |> Map.new()
 
   defp dbip?() do
-    on_ee do
-      false
-    else
-      Plausible.Geo.database_type()
+    type = Plausible.Geo.database_type() |> to_string()
+
+    path =
+      :plausible
+      |> Application.get_env(Plausible.Geo, [])
+      |> Keyword.get(:path, "")
       |> to_string()
-      |> String.starts_with?("DBIP")
-    end
+      |> String.downcase()
+
+    String.starts_with?(type, "DBIP") or String.contains?(path, "dbip")
   end
 
   defp title(%{path_info: ["plausible.io"]}, _) do

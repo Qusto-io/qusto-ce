@@ -916,7 +916,8 @@ test('props breakdown', async ({ page, request }) => {
   })
 })
 
-test('funnels', async ({ page, request }) => {
+// Funnels live in extra/, which this build does not compile.
+test.skip('funnels', async ({ page, request }) => {
   const report = getReport(page)
   const { domain } = await setupSite({ page, request })
 
@@ -1043,7 +1044,7 @@ test('funnels', async ({ page, request }) => {
   })
 })
 
-test('funnels - comparisons', async ({ page, request }) => {
+test.skip('funnels - comparisons', async ({ page, request }) => {
   const report = getReport(page)
   const { domain } = await setupSite({ page, request })
 

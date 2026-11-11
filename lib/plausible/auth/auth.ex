@@ -16,7 +16,7 @@ defmodule Plausible.Auth do
   require Logger
 
   case Mix.env() do
-    :e2e_test ->
+    env when env in [:e2e_test, :ce_e2e] ->
       @ip_rate_limit 100_000
       @user_rate_limit 100_000
       @activation_limit 100_000

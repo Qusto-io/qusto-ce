@@ -15,12 +15,12 @@ It is the event engine and traffic dashboard that managed Qusto also runs.
 | Build | How | What is in it |
 |---|---|---|
 | **CE** (`MIX_ENV=ce`) | `Dockerfile` default; `docker compose` in this repo; the production deploy | `lib/` only. Traffic analytics, goals, custom properties, Stats API, Qusto branding and privacy defaults |
-| Upstream test/dev envs (`test`, `dev`) | `mix test`, local dev | also compile `extra/lib` (see below). **Never built into an image** |
+| Local and CI (`ce_dev`, `ce_test`, `dev`, `test`) | `mix test`, local dev | the same `lib/` tree. **Never built into an image** |
 
-`extra/` is **Plausible's proprietary code**, kept only because it is in the
-upstream tree. `extra/COPYING.txt` grants no rights to use, distribute or
-otherwise exploit it. No Qusto image includes it: `deploy-variant-guard.yml`
-fails any PR that builds an image with the `prod` variant.
+`extra/` is absent at this commit. It remains on tags published before the
+removal. Those files are Plausible's. `deploy-variant-guard.yml` fails the
+build if `extra/` or `assets/js/dashboard/extra/` is present, and it fails any
+PR that builds an image with the `prod` variant.
 
 **Not in this repository:** orders, revenue, products, the Coverage figure,
 customer LTV, cart abandonment, attribution and the Shopify/WooCommerce

@@ -1,18 +1,8 @@
 name: Deploy Variant Guard
 
-# Production (qusto-prod-1) runs a MIX_ENV=ce image, which excludes BOTH extra/lib/
-# (Elixir) and assets/js/dashboard/extra/ (JS, via BUILD_EXTRA=false).
-#
-# `deploy.yml` builds with
-# `docker build .` and no --build-arg, so the Dockerfile default `ARG MIX_ENV=ce`
-# applies. `mix.exs` sets `elixirc_paths(:ce), do: ["lib"]`, so `extra/lib` is
-# NEVER compiled into what production runs.
-#
-# A change under extra/lib/ is therefore invisible in production. This guard makes
-# that explicit at review time so an EE-only change can't be reported as "deployed
-# and live" on the strength of a green CE deploy.
-#
-# To land an intentional EE-only change, add the `ee-only` label to the PR.
+# Production (qusto-prod-1) runs a MIX_ENV=ce image.
+# extra/ and assets/js/dashboard/extra/ are not in this tree. Tags published
+# before the removal still contain them. This guard fails if either path returns.
 
 on:
   pull_request:
@@ -35,68 +25,21 @@ jobs:
       - name: No image may be built with the proprietary extra/lib (OC-03)
         run: |
           set -euo pipefail
-          # extra/lib is Plausible's proprietary code (extra/COPYING.txt: "no rights
-          # to use, distribute or otherwise exploit"). Only MIX_ENV=ce images are
-          # built or shipped. No Mix env compiles extra/lib.
           hits="$(grep -rnE 'MIX_ENV[=:][[:space:]]*"?prod' \
                     .github/workflows Dockerfile docker-compose*.yml 2>/dev/null \
                   | grep -v 'deploy-variant-guard.yml' || true)"
           if [ -n "${hits}" ]; then
-            echo "::error::An image build sets MIX_ENV=prod, which compiles Plausible's proprietary extra/lib:"
+            echo "::error::An image build sets MIX_ENV=prod. Production ships MIX_ENV=ce:"
             echo "${hits}"
             exit 1
           fi
           echo "No image build uses MIX_ENV=prod."
 
-      - name: Flag changes that production does not compile
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+      - name: Fail if extra/ is present
         run: |
           set -euo pipefail
-
-          # Paths the production MIX_ENV=ce build does NOT ship. There are TWO
-          # independent exclusion mechanisms and they are easy to conflate:
-          #
-          #   extra/lib/                  Elixir. mix.exs elixirc_paths(:ce) => ["lib"],
-          #                               so these modules are never compiled.
-          #   assets/js/dashboard/extra/  JavaScript. config/ce.exs builds with
-          #                               --define:BUILD_EXTRA=false, and the import
-          #                               sites are guarded by `if (BUILD_EXTRA)`, so
-          #                               esbuild dead-code-eliminates the whole tree.
-          #
-          # The JS path was missing until 2026-09-21, and its absence is exactly how a
-          # funnel-tooltip XSS fix (PR #152) got described as live when the vulnerable
-          # file is not in the production bundle at all. Same trap, second time.
-          EXCLUDED_PREFIXES="extra/lib/ assets/js/dashboard/extra/"
-
-          changed="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}")"
-
-          # Accumulate through a file: building a multi-line shell string inline
-          # would need a literal newline, which ends this YAML block scalar.
-          hits_file="$(mktemp)"
-          printf '%s\n' "${changed}" > "${hits_file}.all"
-          : > "${hits_file}"
-          for prefix in ${EXCLUDED_PREFIXES}; do
-            grep "^${prefix}" "${hits_file}.all" >> "${hits_file}" || true
-          done
-          ee_only_changes="$(cat "${hits_file}")"
-
-          if [ -z "${ee_only_changes}" ]; then
-            echo "No changes under: ${EXCLUDED_PREFIXES}"
-            echo "Production ships everything in this PR."
-            exit 0
+          if [ -e extra ] || [ -e assets/js/dashboard/extra ]; then
+            echo "::error::extra/ or assets/js/dashboard/extra is present. Those trees are not part of HEAD."
+            exit 1
           fi
-
-          echo "Files in this PR that the production CE build does not ship:"
-          printf '  %s\n' ${ee_only_changes}
-          echo ""
-
-          if printf '%s' "${LABELS}" | tr ',' '\n' | grep -qx "ee-only"; then
-            echo "::notice title=EE-only change acknowledged::This PR changes paths the production MIX_ENV=ce build excludes. Labelled 'ee-only', so this is intentional — do not describe it as live on qusto-prod-1 after merge."
-            exit 0
-          fi
-
-          echo "::error title=Change will not reach production::This PR modifies paths excluded from the MIX_ENV=ce build that qusto-prod-1 runs — extra/lib/ (mix.exs elixirc_paths(:ce)) and/or assets/js/dashboard/extra/ (config/ce.exs --define:BUILD_EXTRA=false). Merging deploys a functionally identical artifact. If that is intended, add the 'ee-only' label and do not report the change as live. If it must reach production, move the code out of the excluded path."
-          exit 1
+          echo "OK: extra trees are absent"

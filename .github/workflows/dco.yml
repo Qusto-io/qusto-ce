@@ -1,0 +1,35 @@
+name: DCO
+
+on:
+  pull_request:
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  dco:
+    name: Signed-off-by
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Every non-merge commit has a Signed-off-by line
+        run: |
+          set -euo pipefail
+          base="${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha }}"
+          missing=0
+          while read -r sha; do
+            [ -z "${sha}" ] && continue
+            if ! git log -1 --format='%b' "${sha}" | grep -q '^Signed-off-by: '; then
+              echo "::error::${sha} $(git log -1 --format='%s' "${sha}") has no Signed-off-by line"
+              missing=1
+            fi
+          done < <(git rev-list --no-merges "${base}..HEAD")
+          if [ "${missing}" -ne 0 ]; then
+            echo "Add a Signed-off-by trailer. See CONTRIBUTING.md."
+            exit 1
+          fi
+          echo "DCO sign-off present on every non-merge commit in this pull request."

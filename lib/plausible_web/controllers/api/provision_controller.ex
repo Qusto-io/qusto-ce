@@ -6,6 +6,9 @@ defmodule PlausibleWeb.Api.ProvisionController do
   or call `Plausible.Sites.create/3`. It writes `sites` and `site_memberships`
   only, for team_id 1 and user_id 1, which is the production row those
   foreign keys already point at.
+
+  It never touches a site that belongs to another team: create answers 409
+  and delete answers 404 for such a domain, and neither writes anything.
   """
 
   use PlausibleWeb, :controller
@@ -35,6 +38,9 @@ defmodule PlausibleWeb.Api.ProvisionController do
 
           :bad_timezone ->
             send_resp(conn, 400, "")
+
+          {:error, :owned_by_another_team} ->
+            send_resp(conn, 409, "")
 
           {:error, reason} ->
             Logger.error("provision create failed: #{inspect(reason)}")
@@ -126,6 +132,7 @@ defmodule PlausibleWeb.Api.ProvisionController do
       tz == "" -> {:ok, @default_timezone}
       byte_size(tz) > 64 -> :bad_timezone
       String.contains?(tz, ["\n", "\r", "\0"]) -> :bad_timezone
+      not Plausible.Timezones.valid?(tz) -> :bad_timezone
       true -> {:ok, tz}
     end
   end
@@ -136,10 +143,17 @@ defmodule PlausibleWeb.Api.ProvisionController do
         """
         INSERT INTO sites (domain, timezone, public, inserted_at, updated_at, team_id)
         VALUES ($1, $2, false, NOW(), NOW(), 1)
-        ON CONFLICT (domain) DO UPDATE SET team_id = 1
+        ON CONFLICT (domain) DO NOTHING
         """,
         [domain, timezone]
       )
+
+      # A repeat for a team-1 site is a no-op. A domain another team owns is
+      # left alone: the old `DO UPDATE SET team_id = 1` moved it to team 1.
+      case Repo.query!("SELECT team_id FROM sites WHERE domain = $1", [domain]) do
+        %{rows: [[1]]} -> :ok
+        _ -> Repo.rollback(:owned_by_another_team)
+      end
 
       Repo.query!(
         """
@@ -157,12 +171,14 @@ defmodule PlausibleWeb.Api.ProvisionController do
       Repo.query!(
         """
         DELETE FROM site_memberships
-        WHERE site_id = (SELECT id FROM sites WHERE domain = $1)
+        WHERE site_id = (SELECT id FROM sites WHERE domain = $1 AND team_id = 1)
         """,
         [domain]
       )
 
-      %{num_rows: n} = Repo.query!("DELETE FROM sites WHERE domain = $1", [domain])
+      %{num_rows: n} =
+        Repo.query!("DELETE FROM sites WHERE domain = $1 AND team_id = 1", [domain])
+
       n
     end)
   end

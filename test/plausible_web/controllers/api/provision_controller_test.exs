@@ -118,6 +118,63 @@ defmodule PlausibleWeb.Api.ProvisionControllerTest do
     assert counts() == before
   end
 
+  test "an unknown timezone is rejected", %{conn: conn} do
+    domain = "badtz-#{System.unique_integer([:positive])}.example"
+    before = counts()
+
+    conn =
+      conn
+      |> auth()
+      |> post("/api/v1/sites", %{"domain" => domain, "timezone" => "Mars/Olympus_Mons"})
+
+    assert response(conn, 400) == ""
+    assert counts() == before
+    assert site_row(domain) == nil
+  end
+
+  test "a site owned by another team is neither moved nor deleted", %{conn: conn} do
+    domain = "other-#{System.unique_integer([:positive])}.example"
+    other_team_id = insert_other_team()
+
+    Plausible.Repo.query!(
+      """
+      INSERT INTO sites (domain, timezone, public, inserted_at, updated_at, team_id)
+      VALUES ($1, 'UTC', false, NOW(), NOW(), $2)
+      """,
+      [domain, other_team_id]
+    )
+
+    before = counts()
+
+    conn = conn |> auth() |> post("/api/v1/sites", %{"domain" => domain})
+    assert response(conn, 409) == ""
+    assert site_row(domain) == {"UTC", other_team_id, false}
+    assert membership_count(domain) == 0
+    assert counts() == before
+
+    conn = build_conn() |> auth() |> delete("/api/v1/sites/#{domain}")
+    assert response(conn, 404) == ""
+    assert site_row(domain) == {"UTC", other_team_id, false}
+    assert counts() == before
+  end
+
+  defp insert_other_team do
+    %{rows: [[id]]} =
+      Plausible.Repo.query!("""
+      INSERT INTO teams (
+        identifier, name, trial_expiry_date, accept_traffic_until,
+        allow_next_upgrade_override, inserted_at, updated_at
+      )
+      VALUES (
+        gen_random_uuid(), 'Other Team', CURRENT_DATE + 30, CURRENT_DATE + 44,
+        false, NOW(), NOW()
+      )
+      RETURNING id
+      """)
+
+    id
+  end
+
   defp auth(conn), do: put_req_header(conn, "authorization", "Bearer #{@token}")
 
   defp counts do

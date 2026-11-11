@@ -12,6 +12,6 @@ Qusto Community Edition is derived from Plausible Analytics. The upstream merge-
 - AI referrer detection for ChatGPT, Perplexity, Claude, Gemini
 - Geo-name fields on the public stats API. There is no private bridge between this repository and the managed service
 
-The files under `extra/` are Plausible's. `extra/COPYING.txt` is unchanged. This record does not claim a right to those files.
+`extra/` is not in this tree. It remains on tags published before this removal. Those files are Plausible's, and this record does not claim a right to them. No Mix environment compiles them.
 
 All modifications in this repository are under the GNU AGPL v3.0, the same licence as the upstream work.

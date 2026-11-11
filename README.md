@@ -10,7 +10,7 @@ Open source so you can trust it. Managed so you don't have to run it.
 
 Data processing agreement: https://qusto.io/dpa/
 
-Local development uses `MIX_ENV=ce_dev` (live reload). `MIX_ENV=dev` is the same Community Edition build. No Mix environment compiles `extra/`.
+Local development uses `MIX_ENV=ce_dev` (live reload). `MIX_ENV=dev` is the same Community Edition build. `extra/` is not in this tree. It remains on tags published before the removal.
 
 ## Origin and licence
 

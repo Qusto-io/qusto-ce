@@ -34,18 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # elixir.yml `build` matrix
-          - prefix: ""
-            mix_env: test
-            deps_only: true
-            tracker: true
-            paths: |
-              deps
-              _build
-              tracker/node_modules
-              priv/tracker/js
-              priv/tracker/installation_support
-              cached
+          # elixir.yml `build` matrix. ce_test only: the old `test` env compiled extra/.
           - prefix: ""
             mix_env: ce_test
             deps_only: true
@@ -59,7 +48,7 @@ jobs:
               cached
           # elixir.yml `e2e`
           - prefix: "e2e-"
-            mix_env: e2e_test
+            mix_env: ce_e2e
             deps_only: true
             tracker: true
             paths: |
@@ -73,7 +62,7 @@ jobs:
               cached
           # elixir.yml `static`
           - prefix: "static-"
-            mix_env: test
+            mix_env: ce_test
             deps_only: false
             tracker: false
             paths: |
@@ -82,7 +71,7 @@ jobs:
               priv/plts
           # elixir.yml `security`
           - prefix: "security-"
-            mix_env: test
+            mix_env: ce_test
             deps_only: false
             tracker: false
             paths: |

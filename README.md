@@ -12,6 +12,8 @@ Data processing agreement: https://qusto.io/dpa/
 
 This readme names no company. The sections below keep the upstream Plausible Analytics readme. Sentences that stated a compliance badge are replaced with the facts above.
 
+Local development uses `MIX_ENV=ce_dev` (live reload). `MIX_ENV=dev` is the same Community Edition build. No Mix environment compiles `extra/`.
+
 # Upstream readme: Plausible Analytics
 
 # Plausible Analytics

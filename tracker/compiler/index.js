@@ -92,7 +92,7 @@ export async function compileFile(variant, options) {
     code = wrapInstantlyEvaluatingFunction(code)
   }
 
-  code = minify(code, globals, variant)
+  code = trackerNotice() + minify(code, globals, variant)
 
   if (variant.npm_package) {
     code = addExports(code)
@@ -103,6 +103,10 @@ export async function compileFile(variant, options) {
   } else {
     fs.writeFileSync(outputPath(variant, options), code)
   }
+}
+
+function trackerNotice() {
+  return '/*! Copyright 2020 Plausible Insights OÜ. The Qusto tracker is derived from the Plausible Analytics tracker and is under the MIT License. See tracker/npm_package/LICENSE.md */\n'
 }
 
 function wrapInstantlyEvaluatingFunction(baseCode) {
@@ -118,7 +122,7 @@ export function compileWebSnippet() {
   const code = fs.readFileSync(relPath('../src/web-snippet.js')).toString()
   return `
 <script>
-  ${minify(code)}
+  ${trackerNotice()}${minify(code)}
   plausible.init()
 </script>
   `

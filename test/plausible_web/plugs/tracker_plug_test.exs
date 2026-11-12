@@ -119,12 +119,19 @@ defmodule PlausibleWeb.TrackerPlugTest do
         ] do
       test "variant #{variant} is available" do
         script = get_script(unquote(variant))
-        assert String.starts_with?(script, "!function(){var")
+        assert String.starts_with?(tracker_body(script), "!function(){var")
+        assert String.contains?(script, "Copyright 2020 Plausible Insights OÜ")
         assert String.length(script) > 200
 
         assert String.contains?(script, "window.qusto")
       end
     end
+  end
+
+  # The MIT notice is a leading block comment. The program itself still starts
+  # with the IIFE.
+  defp tracker_body(script) do
+    String.replace(script, ~r/\A\/\*!.*?\*\/\s*/s, "")
   end
 
   def get_script(filename) do

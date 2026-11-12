@@ -44,20 +44,18 @@ Coverage figure, customer LTV, attribution and the Shopify and WooCommerce
 connectors are separate Qusto services. They read this engine over its API and
 are not part of this repository.
 
-### `extra/` is not open source
+### `extra/` is not in this tree
 
 Plausible keeps some features (funnels, installation verification, the
 customer-support tools and more) in `extra/`. **`extra/COPYING.txt` grants no
-rights** to use, distribute or otherwise exploit that code. It is in this
-repository only because it is in the upstream tree.
+rights** to use, distribute or otherwise exploit that code. At this commit the
+directory is absent. Tags published before the removal still contain it.
 
 - Every image Qusto builds or ships uses `MIX_ENV=ce`, which compiles `lib/`
-  only. `deploy-variant-guard.yml` fails any PR that builds an image with the
-  `prod` variant.
+  only. `deploy-variant-guard.yml` fails if `extra/` is present, and it fails
+  any PR that builds an image with the `prod` variant.
 - CI runs the Elixir suite as `ce_test` only (ADR-008 D3, 2026-11-10).
-- Still open: the end-to-end suite (`e2e_test`) and local `dev` compile
-  `extra/lib`. Moving them to CE environments is tracked as a follow-up.
-- Funnels in managed Qusto are a separate Qusto implementation, not
+- Funnels in managed Qusto are a separate Qusto implementation. They are not
   Plausible's `extra/` code.
 
 ## Licence notices

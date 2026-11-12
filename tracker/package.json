@@ -19,7 +19,7 @@
     "@duckduckgo/autoconsent": "^15.1.0",
     "@rollup/plugin-json": "^6.1.0",
     "@swc/core": "^1.11.24",
-    "chokidar": "^4.0.3",
+    "chokidar": "^6.0.0",
     "cli-progress": "^3.12.0",
     "generatorics": "^1.1.0",
     "rollup": "^4.67.4",

@@ -1162,6 +1162,8 @@ unless s3_disabled? do
     imports_bucket: s3_env_value.("S3_IMPORTS_BUCKET")
 end
 
+config :plausible, :provision_token, System.get_env("QUSTO_PROVISION_TOKEN")
+
 config :plausible, Plausible.Cache.Adapter, sessions: [partitions: 100]
 
 config :plausible, Plausible.IP.Tools,

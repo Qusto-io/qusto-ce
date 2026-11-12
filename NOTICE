@@ -28,6 +28,14 @@ https://github.com/Qusto-io/qusto-ce
 
 ---
 
+DB-IP
+Website:   https://db-ip.com
+License:   Creative Commons Attribution 4.0 International (CC BY 4.0)
+Used for:  IP geolocation when IP_GEOLOCATION_DB points at a DB-IP database
+Credit:    IP Geolocation by DB-IP. The dashboard map shows this credit when the
+           configured database is DB-IP. The credit does not depend on a compile
+           flag that hides it.
+
 GeoNames
 Website:   https://www.geonames.org
 License:   Creative Commons Attribution 4.0 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/

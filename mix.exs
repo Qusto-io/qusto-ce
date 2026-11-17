@@ -93,7 +93,7 @@ defmodule Plausible.MixProject do
       {:eqrcode, "~> 0.2.1"},
       {:ex_machina, "~> 2.3", only: [:dev, :test, :ce_dev, :ce_test, :e2e_test, :ce_e2e]},
       {:excoveralls, "~> 0.10", only: :test},
-      {:finch, "~> 0.23.0"},
+      {:finch, "~> 0.24.0"},
       {:floki, "~> 0.36"},
       {:lazy_html, "~> 0.1.8"},
       {:fun_with_flags, "~> 1.13.0"},

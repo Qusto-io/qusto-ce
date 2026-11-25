@@ -161,28 +161,31 @@ jobs:
             printf '_This issue is updated in place each week; it is not a new issue per run._\n'
           } > "${body_file}"
 
-          # Label attachment is best-effort and decoupled from issue creation:
-          # a label hiccup (seen 2026-09-24 - `gh issue create --label` failed
-          # with "not found" even immediately after the label was confirmed to
-          # exist in the repo) must never suppress the substantive report.
-          gh label create upstream-drift --description "Fork drift from plausible/analytics" --color ededed 2>/dev/null || true
+          # REST instead of `gh issue create/edit/list`: those use GraphQL, and
+          # `createIssue` is refused for GITHUB_TOKEN here ("Resource not
+          # accessible by integration") even with `issues: write`. This job has
+          # failed weekly since 2026-10-19 (first run with drift >= threshold).
+          repo="${GITHUB_REPOSITORY}"
+          gh api -X POST "repos/${repo}/labels" -f name=upstream-drift \
+            -f description="Fork drift from plausible/analytics" -f color=ededed \
+            >/dev/null 2>&1 || true
 
-          existing="$(gh issue list --state open --label upstream-drift \
-            --json number -q '.[0].number' 2>/dev/null || true)"
+          # Issues endpoint also returns PRs; exclude them. Match on label, then
+          # fall back to the title so this never forks into a duplicate.
+          existing="$(gh api "repos/${repo}/issues?state=open&labels=upstream-drift&per_page=100" \
+            --jq '[.[] | select(.pull_request | not)][0].number // empty')"
           if [ -z "${existing}" ]; then
-            # Label search can miss a label created moments earlier; fall back
-            # to title matching so this doesn't fork into a duplicate issue.
-            existing="$(gh issue list --state open --search "in:title \"Upstream drift:\"" \
-              --json number -q '.[0].number' 2>/dev/null || true)"
+            existing="$(gh api "repos/${repo}/issues?state=open&per_page=100" \
+              --jq '[.[] | select((.pull_request | not) and (.title | startswith("Upstream drift:")))][0].number // empty')"
           fi
 
           if [ -n "${existing}" ]; then
-            gh issue edit "${existing}" --title "${title}" --body-file "${body_file}"
+            gh api -X PATCH "repos/${repo}/issues/${existing}" \
+              -f title="${title}" -F body=@"${body_file}" >/dev/null
             echo "Updated issue #${existing}"
           else
-            issue_url="$(gh issue create --title "${title}" --body-file "${body_file}")"
+            issue_url="$(gh api -X POST "repos/${repo}/issues" \
+              -f title="${title}" -F body=@"${body_file}" -f 'labels[]=upstream-drift' \
+              --jq .html_url)"
             echo "Created ${issue_url}"
-            issue_number="${issue_url##*/}"
-            gh issue edit "${issue_number}" --add-label upstream-drift \
-              || echo "::warning title=Label attach failed::Issue ${issue_url} created but could not attach 'upstream-drift' label - attach it manually."
           fi

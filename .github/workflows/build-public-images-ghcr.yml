@@ -73,7 +73,11 @@ jobs:
         run: |
           set -euo pipefail
           echo "app_version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
-          git fetch -q --tags https://github.com/plausible/analytics.git master
+          # --no-tags: plausible/analytics owns tags such as v1.0.0 and v1.1.0. Fetching
+          # them with --tags is refused ("would clobber existing tag") when our release
+          # tag has the same name, which failed the v1.0.0 run on 2026-11-25. Upstream
+          # tags already in this fork's history are enough for `git describe` below.
+          git fetch -q --no-tags https://github.com/plausible/analytics.git master
           mb=$(git merge-base HEAD FETCH_HEAD)
           echo "upstream_base=$mb" >> "$GITHUB_OUTPUT"
           echo "upstream_describe=$(git describe --tags "$mb" 2>/dev/null || echo "$mb")" >> "$GITHUB_OUTPUT"

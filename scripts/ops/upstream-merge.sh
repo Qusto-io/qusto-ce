@@ -35,12 +35,32 @@ LIVE_CACHE="${git_dir}/rr-cache"
 
 die() { echo "ERROR: $*" >&2; exit 1; }
 
+# main's history was rewritten on 2026-11-27 (Plausible's proprietary extra/ and leaked
+# upstream credentials removed). Raw upstream shares no commit ids with main any more and
+# would re-import extra/. Upstream is therefore always taken through the same deterministic
+# filter (scripts/ops/filtered-upstream.sh); the `upstream` remote points at that local copy.
+FILTERED_UPSTREAM="${FILTERED_UPSTREAM:-${XDG_CACHE_HOME:-$HOME/.cache}/qusto-ce/upstream-filtered.git}"
+
 ensure_upstream_remote() {
   if git remote get-url upstream >/dev/null 2>&1; then
-    git remote set-url upstream "${UPSTREAM_URL}"
+    git remote set-url upstream "${FILTERED_UPSTREAM}"
   else
-    git remote add upstream "${UPSTREAM_URL}"
+    git remote add upstream "${FILTERED_UPSTREAM}"
   fi
+}
+
+# Rebuild the filtered copy and fetch it. Never fetch ${UPSTREAM_URL} directly.
+fetch_upstream() {
+  command -v git-filter-repo >/dev/null 2>&1 || die "git-filter-repo is required (pip install git-filter-repo==2.47.0)"
+  mkdir -p "$(dirname "${FILTERED_UPSTREAM}")"
+  "${repo_root}/scripts/ops/filtered-upstream.sh" "${FILTERED_UPSTREAM}" "${UPSTREAM_URL}" >&2
+  ensure_upstream_remote
+  git fetch --no-tags -q upstream "${UPSTREAM_REF}"
+}
+
+# docs/UPSTREAM_INTEGRATION_STATE.md records the ORIGINAL upstream sha; print its filtered id.
+map_integrated_tip() {
+  awk -v s="$1" '$1==s{print $2}' "${FILTERED_UPSTREAM}/filter-repo/commit-map" 2>/dev/null
 }
 
 cmd_setup() {
@@ -104,8 +124,7 @@ cmd_slice() {
     *) die "date must be YYYY-MM-DD, got '${cutoff}'" ;;
   esac
 
-  ensure_upstream_remote
-  git fetch --no-tags upstream "${UPSTREAM_REF}"
+  fetch_upstream
 
   local target
   target="$(git rev-list -1 --before="${cutoff} 23:59:59" "upstream/${UPSTREAM_REF}")"
@@ -127,8 +146,7 @@ cmd_slice() {
 }
 
 cmd_status() {
-  ensure_upstream_remote
-  git fetch --no-tags -q upstream "${UPSTREAM_REF}" 2>/dev/null || true
+  fetch_upstream
 
   local base behind ahead
   base="$(git merge-base HEAD "upstream/${UPSTREAM_REF}" 2>/dev/null || echo '')"
@@ -144,7 +162,7 @@ cmd_status() {
 
   integrated_file="${repo_root}/docs/UPSTREAM_INTEGRATION_STATE.md"
   if [ -f "${integrated_file}" ]; then
-    integrated="$(sed -n 's/^integrated_upstream_tip: //p' "${integrated_file}" | head -1)"
+    integrated="$(map_integrated_tip "$(sed -n 's/^integrated_upstream_tip: //p' "${integrated_file}" | head -1)")"
     if [ -n "${integrated}" ] && git cat-file -e "${integrated}^{commit}" 2>/dev/null; then
       remaining="$(git rev-list --count "${integrated}..upstream/${UPSTREAM_REF}")"
       echo "integrated : ${integrated:0:10} ($(git log -1 --format=%cs "${integrated}"))"

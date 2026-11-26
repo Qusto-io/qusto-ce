@@ -237,7 +237,12 @@ jobs:
             git clone --depth 1 --branch "${CE_GIT_REF}" \
               https://github.com/Qusto-io/qusto-ce.git "${BUILD_DIR}"
             cd "${BUILD_DIR}"
-            docker build -t "${IMAGE}" -t "qusto/qusto-ce:${CE_VERSION}" .
+            # AGPL section 13: record which source this image was built from, so the
+            # Source Code Offer page and GET /api/system can name the exact commit.
+            CE_SHA="$(git rev-parse HEAD)"
+            BUILD_META="$(printf '{"labels":{"org.opencontainers.image.version":"%s","org.opencontainers.image.revision":"%s","org.opencontainers.image.source":"https://github.com/Qusto-io/qusto-ce"}}' "${CE_VERSION}" "${CE_SHA}")"
+            docker build --build-arg BUILD_METADATA="${BUILD_META}" \
+              -t "${IMAGE}" -t "qusto/qusto-ce:${CE_VERSION}" .
 
             # Phase 0 gate: prove the image boots and serves BEFORE the running
             # production container is swapped for it. Previously the health check

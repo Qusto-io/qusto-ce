@@ -37,12 +37,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch upstream
+      - name: Fetch upstream (filtered)
+        # main's history was rewritten on 2026-11-27 (extra/ and leaked upstream
+        # credentials removed). Upstream must go through the same deterministic
+        # filter to share commit ids with main. See scripts/ops/filtered-upstream.sh.
         run: |
           set -euo pipefail
-          git remote add upstream "${UPSTREAM_REPO}" 2>/dev/null || \
-            git remote set-url upstream "${UPSTREAM_REPO}"
-          git fetch --no-tags upstream "${UPSTREAM_REF}"
+          python3 -m pip install --quiet git-filter-repo==2.47.0
+          export PATH="$HOME/.local/bin:$PATH"
+          scripts/ops/filtered-upstream.sh "${RUNNER_TEMP}/upstream-filtered.git" "${UPSTREAM_REPO}"
+          git fetch --no-tags "${RUNNER_TEMP}/upstream-filtered.git" "${UPSTREAM_REF}:refs/remotes/upstream/${UPSTREAM_REF}"
 
       - name: Measure
         id: measure
@@ -67,7 +71,9 @@ jobs:
           metric="raw ancestry (no docs/UPSTREAM_INTEGRATION_STATE.md tip found)"
           integrated_file="docs/UPSTREAM_INTEGRATION_STATE.md"
           if [ -f "${integrated_file}" ]; then
-            integrated="$(sed -n 's/^integrated_upstream_tip: //p' "${integrated_file}" | head -1)"
+            integrated_orig="$(sed -n 's/^integrated_upstream_tip: //p' "${integrated_file}" | head -1)"
+            # The state file records the ORIGINAL upstream sha; map it to its filtered id.
+            integrated="$(awk -v s="${integrated_orig}" '$1==s{print $2}' "${RUNNER_TEMP}/upstream-filtered.git/filter-repo/commit-map")"
             if [ -n "${integrated}" ] && git cat-file -e "${integrated}^{commit}" 2>/dev/null; then
               behind="$(git rev-list --count "${integrated}..upstream/${UPSTREAM_REF}")"
               scan_since="${integrated}"

@@ -207,7 +207,7 @@ After a successful push-to-`main` deploy, GitHub Actions tags the deployed commi
 Verify a running beta1 image against source:
 
 ```sh
-TAG=v121-ce   # from qusto-ee .env CE_VERSION
+TAG=v121-ce   # the deploy counter tag of the running image (CE_VERSION)
 git fetch --tags origin
 git rev-parse "$TAG"
 # Optional on beta1: docker inspect qusto-ce-ee --format '{{.Config.Image}}'

@@ -155,6 +155,10 @@ Thumbs.db
 # Claude AI assistant
 .claude/
 
+# Recorded merge resolutions hold whole upstream files, which can include code we
+# have no licence to redistribute. They live outside the repository.
+/.rerere-cache/
+
 # Qusto-specific secrets
 .env
 .env.*

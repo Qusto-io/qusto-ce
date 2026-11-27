@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Build a *filtered* copy of plausible/analytics that shares commit ids with qusto-ce.
 #
-# On 2026-11-27 qusto-ce's public history was rewritten with git-filter-repo to remove
-# Plausible's proprietary extra/ tree and credentials that upstream once committed.
-# Every commit id changed, so a raw `git fetch` of upstream no longer shares ancestry
+# qusto-ce's public history was rewritten with git-filter-repo to remove Plausible's
+# proprietary extra/ and assets/js/dashboard/extra/ trees, recorded merge resolutions
+# (.rerere-cache/) and credentials that upstream once committed.
+# Commit ids changed, so a raw `git fetch` of upstream no longer shares ancestry
 # with main. Applying the SAME deterministic filter to a clone of upstream yields the
 # same commit ids for shared history, so merges and drift measurement work again.
 #
@@ -29,6 +30,7 @@ git clone --quiet --bare "${url}" "${target}"
   git filter-repo --force \
     --path extra/ --path backups/ --path E2E_IMPLEMENTATION_REPORT.md --path .week5-progress.json \
     --path opencode.json --path .env --path .backup-env --path backup-config.yml \
+    --path .rerere-cache/ --path assets/js/dashboard/extra/ \
     --invert-paths \
     --preserve-commit-hashes \
     --replace-text "${here}/filter-replace.txt" >/dev/null 2>&1

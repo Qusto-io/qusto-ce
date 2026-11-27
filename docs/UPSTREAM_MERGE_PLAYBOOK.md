@@ -1,5 +1,16 @@
 # Upstream merge playbook
 
+> **History rewrite, 2026-11-27.** Public history was rewritten to remove Plausible's
+> proprietary `extra/` tree and credentials that upstream once committed. All commit ids
+> before the fork changed. Never fetch `plausible/analytics` directly into this repository:
+> it shares no ids with `main` and would re-import `extra/`. Always go through
+> `scripts/ops/upstream-merge.sh` (it runs `scripts/ops/filtered-upstream.sh`, the same
+> deterministic filter, on a clone of upstream; needs `pip install git-filter-repo==2.47.0`,
+> takes a few minutes). Do not edit the filter arguments or `scripts/ops/filter-replace.txt`:
+> any change alters commit ids and breaks the shared ancestry.
+> `docs/UPSTREAM_INTEGRATION_STATE.md` keeps the ORIGINAL upstream sha; the scripts map it.
+
+
 How to merge `plausible/analytics` into `qusto-ce` without re-deciding the same
 questions every time. DRIFT-01 Phase 1.
 

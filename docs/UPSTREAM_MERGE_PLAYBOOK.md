@@ -1,9 +1,10 @@
 # Upstream merge playbook
 
-> **History rewrite, 2026-11-27.** Public history was rewritten to remove Plausible's
-> proprietary `extra/` tree and credentials that upstream once committed. All commit ids
-> before the fork changed. Never fetch `plausible/analytics` directly into this repository:
-> it shares no ids with `main` and would re-import `extra/`. Always go through
+> **History rewrites, 2026-11.** Public history was rewritten to remove Plausible's
+> proprietary `extra/` and `assets/js/dashboard/extra/` trees, the committed
+> `.rerere-cache/` and credentials that upstream once committed. Commit ids changed.
+> Never fetch `plausible/analytics` directly into this repository: it shares no ids with
+> `main` and would re-import `extra/`. Always go through
 > `scripts/ops/upstream-merge.sh` (it runs `scripts/ops/filtered-upstream.sh`, the same
 > deterministic filter, on a clone of upstream; needs `pip install git-filter-repo==2.47.0`,
 > takes a few minutes). Do not edit the filter arguments or `scripts/ops/filter-replace.txt`:
@@ -26,7 +27,10 @@ scripts/ops/upstream-merge.sh setup
 ```
 
 Enables `rerere` + `rerere.autoupdate`, adds the `upstream` remote, and loads the
-shared resolution cache from `.rerere-cache/` into `.git/rr-cache`.
+saved resolution cache into `.git/rr-cache`. The cache lives outside the repository,
+in `~/.local/share/qusto-ce/rerere-cache` (override with `RERERE_SHARED_CACHE`). Its
+entries are whole conflicted upstream files, so it is never committed here. Copy it
+privately to use it on another machine.
 
 `rerere.enabled` is **local config** — git cannot carry it in the repo, so every
 clone needs this once.
@@ -39,8 +43,7 @@ scripts/ops/upstream-merge.sh slice 2026-03-31  # prints the target commit
 git merge <target>                              # you run it, you see the conflicts
 # ...resolve per the table below...
 git commit                                      # rerere records postimages HERE
-scripts/ops/upstream-merge.sh save              # export to .rerere-cache/
-git add .rerere-cache && git commit -m "chore: record merge resolutions"
+scripts/ops/upstream-merge.sh save              # keep the resolutions, outside the repo
 ```
 
 **`save` after `git commit`, not before.** rerere writes the *preimage* when the
@@ -236,7 +239,7 @@ every future merge, silently. So:
   because it is convenient.
 - `upstream-merge.sh slice` deliberately does **not** run the merge for you.
 - If a resolution turns out to be wrong, delete its directory from
-  `.rerere-cache/` and re-resolve; otherwise it outlives the mistake.
+  the saved cache and `.git/rr-cache` and re-resolve; otherwise it outlives the mistake.
 
 ## Cadence
 

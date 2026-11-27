@@ -5,12 +5,13 @@
 # qusto-ce is a long-lived fork that rebranded in place, so ~58% of the conflicts
 # in an upstream merge are the same branding collisions every single time. git
 # rerere ("reuse recorded resolution") replays a resolution once it has seen it,
-# which turns that recurring cost into a one-off — but only if the cache is
-# shared. `.git/rr-cache` is not version controlled, so this script moves it in
-# and out of a tracked directory.
+# which turns that recurring cost into a one-off — but only if the cache
+# outlives the clone. `.git/rr-cache` does not, so this script copies it to and
+# from a private directory outside the repository. Cache entries are whole
+# conflicted files from upstream: never commit them to this public repository.
 #
-#   setup            enable rerere and load the shared cache into this clone
-#   save             export this clone's cache back to .rerere-cache/ to commit
+#   setup            enable rerere and load the saved cache into this clone
+#   save             export this clone's cache to the private directory
 #   slice <DATE>     merge upstream history up to YYYY-MM-DD (Phase 3 slices)
 #   status           drift, rerere state, cache size
 #
@@ -30,13 +31,17 @@ case "${git_dir}" in
   *) git_dir="${repo_root}/${git_dir}" ;;
 esac
 
-SHARED_CACHE="${repo_root}/.rerere-cache"
+SHARED_CACHE="${RERERE_SHARED_CACHE:-${XDG_DATA_HOME:-$HOME/.local/share}/qusto-ce/rerere-cache}"
 LIVE_CACHE="${git_dir}/rr-cache"
 
 die() { echo "ERROR: $*" >&2; exit 1; }
 
-# main's history was rewritten on 2026-11-27 (Plausible's proprietary extra/ and leaked
-# upstream credentials removed). Raw upstream shares no commit ids with main any more and
+case "${SHARED_CACHE}/" in
+  "${repo_root}"/*) die "RERERE_SHARED_CACHE must be outside the repository: ${SHARED_CACHE}" ;;
+esac
+
+# main's history was rewritten (extra/, assets/js/dashboard/extra/ and leaked upstream
+# credentials removed). Raw upstream shares no commit ids with main any more and
 # would re-import extra/. Upstream is therefore always taken through the same deterministic
 # filter (scripts/ops/filtered-upstream.sh); the `upstream` remote points at that local copy.
 FILTERED_UPSTREAM="${FILTERED_UPSTREAM:-${XDG_CACHE_HOME:-$HOME/.cache}/qusto-ce/upstream-filtered.git}"
@@ -95,6 +100,7 @@ cmd_save() {
   [ -d "${LIVE_CACHE}" ] || die "no ${LIVE_CACHE}; run '$0 setup' and perform a merge first"
 
   mkdir -p "${SHARED_CACHE}"
+  chmod 700 "${SHARED_CACHE}"
   local saved=0 skipped=0
   for d in "${LIVE_CACHE}"/*/; do
     [ -d "${d}" ] || continue
@@ -113,7 +119,7 @@ cmd_save() {
   if [ "${skipped}" -gt 0 ]; then
     echo "skipped ${skipped} unresolved entr(ies) (preimage only)"
   fi
-  echo "commit .rerere-cache/ so the next merge - and the next machine - replays them"
+  echo "kept outside the repository; copy that directory privately to use it on another machine"
 }
 
 cmd_slice() {
@@ -171,7 +177,7 @@ cmd_status() {
   fi
 
   echo "rerere     : $(git config --get rerere.enabled || echo 'NOT ENABLED - run setup')"
-  echo "shared     : $(find "${SHARED_CACHE}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ') resolution(s) in .rerere-cache/"
+  echo "shared     : $(find "${SHARED_CACHE}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ') resolution(s) in ${SHARED_CACHE}"
   echo "live       : $(find "${LIVE_CACHE}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ') entr(ies) in ${LIVE_CACHE}"
 }
 

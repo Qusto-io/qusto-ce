@@ -72,15 +72,28 @@ jobs:
         run: |
           set -euo pipefail
           echo "app_version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
-          # --no-tags: plausible/analytics owns tags such as v1.0.0 and v1.1.0. Fetching
-          # them with --tags is refused ("would clobber existing tag") when our release
-          # tag has the same name, which failed the v1.0.0 run on 2026-11-25. Upstream
-          # tags already in this fork's history are enough for `git describe` below.
-          git fetch -q --no-tags https://github.com/plausible/analytics.git master
+          # main's history is a filtered copy of upstream's, so upstream must pass through
+          # the same filter before the two share commit ids. Never fetch it directly.
+          python3 -m pip install --quiet git-filter-repo==2.47.0
+          export PATH="$HOME/.local/bin:$PATH"
+          filtered="${RUNNER_TEMP}/upstream-filtered.git"
+          scripts/ops/filtered-upstream.sh "$filtered"
+          # --no-tags: plausible/analytics owns tags such as v1.0.0 and v1.1.0, which
+          # clobber ours (this failed the v1.0.0 run on 2026-11-25).
+          git fetch -q --no-tags "$filtered" master
           mb=$(git merge-base HEAD FETCH_HEAD)
-          echo "upstream_base=$mb" >> "$GITHUB_OUTPUT"
-          echo "upstream_describe=$(git describe --tags "$mb" 2>/dev/null || echo "$mb")" >> "$GITHUB_OUTPUT"
-          echo "Upstream base: $mb"
+          # Publish the ORIGINAL upstream id, which resolves in plausible/analytics. A
+          # commit the filter did not change maps to itself. Commits the filter dropped
+          # map to zeros, so the reverse lookup cannot pick one of them.
+          orig=$(awk -v s="$mb" '$2==s{print $1}' "$filtered/filter-repo/commit-map")
+          if [ "$(printf '%s\n' "$orig" | grep -c .)" -ne 1 ]; then
+            echo "::error::Expected exactly one upstream commit for merge base $mb, got: ${orig:-none}"
+            exit 1
+          fi
+          describe=$(git -C "$filtered" describe --tags "$mb" 2>/dev/null || echo "$orig")
+          echo "upstream_base=$orig" >> "$GITHUB_OUTPUT"
+          echo "upstream_describe=$describe" >> "$GITHUB_OUTPUT"
+          echo "Upstream base: $orig ($describe), filtered id $mb"
 
   build:
     needs: gate
@@ -256,7 +269,7 @@ jobs:
           - **You get:** traffic analytics (sources, pages, locations, devices), goals, custom properties, the Stats API.
           - **Not included:** funnels, orders, revenue, products, Coverage, LTV, attribution and store connectors. Those are managed Qusto services.
           - **Upstream base:** \`${BASE}\`.
-          - **Build:** \`MIX_ENV=ce\`. \`extra/\` is not in this tree (asserted in CI). It remains on older tags.
+          - **Build:** \`MIX_ENV=ce\`. \`extra/\` is not in this tree (asserted in CI).
           - **Verify:** \`cosign verify ${GHCR_REPO}@${DIGEST} --certificate-identity-regexp 'https://github.com/${GITHUB_REPOSITORY}/' --certificate-oidc-issuer https://token.actions.githubusercontent.com\`
 
           Community supported. Install guide: see DEPLOYMENT.md.

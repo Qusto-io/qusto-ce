@@ -1,7 +1,6 @@
 name: Build Public Images GHCR
 
 # OC-05 (approved 2026-11-10): the public, versioned Qusto CE image.
-# Spec: vault 01-strategy/roadmap/OC05_PUBLIC_CE_IMAGE_SPEC_20261109.md
 #
 # - Only SemVer tags (v1.2.3) release. Deploy counters (v147-ce) never match.
 # - Image: ghcr.io/qusto-io/qusto-ce-community (public). Never the private

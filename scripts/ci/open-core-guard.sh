@@ -18,7 +18,7 @@ bad_paths="$(printf '%s\n' "$files" | grep -E '(\.go$|(^|/)go\.(mod|sum)$|^(extr
 bad_env="$(printf '%s\n' "$files" | grep -E '(^|/)\.(env|backup-env)([._-].*)?$' | grep -v -E '^(config/\.env\.(dev|test|e2e_test|load)|\.env\.(example|dev|test)|plausible-variables\.sample\.env)$' || true)"
 [ -z "$bad_env" ] || report "env files that are not the known placeholders: $(echo "$bad_env" | head -5 | tr '\n' ' ')"
 
-patterns='-----BEGIN ((RSA|OPENSSH|EC|DSA|PGP) )?PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|xox[abpr]-[A-Za-z0-9-]{10,}|[sr]k_live_[A-Za-z0-9]{16,}|shp(at|ua|ss|ca)_[a-f0-9]{24,}|AIza[0-9A-Za-z_-]{35}|ya29\.[A-Za-z0-9_-]{20,}|hooks\.slack\.com/services/T[A-Z0-9]+/B[A-Z0-9]+/[A-Za-z0-9]+'
+patterns='-----BEGIN ((RSA|OPENSSH|EC|DSA|PGP) )?PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|xox[abpr]-[A-Za-z0-9-]{10,}|[sr]k_live_[A-Za-z0-9]{16,}|shp(at|ua|ss|ca)_[a-f0-9]{24,}|AIza[0-9A-Za-z_-]{35}|GOCSPX-[A-Za-z0-9_-]{10,}|ya29\.[A-Za-z0-9_-]{20,}|hooks\.slack\.com/services/T[A-Z0-9]+/B[A-Z0-9]+/[A-Za-z0-9]+'
 set +e
 hits="$(git grep -nIE -e "$patterns" -- . ':!scripts/ci/open-core-guard.sh')"
 status=$?

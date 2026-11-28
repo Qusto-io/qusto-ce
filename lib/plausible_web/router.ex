@@ -399,6 +399,13 @@ defmodule PlausibleWeb.Router do
     end
   end
 
+  # Site rows for managed Qusto. The on_ee block above is not compiled, so
+  # this path is free. It is not Plausible's sites API.
+  scope "/api/v1/sites", PlausibleWeb.Api do
+    post "/", ProvisionController, :create
+    delete "/:domain", ProvisionController, :delete
+  end
+
   scope "/api", PlausibleWeb do
     scope [] do
       pipe_through :external_api
